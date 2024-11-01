@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Close</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="iPhone-13-Pro" transform="translate(-267.000000, -109.000000)" fill="#050505">
+            <path d="M289,119 C289.552285,119 290,119.447715 290,120 L290,130 L300,130 C300.552285,130 301,130.447715 301,131 C301,131.552285 300.552285,132 300,132 L290,132 L290,142 C290,142.552285 289.552285,143 289,143 C288.447715,143 288,142.552285 288,142 L288,132 L278,132 C277.447715,132 277,131.552285 277,131 C277,130.447715 277.447715,130 278,130 L288,130 L288,120 C288,119.447715 288.447715,119 289,119 Z" id="Combined-Shape" transform="translate(289.000000, 131.000000) rotate(45.000000) translate(-289.000000, -131.000000) "></path>
+        </g>
+    </g>
+</svg>
