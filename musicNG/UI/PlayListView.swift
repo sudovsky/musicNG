@@ -10,10 +10,8 @@ import SwiftUI
 public struct PlayListView: View {
 
     @State private var showingDetail: Bool = false
-    
     @State private var currentFrame: Int = 0
-
-    var playlists: [Playlist] = [Playlist(), Playlist(), Playlist()]
+    @State private var playlists: [Playlist] = []
     
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -21,43 +19,36 @@ public struct PlayListView: View {
     ]
 
     public var body: some View {
-        var currentPlaylist: Playlist?
-        
-        VStack(spacing: 0) {
-            if currentFrame == 0 {
-                Spacer()
-                prepareData()
-            } else if currentFrame == 1 {
-                plView(action: { playlist in
-                    currentPlaylist = playlist
-                    showingDetail.toggle()
-                })
-                
-                bottomView()
-            } else if currentFrame == 2 {
-                TitleView(backButtonVisible: false,
-                          actionButtonVisible: false,
-                          secondActionButton: false,
-                          title: "Настройки")
-
-                Spacer()
-                
-                bottomView()
+        NavigationView {
+            VStack(spacing: 0) {
+                if currentFrame == 0 {
+                    Spacer()
+                    prepareData()
+                } else if currentFrame == 1 {
+                    plView()
+                    bottomView()
+                } else if currentFrame == 2 {
+                    TitleView(backButtonVisible: false,
+                              actionButtonVisible: false,
+                              secondActionButton: false,
+                              title: "Настройки")
+                    
+                    Spacer()
+                    
+                    bottomView()
+                }
+            }
+            .background {
+                Color.back
             }
         }
-        .background {
-            Color.back
-        }
-        .fullScreenCover(isPresented: $showingDetail.animation(.interactiveSpring)) {
-            SongTile(artist: currentPlaylist?.name ?? "")
-        }
-
-        
+        .navigationBarHidden(true)
     }
     
     func prepareData() -> some View {
         Spacer()
             .onAppear {
+                playlists += [Playlist(), Playlist(), Playlist()]
                 currentFrame = 1
             }
     }
@@ -70,7 +61,7 @@ public struct PlayListView: View {
         }
     }
     
-    func plView(action: @escaping (Playlist) -> Void) -> some View {
+    func plView() -> some View {
         return VStack(spacing: 0) {
             TitleView(backButtonVisible: false,
                       actionButtonVisible: true,
@@ -84,11 +75,11 @@ public struct PlayListView: View {
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     ForEach(playlists) { playlist in
-                        Button(action: {
-                            action(playlist)
-                        }, label: {
+                        NavigationLink {
+                            SongTile(artist: playlist.name)
+                        } label: {
                             PlaylistTile(playlist: playlist)
-                        })
+                        }
                     }
                     Color(.white)
                 }.padding(16)

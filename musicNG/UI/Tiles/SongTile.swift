@@ -12,14 +12,14 @@ struct SongTile: View {
     
     @State var artistVisible = true
     
-    var imageName: String? = nil
+    var image: Image? = nil
     var artist: String = "Unknown"
     var track: String = "Unknown"
     var shadow: Bool = true
     
     var body: some View {
         ZStack {
-            getImageByName()
+            getImage()
                 .scaledToFill()
             LinearGradient(colors: [commonGradientColor, .clear], startPoint: UnitPoint.bottom, endPoint: UnitPoint.top)
             VStack(spacing: 0) {
@@ -53,13 +53,13 @@ struct SongTile: View {
         .shadow(color: shadow ? commonShadowColor : .clear, radius: 5.4, x: 2.7, y: 5.5)
     }
     
-    func getImageByName() -> Image {
-        guard let imageName = imageName else {
+    func getImage() -> Image {
+        guard let image = image else {
             return Image("NoImage")
                 .resizable()
         }
         
-        return Image(imageName)
+        return image
             .resizable()
     }
 }

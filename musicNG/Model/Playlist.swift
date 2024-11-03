@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import UIKit
+import SwiftUI
 
 class Playlist: Codable, Identifiable {
     
@@ -17,9 +17,13 @@ class Playlist: Codable, Identifiable {
     
     var customSortKey = 0
     
-    var cover: UIImage? {
+    var cover: Image? {
         if let url = urlForPlaylistCover() {
-            return UIImage(contentsOfFile: url.path)
+            if let image = UIImage(contentsOfFile: url.path) {
+                return Image(uiImage: image)
+            } else {
+                return nil
+            }
         } else {
             return nil
             //return FileData.getDownloadsExt(for: self, readMetadata: true).first(where: { $0.cover != nil })?.cover
