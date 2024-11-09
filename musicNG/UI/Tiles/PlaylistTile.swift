@@ -20,7 +20,7 @@ struct PlaylistTile: View {
                 .padding([.top, .leading], 3)
                 .padding([.trailing, .bottom], 3)
                 .opacity(0.4)
-            SongTile(artistVisible: false, image: playlist.cover, track: playlist.name, shadow: false)
+            SongTile(artistVisible: false, image: playlist.cover?.image(), track: playlist.name, shadow: false)
                 .padding([.trailing, .bottom], 6)
             
         }

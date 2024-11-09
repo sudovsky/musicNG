@@ -6,21 +6,20 @@
 //
 
 import Foundation
-import SwiftUI
 
 class Playlist: Codable, Identifiable {
     
     var id = UUID().uuidString
-    var name = "Пиздец Какой Неизвестный"
+    var name = "Неизвестный"
     var date = Date()
     var songsSort: SortType = .userDefined
     
     var customSortKey = 0
     
-    var cover: Image? {
+    var cover: Data? {
         if let url = urlForPlaylistCover() {
-            if let image = UIImage(contentsOfFile: url.path) {
-                return Image(uiImage: image)
+            if let data = try? Data(contentsOf: url) {
+                return data
             } else {
                 return nil
             }
