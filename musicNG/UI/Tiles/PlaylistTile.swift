@@ -10,21 +10,56 @@ import SwiftUI
 struct PlaylistTile: View {
     
     var playlist: Playlist
-    
+    @State var image1: Image? = nil
+    @State var image2: Image? = nil
+    @State var image3: Image? = nil
+
+
     var body: some View {
         ZStack {
-            SongTile(artistVisible: false, shadow: false)
+            image1?
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .cornerRadius(commonCornerRadius)
+                .overlay(
+                    RoundedRectangle(cornerRadius: commonCornerRadius)
+                        .stroke(commonBorderColor, lineWidth: commonBorderWidth)
+                )
                 .padding([.top, .leading], 6)
                 .opacity(0.2)
-            SongTile(artistVisible: false, shadow: false)
+            image2?
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .cornerRadius(commonCornerRadius)
+                .overlay(
+                    RoundedRectangle(cornerRadius: commonCornerRadius)
+                        .stroke(commonBorderColor, lineWidth: commonBorderWidth)
+                )
                 .padding([.top, .leading], 3)
                 .padding([.trailing, .bottom], 3)
                 .opacity(0.4)
-            SongTile(artistVisible: false, image: playlist.cover?.image(), track: playlist.name, shadow: false)
+            SongTile(artistVisible: false, image: image3, track: playlist.name, shadow: false)
                 .padding([.trailing, .bottom], 6)
             
         }
         .shadowed()
+        .onAppear {
+            if image1 != nil {
+                return
+            }
+            
+            DispatchQueue.global().async {
+                let img1 = playlist.cover?.image() ?? Image("NoImage")
+                let img2 = playlist.cover?.image() ?? Image("NoImage")
+                let img3 = playlist.cover?.image() ?? Image("NoImage")
+                
+                DispatchQueue.main.async {
+                    image1 = img1
+                    image2 = img2
+                    image3 = img3
+                }
+            }
+        }
     }
 }
 

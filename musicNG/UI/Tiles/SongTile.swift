@@ -16,12 +16,15 @@ struct SongTile: View {
     var artist: String = "Unknown"
     var track: String = "Unknown"
     var shadow: Bool = true
+    var gradient: Bool = true
     
     var body: some View {
         ZStack {
             getImage()
                 .aspectRatio(contentMode: .fill)
-            LinearGradient(colors: [commonGradientColor, .clear], startPoint: UnitPoint.bottom, endPoint: UnitPoint.top)
+            if gradient {
+                LinearGradient(colors: [commonGradientColor, .clear], startPoint: UnitPoint.bottom, endPoint: UnitPoint.top)
+            }
             VStack(spacing: 0) {
                 Spacer()
                 Text(track)
