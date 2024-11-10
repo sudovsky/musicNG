@@ -48,7 +48,11 @@ public struct PlayListView: View {
     func prepareData() -> some View {
         Spacer()
             .onAppear {
-                playlists += [Playlist(), Playlist(), Playlist()]
+                if !playlists.isEmpty { return }
+                
+                let path = FileManager.playlistsSettings
+                
+                playlists = load(path) ?? [Playlist(), Playlist(), Playlist()] as! [Playlist]
                 currentFrame = 1
             }
     }

@@ -13,10 +13,10 @@ struct PlaylistTile: View {
     
     var body: some View {
         ZStack {
-            SongTile(shadow: false)
+            SongTile(artistVisible: false, shadow: false)
                 .padding([.top, .leading], 6)
                 .opacity(0.2)
-            SongTile(shadow: false)
+            SongTile(artistVisible: false, shadow: false)
                 .padding([.top, .leading], 3)
                 .padding([.trailing, .bottom], 3)
                 .opacity(0.4)
@@ -24,7 +24,7 @@ struct PlaylistTile: View {
                 .padding([.trailing, .bottom], 6)
             
         }
-        .shadow(color: commonShadowColor, radius: 5.4, x: 2.7, y: 5.5)
+        .shadowed()
     }
 }
 

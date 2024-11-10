@@ -20,7 +20,7 @@ struct SongTile: View {
     var body: some View {
         ZStack {
             getImage()
-                .scaledToFill()
+                .aspectRatio(contentMode: .fill)
             LinearGradient(colors: [commonGradientColor, .clear], startPoint: UnitPoint.bottom, endPoint: UnitPoint.top)
             VStack(spacing: 0) {
                 Spacer()
@@ -50,7 +50,7 @@ struct SongTile: View {
             RoundedRectangle(cornerRadius: commonCornerRadius)
                 .stroke(commonBorderColor, lineWidth: commonBorderWidth)
         )
-        .shadow(color: shadow ? commonShadowColor : .clear, radius: 5.4, x: 2.7, y: 5.5)
+        .shadowed(use: shadow)
     }
     
     func getImage() -> Image {

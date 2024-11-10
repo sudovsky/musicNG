@@ -7,14 +7,14 @@
 
 import Foundation
 
-class Playlist: Codable, Identifiable {
+class Playlist: Hashable, Codable, Identifiable {
     
     var id = UUID().uuidString
     var name = "Неизвестный"
     var date = Date()
     var songsSort: SortType = .userDefined
     
-    var customSortKey = 0
+    var sortKey = 0
     
     var cover: Data? {
         if let url = urlForPlaylistCover() {
@@ -38,6 +38,14 @@ class Playlist: Codable, Identifiable {
         }
         
         return nil
+    }
+
+    static func == (lhs: Playlist, rhs: Playlist) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 
 }
