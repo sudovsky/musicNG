@@ -18,14 +18,9 @@ class Playlist: Hashable, Codable, Identifiable {
     
     var cover: Data? {
         if let url = urlForPlaylistCover() {
-            if let data = try? Data(contentsOf: url) {
-                return data
-            } else {
-                return nil
-            }
+            return try? Data(contentsOf: url)
         } else {
             return nil
-            //return FileData.getDownloadsExt(for: self, readMetadata: true).first(where: { $0.cover != nil })?.cover
         }
     }
     
