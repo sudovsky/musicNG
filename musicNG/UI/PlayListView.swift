@@ -9,6 +9,8 @@ import SwiftUI
 
 public struct PlayListView: View {
 
+    @ObservedObject var variables =  Variables.shared
+    
     @State private var showingDetail: Bool = false
     @State private var currentFrame: Int = 0
     @State private var playlists: [Playlist] = []
@@ -26,15 +28,18 @@ public struct PlayListView: View {
                     prepareData()
                 } else if currentFrame == 1 {
                     plView()
-                    bottomView()
                 } else if currentFrame == 2 {
                     TitleView(backButtonVisible: false,
                               title: "Настройки")
                     
                     Spacer()
                     
-                    bottomView()
                 }
+                if variables.currentSong != nil {
+                    CurrentSongView(currentSong: variables.currentSong)
+                        .transition(.opacity.combined(with: .scale(scale: 0.2)))
+                }
+                bottomView()
             }
             .background {
                 Color.back

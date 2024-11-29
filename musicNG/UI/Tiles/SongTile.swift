@@ -58,8 +58,7 @@ struct SongTile: View {
     
     func getImage() -> Image {
         guard let image = image else {
-            return Image("NoImage")
-                .resizable()
+            return noImage
         }
         
         return image

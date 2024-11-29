@@ -49,9 +49,9 @@ struct PlaylistTile: View {
             }
             
             DispatchQueue.global().async {
-                let img1 = playlist.cover?.image() ?? Image("NoImage")
-                let img2 = playlist.cover?.image() ?? Image("NoImage")
-                let img3 = playlist.cover?.image() ?? Image("NoImage")
+                let img1 = playlist.cover?.image() ?? noImage
+                let img2 = playlist.cover?.image() ?? noImage
+                let img3 = playlist.cover?.image() ?? noImage
                 
                 DispatchQueue.main.async {
                     image1 = img1
