@@ -25,8 +25,7 @@ class Playlist: Hashable, Codable, Identifiable {
     }
     
     func urlForPlaylistCover() -> URL? {
-        let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let currentDirPath = documentsUrl.appendingPathComponent("Covers").appendingPathComponent(id).appendingPathExtension("jpg")
+        let currentDirPath = FileManager.covers.appendingPathComponent(id).appendingPathExtension("jpg")
 
         if FileManager.default.fileExists(atPath: currentDirPath.path) {
             return currentDirPath
@@ -35,6 +34,12 @@ class Playlist: Hashable, Codable, Identifiable {
         return nil
     }
 
+    func updateCover() {
+        DispatchQueue.global().async {
+            
+        }
+    }
+    
     static func == (lhs: Playlist, rhs: Playlist) -> Bool {
         lhs.id == rhs.id
     }

@@ -12,6 +12,7 @@ import Foundation
 extension FileManager {
     
     static var root: URL { FileManager.default.getUrlForPLRoot() }
+    static var covers: URL { FileManager.default.getUrlForCovers() }
     static var temp: URL { FileManager.default.getUrlForTemp() }
     static var playlistsSettings: URL { FileManager.default.getUrlForPlaylistsSettings() }
     static var appSettings: URL { FileManager.default.urlForAppSettings() }
@@ -19,6 +20,17 @@ extension FileManager {
     private func getUrlForPLRoot() -> URL {
         let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!
         let currentDirPath = documentsUrl.appendingPathComponent("Playlists")
+
+        if !fileExists(atPath: currentDirPath.path) {
+            try? createDirectory(at: currentDirPath, withIntermediateDirectories: true)
+        }
+
+        return currentDirPath
+    }
+    
+    private func getUrlForCovers() -> URL {
+        let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!
+        let currentDirPath = documentsUrl.appendingPathComponent("Covers")
 
         if !fileExists(atPath: currentDirPath.path) {
             try? createDirectory(at: currentDirPath, withIntermediateDirectories: true)
@@ -96,10 +108,21 @@ extension FileManager {
 
 extension FileManager {
     
+    static var globalCoversDir: URL { FileManager.default.globalURLForCovers() }
     static var globalPlaylistsDir: URL { FileManager.default.globalURLForPlaylists() }
     static var globalPlaylistsSettingsFile: URL { FileManager.default.globalURLForPlaylistsSettingsFile() }
     static var globalDownloadsDir: URL { FileManager.default.globalURLForDownloads() }
     static var globalDownloadsSettingsFile: URL { FileManager.default.globalURLForDownloadsSettingsFile() }
+
+    private func globalURLForCovers() -> URL {
+        let currentDirPath = containerURL(forSecurityApplicationGroupIdentifier: "group.ru.cloudunion.music")!.appendingPathComponent("Covers")
+
+        if !fileExists(atPath: currentDirPath.path) {
+            try? createDirectory(at: currentDirPath, withIntermediateDirectories: true)
+        }
+        
+        return currentDirPath
+    }
 
     private func globalURLForPlaylists() -> URL {
         let currentDirPath = containerURL(forSecurityApplicationGroupIdentifier: "group.ru.cloudunion.music")!.appendingPathComponent("Playlists")
