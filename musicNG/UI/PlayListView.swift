@@ -37,7 +37,6 @@ public struct PlayListView: View {
                 }
                 if variables.currentSong != nil {
                     CurrentSongView(currentSong: variables.currentSong)
-                        .transition(.opacity.combined(with: .scale(scale: 0.2)))
                 }
                 bottomView()
             }

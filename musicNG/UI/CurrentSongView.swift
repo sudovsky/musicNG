@@ -11,6 +11,8 @@ struct CurrentSongView: View {
     
     @State var currentSong: FileData? = nil
     
+    @State private var blur: CGFloat = 16
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -47,6 +49,13 @@ struct CurrentSongView: View {
             Color.main
                 .frame(height: 0.5)
                 .opacity(0.1)
+        }
+        .blur(radius: blur)
+        .transition(.scale(scale: 0.2))
+        .onAppear() {
+            withAnimation(.easeOut.speed(1.8)) {
+                blur = 0
+            }
         }
 
     }
