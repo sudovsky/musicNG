@@ -10,8 +10,8 @@ import SwiftUI
 public struct TitleView: View {
     
     @State var backButtonVisible = false
-    @State var actionButtonVisible = true
-    @State var secondActionButton = true
+    @State var actionImage: Image? = nil
+    @State var secondActionImage: Image? = nil
     
     var title = "Плейлисты"
 
@@ -39,11 +39,11 @@ public struct TitleView: View {
                 .padding(.vertical, 8)
                 .padding(.leading, backButtonVisible ? 0 : 16)
             
-            if actionButtonVisible {
+            if let actionImage = actionImage {
                 Button {
                     action()
                 } label: {
-                    Image(systemName: "network")
+                    actionImage
                         .font(.system(size: 25))
                         .foregroundColor(.main)
                         .padding(.trailing, 8)
@@ -52,11 +52,11 @@ public struct TitleView: View {
                 .frame(width: 44, alignment: .center)
             }
             
-            if secondActionButton {
+            if let secondActionImage = secondActionImage {
                 Button {
                     secondAction()
                 } label: {
-                    Image(.plus)
+                    secondActionImage
                         .font(.system(size: 25))
                         .foregroundColor(.main)
                         .padding(.trailing, 8)

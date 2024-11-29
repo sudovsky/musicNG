@@ -29,8 +29,6 @@ public struct PlayListView: View {
                     bottomView()
                 } else if currentFrame == 2 {
                     TitleView(backButtonVisible: false,
-                              actionButtonVisible: false,
-                              secondActionButton: false,
                               title: "Настройки")
                     
                     Spacer()
@@ -68,8 +66,8 @@ public struct PlayListView: View {
     func plView() -> some View {
         return VStack(spacing: 0) {
             TitleView(backButtonVisible: false,
-                      actionButtonVisible: true,
-                      secondActionButton: true,
+                      actionImage: Image(systemName: "network"),
+                      secondActionImage: Image(.plus),
                       title: "Плейлисты") {
                 print(1);
             } secondAction: {
