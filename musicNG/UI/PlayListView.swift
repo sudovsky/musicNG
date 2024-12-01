@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct PlayListView: View {
 
-    @ObservedObject var variables =  Variables.shared
+    @ObservedObject var variables = Variables.shared
     
     @State private var showingDetail: Bool = false
     @State private var currentFrame: Int = 0
@@ -87,7 +87,7 @@ public struct PlayListView: View {
                             PlaylistTile(playlist: playlist)
                         }
                     }
-                    Color(.white)
+                    Color(.back)
                 }.padding(16)
             }
 

@@ -44,7 +44,7 @@ struct CurrentSongView: View {
             .frame(maxWidth: .infinity, maxHeight: 80)
             .clipped()
             .background {
-                Color.white
+                Color.back
             }
             Color.main
                 .frame(height: 0.5)
