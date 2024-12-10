@@ -15,8 +15,8 @@ struct VinylView: View {
         ZStack {
             Circle()
                 .overlay {
-//                    Image(uiImage: #imageLiteral(resourceName: "1111.jpg"))
-                    Image(uiImage: #imageLiteral(resourceName: "IMG_1403.JPG"))
+                    Image(uiImage: #imageLiteral(resourceName: "1111.jpg"))
+//                    Image(uiImage: #imageLiteral(resourceName: "IMG_1403.JPG"))
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 }

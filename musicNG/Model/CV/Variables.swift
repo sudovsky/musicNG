@@ -22,7 +22,8 @@ extension EnvironmentValues {
 
 class Variables: ObservableObject {
     @Published var currentSong: FileData?
-    
+    @Published var isPlaying = true
+
     static var shared = Variables()
     
     private init() {}

@@ -16,3 +16,6 @@ let commonGradientColor: Color = .black.opacity(0.2)
 
 let artistFont: Font = .system(size: 18, weight: .regular)
 let trackFont: Font = .system(size: 19, weight: .regular)
+
+let noImage = Image("NoImage")
+    .resizable()
