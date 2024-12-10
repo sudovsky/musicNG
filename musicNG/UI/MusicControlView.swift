@@ -16,10 +16,7 @@ struct MusicControlView: View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 Image(.close)
-                    .font(.system(size: 25))
-                    .foregroundColor(.main)
-                    .padding(.leading, 8)
-                    .padding(.bottom, 4)
+                    .titleButtonImage(.leading)
                     .hidden()
 
                 Text(playlist.name)
@@ -31,10 +28,7 @@ struct MusicControlView: View {
                     //action()
                 } label: {
                     Image(.close)
-                        .font(.system(size: 25))
-                        .foregroundColor(.main)
-                        .padding(.trailing, 8)
-                        .padding(.bottom, 4)
+                        .titleButtonImage(.trailing)
                 }
                 .frame(width: 44, alignment: .center)
             }

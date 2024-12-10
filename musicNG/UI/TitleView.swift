@@ -25,10 +25,7 @@ public struct TitleView: View {
                     print("back")
                 } label: {
                     Image(systemName: "chevron.left")
-                        .font(.system(size: 25))
-                        .foregroundColor(.main)
-                        .padding(.leading, 8)
-                        .padding(.bottom, 4)
+                        .titleButtonImage(.leading)
                 }
                 .frame(width: 44, alignment: .center)
             }
@@ -44,10 +41,7 @@ public struct TitleView: View {
                     action()
                 } label: {
                     actionImage
-                        .font(.system(size: 25))
-                        .foregroundColor(.main)
-                        .padding(.trailing, 8)
-                        .padding(.bottom, 4)
+                        .titleButtonImage(.trailing)
                 }
                 .frame(width: 44, alignment: .center)
             }
@@ -57,10 +51,7 @@ public struct TitleView: View {
                     secondAction()
                 } label: {
                     secondActionImage
-                        .font(.system(size: 25))
-                        .foregroundColor(.main)
-                        .padding(.trailing, 8)
-                        .padding(.bottom, 4)
+                        .titleButtonImage(.trailing)
                 }
                 .frame(width: 44, alignment: .center)
             }
