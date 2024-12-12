@@ -40,18 +40,37 @@ struct MusicControlView: View {
             
             Spacer()
             
-            HStack(spacing: 0) {
+            HStack(alignment: .center, spacing: 25) {
+                
+                Button {
+                    
+                } label: {
+                    Image(systemName: "shuffle")
+                        .foregroundStyle(.main)
+                        .font(.system(size: 17))
+                }
+                .buttonStyle(GrowingButton())
+                .shadowed()
+
                 PlayControlButton(imageName: "backward.end.fill")
-                    .frame(width: 44, height: 44, alignment: .center)
-                    .padding(.trailing, 25)
+                    .frame(width: 44, height: 44)
                 PlayControlButton(isBig: true)
-                    .frame(width: 74, height: 74, alignment: .center)
+                    .frame(width: 74, height: 74)
                 PlayControlButton(imageName: "forward.end.fill")
-                    .frame(width: 44, height: 44, alignment: .center)
-                    .padding(.leading, 25)
+                    .frame(width: 44, height: 44)
+                
+                Button {
+                    
+                } label: {
+                    Image(systemName: "repeat")
+                        .foregroundStyle(.main)
+                        .font(.system(size: 17))
+                }
+                .buttonStyle(GrowingButton())
+                .shadowed()
+
             }
-            
-            Spacer()
+            .padding(.bottom, 25)
             
             
         }
