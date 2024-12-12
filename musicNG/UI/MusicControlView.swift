@@ -40,6 +40,19 @@ struct MusicControlView: View {
             
             Spacer()
             
+            HStack(spacing: 0) {
+                PlayControlButton(imageName: "backward.end.fill")
+                    .frame(width: 44, height: 44, alignment: .center)
+                    .padding(.trailing, 25)
+                PlayControlButton(isBig: true)
+                    .frame(width: 74, height: 74, alignment: .center)
+                PlayControlButton(imageName: "forward.end.fill")
+                    .frame(width: 44, height: 44, alignment: .center)
+                    .padding(.leading, 25)
+            }
+            
+            Spacer()
+            
             
         }
     }
