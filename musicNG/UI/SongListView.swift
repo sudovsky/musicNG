@@ -32,6 +32,7 @@ struct SongListView: View {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     ForEach(fileList) { file in
                         Button {
+                            Variables.shared.currentPlaylist = playlist
                             Variables.shared.currentSong = file
                         } label: {
                             SongTile(artistVisible: file.artist != nil, image: file.cover?.image(), artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)

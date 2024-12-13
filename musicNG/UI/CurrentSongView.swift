@@ -64,7 +64,7 @@ struct CurrentSongView: View {
         }
         //showing MusicControlView
         .fullScreenCover(isPresented: $showMusicControl) {
-            MusicControlView(playlist: Playlist())
+            MusicControlView()
         }
         .transaction({ transaction in
           // disable the default FullScreenCover animation

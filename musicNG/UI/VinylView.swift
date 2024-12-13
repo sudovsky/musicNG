@@ -9,26 +9,27 @@ import SwiftUI
 
 struct VinylView: View {
 
+    @ObservedObject var variables = Variables.shared
+
     @State private var rotate = false
     
     var body: some View {
         ZStack {
             Circle()
                 .overlay {
-                    Image(uiImage: #imageLiteral(resourceName: "1111.jpg"))
-//                    Image(uiImage: #imageLiteral(resourceName: "IMG_1403.JPG"))
+                    (Variables.shared.currentSong?.cover?.image() ?? noImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 }
                 .aspectRatio(contentMode: .fit)
                 .rotationEffect(.degrees(rotate ? 360 : 0))
                 .animation(.linear(duration: 30).repeatForever(autoreverses: false), value: rotate)
-                
 
             Image(.vinyl)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .blendMode(.screen)
+            
             Circle()
                 .stroke(.main.opacity(0.6), lineWidth: 4)
                 .foregroundStyle(Color.clear)

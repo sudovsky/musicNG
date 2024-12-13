@@ -11,7 +11,6 @@ struct MusicControlView: View {
     
     @Environment(\.dismiss) var dismiss
 
-    var playlist: Playlist
     @ObservedObject var variables = Variables.shared
     
     var body: some View {
@@ -21,7 +20,7 @@ struct MusicControlView: View {
                     .titleButtonImage(.leading)
                     .hidden()
 
-                Text(playlist.name)
+                Text(Variables.shared.currentPlaylist.name)
                     .font(.system(size: 20))
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 8)
@@ -81,5 +80,5 @@ struct MusicControlView: View {
 }
 
 #Preview {
-    MusicControlView(playlist: Playlist())
+    MusicControlView()
 }
