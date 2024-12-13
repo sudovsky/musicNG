@@ -9,14 +9,14 @@ import SwiftUI
 
 struct CurrentSongView: View {
     
-    @State var currentSong: FileData? = nil
-    
+    @ObservedObject var variables = Variables.shared
+
     @State private var blur: CGFloat = 16
 
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                (currentSong?.cover?.image() ?? Image(.no))
+                (variables.currentSong?.cover?.image() ?? Image(.no))
                     .resizable()
                     .frame(width: 58, height: 58)
                     .aspectRatio(contentMode: .fill)
@@ -26,13 +26,13 @@ struct CurrentSongView: View {
                     .padding(.trailing, 12)
                 
                 VStack(spacing: 0) {
-                    Text(currentSong?.title ?? "Unknown Title")
+                    Text(variables.currentSong?.title ?? "Unknown Title")
                         .font(.system(size: 19, weight: .light))
                         .lineLimit(1)
                         .padding(.trailing, 16)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    Text(currentSong?.artist ?? "Unknown Artist")
+                    Text(variables.currentSong?.artist ?? "Unknown Artist")
                         .font(.system(size: 17, weight: .medium))
                         .lineLimit(1)
                         .padding(.trailing, 16)

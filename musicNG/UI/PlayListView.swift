@@ -21,30 +21,37 @@ public struct PlayListView: View {
     ]
 
     public var body: some View {
-        NavigationView {
-            VStack(spacing: 0) {
-                if currentFrame == 0 {
-                    Spacer()
-                    prepareData()
-                } else if currentFrame == 1 {
+        VStack(spacing: 0) {
+            if currentFrame == 0 {
+                Spacer()
+                prepareData()
+            } else if currentFrame == 1 {
+                NavigationView {
                     plView()
-                } else if currentFrame == 2 {
-                    TitleView(backButtonVisible: false,
-                              title: "Настройки")
-                    
-                    Spacer()
-                    
                 }
-                if variables.currentSong != nil {
-                    CurrentSongView(currentSong: variables.currentSong)
-                }
-                bottomView()
+            } else if currentFrame == 2 {
+                TitleView(backButtonVisible: false,
+                          title: "Настройки")
+                
+                Spacer()
+                
             }
-            .background {
-                Color.back
+            if variables.currentSong != nil {
+                CurrentSongView()
             }
+            bottomView()
+        }
+        .background {
+            Color.back
         }
         .navigationBarHidden(true)
+        .onAppear {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+//                withAnimation(.easeOut.speed(1.8)) {
+//                    variables.currentSong = FileData()
+//                }
+//            }
+        }
     }
     
     func prepareData() -> some View {
@@ -89,7 +96,7 @@ public struct PlayListView: View {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     ForEach(playlists) { playlist in
                         NavigationLink {
-                            SongTile(artist: playlist.name)
+                            SongListView(playlist: playlist)
                         } label: {
                             PlaylistTile(playlist: playlist)
                         }

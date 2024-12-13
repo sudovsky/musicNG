@@ -31,7 +31,11 @@ struct SongListView: View {
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     ForEach(fileList) { file in
-                        SongTile(artistVisible: file.artist != nil, image: file.cover?.image(), artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
+                        Button {
+                            Variables.shared.currentSong = file
+                        } label: {
+                            SongTile(artistVisible: file.artist != nil, image: file.cover?.image(), artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
+                        }
                     }
                     Color(.back)
                 }.padding(16)
