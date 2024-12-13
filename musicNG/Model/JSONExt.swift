@@ -32,7 +32,12 @@ func load<T: Decodable>(_ file: URL) -> T? {
 
 extension Encodable {
     func toJSON() throws -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+
         let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .formatted(dateFormatter)
+        encoder.outputFormatting = .prettyPrinted
         return try String(data: encoder.encode(self), encoding: .utf8)
     }
     

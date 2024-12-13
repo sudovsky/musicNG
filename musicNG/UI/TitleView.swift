@@ -8,7 +8,9 @@
 import SwiftUI
 
 public struct TitleView: View {
-    
+
+    @Environment(\.dismiss) var dismiss
+
     @State var backButtonVisible = false
     @State var actionImage: Image? = nil
     @State var secondActionImage: Image? = nil
@@ -22,7 +24,7 @@ public struct TitleView: View {
         HStack(spacing: 0) {
             if backButtonVisible {
                 Button {
-                    print("back")
+                    dismiss()
                 } label: {
                     Image(systemName: "chevron.left")
                         .titleButtonImage(.leading)

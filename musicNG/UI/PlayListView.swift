@@ -55,6 +55,11 @@ public struct PlayListView: View {
                 let path = FileManager.playlistsSettings
                 
                 playlists = load(path) ?? [Playlist(), Playlist(), Playlist()] as! [Playlist]
+                
+                for playlist in playlists {
+                    playlist.updateDownloads()
+                }
+                
                 currentFrame = 1
             }
     }

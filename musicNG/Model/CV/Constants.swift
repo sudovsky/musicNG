@@ -19,3 +19,5 @@ let trackFont: Font = .system(size: 19, weight: .regular)
 
 let noImage = Image("NoImage")
     .resizable()
+
+var standarts: [String] { ["MP3", "M4A"] }
