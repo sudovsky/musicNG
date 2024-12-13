@@ -13,6 +13,8 @@ struct CurrentSongView: View {
 
     @State private var blur: CGFloat = 16
 
+    @State private var showMusicControl: Bool = false
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -57,7 +59,26 @@ struct CurrentSongView: View {
                 blur = 0
             }
         }
+        .onTapGesture {
+            showMusicControl = true
+        }
+        //showing MusicControlView
+        .fullScreenCover(isPresented: $showMusicControl) {
+            MusicControlView(playlist: Playlist())
+        }
+        .transaction({ transaction in
+          // disable the default FullScreenCover animation
+          transaction.disablesAnimations = true
 
+          // add custom animation for presenting and dismissing the FullScreenCover
+            //transaction.animation = .linear(duration: 0.2)
+        })
+//        .onReceive(variables.$currentSong) { newTitle in
+//            // 4
+//            withAnimation {
+//                blur = 0
+//            }
+//        }
     }
 }
 

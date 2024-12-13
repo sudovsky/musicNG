@@ -9,8 +9,10 @@ import SwiftUI
 
 struct MusicControlView: View {
     
+    @Environment(\.dismiss) var dismiss
+
     var playlist: Playlist
-    @ObservedObject var file = (Variables.shared.currentSong ?? FileData())
+    @ObservedObject var variables = Variables.shared
     
     var body: some View {
         VStack(spacing: 0) {
@@ -25,7 +27,7 @@ struct MusicControlView: View {
                     .padding(.vertical, 8)
 
                 Button {
-                    //action()
+                    dismiss()
                 } label: {
                     Image(.close)
                         .titleButtonImage(.trailing)
@@ -74,6 +76,7 @@ struct MusicControlView: View {
             
             
         }
+        .transition(.opacity.animation(.spring))
     }
 }
 
