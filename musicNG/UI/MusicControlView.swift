@@ -41,6 +41,21 @@ struct MusicControlView: View {
             
             Spacer()
             
+            Text((variables.currentSong?.title ?? variables.currentSong?.name) ?? "")
+                .multilineTextAlignment(.center)
+                .font(.system(size: 20))
+                .padding(.top, 40)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+            
+            if let artist = variables.currentSong?.artist {
+                Text(artist)
+                    .multilineTextAlignment(.center)
+                    .font(.system(size: 18))
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 40)
+            }
+            
             HStack(alignment: .center, spacing: 25) {
                 
                 Button {
