@@ -21,7 +21,10 @@ struct SongTile: View {
     var body: some View {
         ZStack {
             getImage()
-                .aspectRatio(contentMode: .fill)
+                .scaledToFill()
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .aspectRatio(1, contentMode: .fill)
+                .clipped()
             if gradient {
                 LinearGradient(colors: [commonGradientColor, .clear], startPoint: UnitPoint.bottom, endPoint: UnitPoint.top)
             }

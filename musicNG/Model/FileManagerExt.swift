@@ -15,7 +15,14 @@ extension FileManager {
     static var covers: URL { FileManager.default.getUrlForCovers() }
     static var temp: URL { FileManager.default.getUrlForTemp() }
     static var playlistsSettings: URL { FileManager.default.getUrlForPlaylistsSettings() }
-    static var appSettings: URL { FileManager.default.urlForAppSettings() }
+    static var metaDB: URL { FileManager.default.getUrlForMetaDB() }
+
+    private func getUrlForMetaDB() -> URL {
+        let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!
+        let currentPath = documentsUrl.appendingPathComponent("localDB").appendingPathExtension("json")
+
+        return currentPath
+    }
 
     private func getUrlForPLRoot() -> URL {
         let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!

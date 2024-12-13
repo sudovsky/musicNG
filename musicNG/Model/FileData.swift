@@ -40,8 +40,20 @@ class FileData: Codable, Identifiable {
         self.customSortKey = customSortKey
     }
     
-//    static private func readMetadata(for plist: [FileData], async: Bool = false, readedData: @escaping () -> Void = {}) {
-//        
+    func readMetadata() {
+        
+        
+        if let fdbl = FilesMetaDB.getDataForPath(path) {
+            title = fdbl.title
+            artist = fdbl.artist
+            cover = fdbl.cover?.jpg
+            if let p = fdbl.peaks {
+                slowPeaks = p
+            }
+            return
+        }
+
+//
 //        if async {
 //            DispatchQueue.global().async {
 //                for file in plist {
@@ -75,6 +87,6 @@ class FileData: Codable, Identifiable {
 //                }
 //            }
 //        }
-//    }
+    }
 
 }

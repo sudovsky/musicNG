@@ -63,9 +63,13 @@ class Playlist: Hashable, Codable, Identifiable {
         
         for file in files {
             file.path = "\(name)/\(file.name)"
+            
+            if readMetadata {
+                file.readMetadata()
+            }
         }
         
-        return files
+        return files.sorted(by: { $0.customSortKey < $1.customSortKey })
     }
     
     func updateDownloads() {

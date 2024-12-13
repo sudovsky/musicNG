@@ -31,7 +31,7 @@ struct SongListView: View {
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     ForEach(fileList) { file in
-                        SongTile(artistVisible: file.artist != nil, image: nil, artist: file.artist ?? "", track: file.name, shadow: true, gradient: true)
+                        SongTile(artistVisible: file.artist != nil, image: file.cover?.image(), artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
                     }
                     Color(.back)
                 }.padding(16)
@@ -40,7 +40,7 @@ struct SongListView: View {
         .navigationBarHidden(true)
         .onAppear {
             if fileList.isEmpty {
-                fileList = playlist.getDownloads()
+                fileList = playlist.getDownloads(readMetadata: true)
             }
         }
     }

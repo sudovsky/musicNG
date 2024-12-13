@@ -52,6 +52,8 @@ public struct PlayListView: View {
             .onAppear {
                 if !playlists.isEmpty { return }
                 
+                FilesMetaDB.restore()
+                
                 let path = FileManager.playlistsSettings
                 
                 playlists = load(path) ?? [Playlist(), Playlist(), Playlist()] as! [Playlist]
