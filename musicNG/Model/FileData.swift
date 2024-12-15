@@ -40,6 +40,23 @@ class FileData: Codable, Identifiable {
         self.customSortKey = customSortKey
     }
     
+    func getPeaks() -> [Peak] {
+        var result = [Peak]()
+        for i in 0..<peaks.count {
+            result.append(Peak(id: i, value: CGFloat(peaks[i] * peaks[i] * peaks[i])))
+        }
+        return result
+    }
+    
+    func maxPeak() -> CGFloat {
+        
+        let maxX = getPeaks().max { (firstElement, secondElement) -> Bool in
+            return firstElement.value < secondElement.value
+        }
+        
+        return CGFloat(maxX?.value ?? 1)
+    }
+    
     func readMetadata() {
         
         
@@ -89,4 +106,13 @@ class FileData: Codable, Identifiable {
 //        }
     }
 
+}
+
+extension Sequence {
+    func max<T: Comparable>(_ predicate: (Element) -> T)  -> Element? {
+        self.max(by: { predicate($0) < predicate($1) })
+    }
+    func min<T: Comparable>(_ predicate: (Element) -> T)  -> Element? {
+        self.min(by: { predicate($0) < predicate($1) })
+    }
 }
