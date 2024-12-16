@@ -33,6 +33,7 @@ struct SongListView: View {
                     ForEach(fileList) { file in
                         Button {
                             Variables.shared.currentPlaylist = playlist
+                            Variables.shared.songList = fileList
                             Variables.shared.currentSong = file
                         } label: {
                             SongTile(artistVisible: file.artist != nil, image: file.cover?.image(), artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)

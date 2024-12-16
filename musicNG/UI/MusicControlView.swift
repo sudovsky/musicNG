@@ -71,11 +71,19 @@ struct MusicControlView: View {
                 .buttonStyle(GrowingButton())
                 .shadowed()
 
-                PlayControlButton(imageName: "backward.end.fill")
+                PlayControlButton(imageName: "backward.end.fill") {
+                    withAnimation {
+                        prevSong()
+                    }
+                }
                     .frame(width: 44, height: 44)
                 PlayControlButton(isBig: true)
                     .frame(width: 74, height: 74)
-                PlayControlButton(imageName: "forward.end.fill")
+                PlayControlButton(imageName: "forward.end.fill") {
+                    withAnimation {
+                        nextSong()
+                    }
+                }
                     .frame(width: 44, height: 44)
                 
                 Button {
@@ -95,6 +103,35 @@ struct MusicControlView: View {
         }
         .transition(.opacity.animation(.spring))
     }
+    
+    func nextSong() {
+        let sl = Variables.shared.songList
+        
+        if sl.count == 0 { return }
+        
+        guard let currentIndex = sl.firstIndex(where: {$0.id == Variables.shared.currentSong?.id}) else { return }
+        
+        if currentIndex < sl.count - 1 {
+            Variables.shared.currentSong = sl[currentIndex + 1]
+        } else {
+            Variables.shared.currentSong = sl[0]
+        }
+    }
+    
+    func prevSong() {
+        let sl = Variables.shared.songList
+        
+        if sl.count == 0 { return }
+        
+        guard let currentIndex = sl.firstIndex(where: {$0.id == Variables.shared.currentSong?.id}) else { return }
+        
+        if currentIndex > 0 {
+            Variables.shared.currentSong = sl[currentIndex - 1]
+        } else {
+            Variables.shared.currentSong = sl[sl.count - 1]
+        }
+    }
+
 }
 
 #Preview {

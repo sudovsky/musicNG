@@ -25,6 +25,7 @@ class Variables: ObservableObject {
     @Published var isPlaying = true
 
     var currentPlaylist = Playlist()
+    var songList: [FileData] = []
 
     static var shared = Variables()
     
