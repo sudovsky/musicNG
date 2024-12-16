@@ -29,7 +29,7 @@ final class MediaPlayer {
     var paused = true {
         willSet {
             DispatchQueue.main.async {
-                PositionCoordinator.shared.isPlaying = !newValue
+                PlaybackCoordinator.shared.isPlaying = !newValue
             }
             
             if !newValue {
@@ -546,14 +546,14 @@ final class MediaPlayer {
         }
         
         let step = UIScreen.waveWidth() / (allSeconds == 0 ? 1 : allSeconds)
-        let curStep = step * curPos + step
+        let curStep = step * curPos + step / 2
         
         withAnimation(.linear) {
             PositionCoordinator.shared.position = curStep
         }
         
         PositionCoordinator.shared.curTime = getTimeFromSeconds(MediaPlayer.shared.playerItem?.currentTime().seconds ?? 0)
-        PositionCoordinator.shared.endTime = getTimeFromSeconds(MediaPlayer.shared.playerItem?.duration.seconds ?? 0)
+        PositionCoordinator.shared.endTime = getTimeFromSeconds((MediaPlayer.shared.playerItem?.duration.seconds ?? 0) - (MediaPlayer.shared.playerItem?.currentTime().seconds ?? 0))
     }
     
     func getTimeFromSeconds(_ seconds: Double) -> String {

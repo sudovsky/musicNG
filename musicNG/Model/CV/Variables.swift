@@ -33,15 +33,23 @@ class Variables: ObservableObject {
 
 class PositionCoordinator: ObservableObject {
 
-    @Published var isPlaying = false
     @Published var position: CGFloat = 0
     @Published var curTime: String = "0:00"
     @Published var endTime: String = "0:00"
-    @Published var peaks: [Peak] = Peak.empty
 
     static var shared = PositionCoordinator()
     
     private init() {}
 
+    
+}
+
+class PlaybackCoordinator: ObservableObject {
+
+    @Published var isPlaying = false
+
+    static var shared = PlaybackCoordinator()
+    
+    private init() {}
     
 }
