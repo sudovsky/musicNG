@@ -33,7 +33,7 @@ class Variables: ObservableObject {
 
 class PositionCoordinator: ObservableObject {
 
-    @Published var isPlaying = true
+    @Published var isPlaying = false
     @Published var position: CGFloat = 0
     @Published var curTime: String = "0:00"
     @Published var endTime: String = "0:00"

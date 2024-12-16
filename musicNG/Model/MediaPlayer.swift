@@ -26,7 +26,13 @@ final class MediaPlayer {
     var shuffled: MPShuffleType = MPShuffleType(rawValue: Settings.shared.shuffleMode) ?? .off
     var repeated: MPRepeatType = MPRepeatType(rawValue: Settings.shared.repeatMode) ?? .all
     
-    var paused = true
+    var paused = true {
+        willSet {
+            DispatchQueue.main.async {
+                PositionCoordinator.shared.isPlaying = !newValue
+            }
+        }
+    }
     
     var timer = Timer()
     
@@ -139,35 +145,41 @@ final class MediaPlayer {
     
     func pause() {
         paused = true
-        player?.pause()
         
-        var info = MPNowPlayingInfoCenter.default().nowPlayingInfo
-        info?[MPNowPlayingInfoPropertyPlaybackRate] = 0.0
-        info?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.playerItem?.currentTime().seconds
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
-        
-        MPNowPlayingInfoCenter.default().playbackState = .paused
-        do {
-            try AVAudioSession.sharedInstance().setActive(false)
-        } catch {
-            print("Error setting the AVAudioSession:", error.localizedDescription)
+        DispatchQueue.global().async {
+            self.player?.pause()
+            
+            var info = MPNowPlayingInfoCenter.default().nowPlayingInfo
+            info?[MPNowPlayingInfoPropertyPlaybackRate] = 0.0
+            info?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = self.playerItem?.currentTime().seconds
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+            
+            MPNowPlayingInfoCenter.default().playbackState = .paused
+            do {
+                try AVAudioSession.sharedInstance().setActive(false)
+            } catch {
+                print("Error setting the AVAudioSession:", error.localizedDescription)
+            }
         }
     }
     
     func unpause() {
         paused = false
-        player?.play()
-        
-        do {
-            try AVAudioSession.sharedInstance().setActive(false)
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.defaultToSpeaker, .mixWithOthers])
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
-            print("Error setting the AVAudioSession:", error.localizedDescription)
+
+        DispatchQueue.global().async {
+            self.player?.play()
+            
+            do {
+                try AVAudioSession.sharedInstance().setActive(false)
+                try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.defaultToSpeaker, .mixWithOthers])
+                try AVAudioSession.sharedInstance().setActive(true)
+            } catch {
+                print("Error setting the AVAudioSession:", error.localizedDescription)
+            }
+            
+            MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = self.player!.rate
+            MPNowPlayingInfoCenter.default().playbackState = .playing
         }
-        
-        MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = self.player!.rate
-        MPNowPlayingInfoCenter.default().playbackState = .playing
     }
     
     func nextFile() {

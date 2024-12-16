@@ -78,7 +78,11 @@ struct MusicControlView: View {
                 }
                 .frame(width: 44, height: 44)
                 PlayControlButton(isBig: true) {
-                    
+                    if MediaPlayer.shared.paused {
+                        MediaPlayer.shared.unpause()
+                    } else {
+                        MediaPlayer.shared.pause()
+                    }
                 }
                 .frame(width: 74, height: 74)
                 PlayControlButton(imageName: "forward.end.fill") {

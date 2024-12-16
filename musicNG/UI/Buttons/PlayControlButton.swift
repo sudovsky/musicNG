@@ -12,6 +12,8 @@ struct PlayControlButton: View {
     var isBig: Bool = false
     var action: () -> Void = { }
 
+    @ObservedObject var pos = PositionCoordinator.shared
+
     var body: some View {
         Button {
             action()
@@ -19,7 +21,7 @@ struct PlayControlButton: View {
             ZStack {
                 Circle()
                     .foregroundStyle(.main)
-                Image(systemName: imageName)
+                Image(systemName: !isBig ? imageName : (pos.isPlaying ? "pause.fill" : "play.fill"))
                     .foregroundStyle(.back)
                     .font(isBig ? .system(size: 33) : .system(size: 17, weight: .ultraLight))
             }
