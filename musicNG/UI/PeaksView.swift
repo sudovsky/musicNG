@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PeaksView: View {
-    var peaks: [Peak] = Peak.test
+    var peaks: [Peak] = Peak.empty
     var maxPeak: CGFloat = 1
     
     var onClick: ((CGPoint) -> Void)?
@@ -38,6 +38,10 @@ struct PeaksView: View {
         if y < step { y = step }
         
         return CGSize(width: step, height: y)
+    }
+    
+    static func peakCount() -> Int {
+        return Int((UIScreen.getSize().width - 64) / (3 * 2 - 3))
     }
     
 }

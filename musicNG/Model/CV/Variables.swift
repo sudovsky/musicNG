@@ -22,7 +22,6 @@ extension EnvironmentValues {
 
 class Variables: ObservableObject {
     @Published var currentSong: FileData?
-    @Published var isPlaying = true
 
     var currentPlaylist = Playlist()
     var songList: [FileData] = []
@@ -30,4 +29,17 @@ class Variables: ObservableObject {
     static var shared = Variables()
     
     private init() {}
+}
+
+class PositionCoordinator: ObservableObject {
+
+    @Published var isPlaying = true
+    @Published var position: CGFloat = 0
+    @Published var peaks: [Peak] = Peak.empty
+
+    static var shared = PositionCoordinator()
+    
+    private init() {}
+
+    
 }

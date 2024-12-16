@@ -31,7 +31,9 @@ class FileData: Codable, Identifiable {
     var peaks: [Float] { slowPeaks ?? fastPeaks }
     var fastPeaks = [Float]()
     var slowPeaks: [Float]? = nil
-    
+
+    var fileDownloaded: Bool { FileManager.default.fileExists(atPath: fileURL().path) }
+
     init() { }
     
     init(name: String, path: String, customSortKey: Int) {
@@ -105,6 +107,29 @@ class FileData: Codable, Identifiable {
 //            }
 //        }
     }
+
+    func getData(completion: @escaping (Data?) -> Void = { _ in }) {
+        if isDirectory {
+            return
+        }
+        
+        if fileDownloaded, let dat = try? Data(contentsOf: fileURL()) {
+            completion(dat)
+            return
+        }
+
+        //TODO: - dowload file
+//        client.getFileData(path: path) { error, data in
+//            guard let data = data else { return }
+//            //self.saveData(data: data)
+//            completion(data)
+//        }
+    }
+
+    func fileURL(needCreate: Bool = false) -> URL {
+        return FileManager.root.appendingPathComponent(path)
+    }
+    
 
 }
 

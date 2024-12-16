@@ -9,9 +9,10 @@ import SwiftUI
 
 struct ProgressView: View {
     
-    var peaks: [Peak] = Peak.test
+    var peaks: [Peak] = Peak.empty
     var maxPeak: CGFloat = 1
-    @Binding var position: CGFloat
+
+    @ObservedObject var pos = PositionCoordinator.shared
 
     var body: some View {
         VStack(spacing: 8) {
@@ -21,18 +22,18 @@ struct ProgressView: View {
                 PeaksView(peaks: peaks, maxPeak: maxPeak) { point in
                     withAnimation {
                         if point.x >= CGFloat(peaks.count * 6 - 3) {
-                            position = CGFloat(peaks.count * 6 - 3)
+                            pos.position = CGFloat(peaks.count * 6 - 3)
                         } else {
-                            position = point.x < 0 ? 0 : point.x
+                            pos.position = point.x < 0 ? 0 : point.x
                         }
                     }
                 }
-                .frame(width: position, alignment: .leading)
+                .frame(width: pos.position, alignment: .leading)
                 .clipped()
                 
                 Color.main
                     .frame(width: 1, height: 42)
-                    .offset(x: position)
+                    .offset(x: pos.position)
                 
             }
             .frame(height: 32)
@@ -51,5 +52,5 @@ struct ProgressView: View {
 }
 
 #Preview {
-    ProgressView(position: .constant(0))
+    ProgressView()
 }
