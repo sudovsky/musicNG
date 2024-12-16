@@ -44,20 +44,20 @@ struct MusicControlView: View {
             Text((variables.currentSong?.title ?? variables.currentSong?.name) ?? "")
                 .multilineTextAlignment(.center)
                 .font(.system(size: 20))
-                .padding(.top, 40)
                 .padding(.horizontal, 16)
-                .padding(.bottom, 8)
             
             if let artist = variables.currentSong?.artist {
                 Text(artist)
                     .multilineTextAlignment(.center)
                     .font(.system(size: 18))
+                    .padding(.top, 8)
                     .padding(.horizontal, 16)
-                    .padding(.bottom, 40)
             }
             
+            Spacer()
+            
             ProgressView(peaks: variables.currentSong?.getPeaks() ?? Peak.test, maxPeak: variables.currentSong?.maxPeak() ?? 1)
-                .padding(.bottom, 32)            
+                .padding(.bottom, 22)            
             
             HStack(alignment: .center, spacing: 25) {
                 
@@ -89,7 +89,7 @@ struct MusicControlView: View {
                 .shadowed()
 
             }
-            .padding(.bottom, 25)
+            .padding(.bottom, 35)
             
             
         }

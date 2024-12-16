@@ -14,27 +14,38 @@ struct ProgressView: View {
     @State var position: CGFloat = 0
 
     var body: some View {
-        ZStack(alignment: .leading) {
-            PeaksView(peaks: peaks, maxPeak: maxPeak)
-                .opacity(0.3)
-            PeaksView(peaks: peaks, maxPeak: maxPeak) { point in
-                withAnimation {
-                    if point.x >= CGFloat(peaks.count * 6 - 3) {
-                        position = CGFloat(peaks.count * 6 - 3)
-                    } else {
-                        position = point.x < 0 ? 0 : point.x
+        VStack(spacing: 8) {
+            ZStack(alignment: .leading) {
+                PeaksView(peaks: peaks, maxPeak: maxPeak)
+                    .opacity(0.3)
+                PeaksView(peaks: peaks, maxPeak: maxPeak) { point in
+                    withAnimation {
+                        if point.x >= CGFloat(peaks.count * 6 - 3) {
+                            position = CGFloat(peaks.count * 6 - 3)
+                        } else {
+                            position = point.x < 0 ? 0 : point.x
+                        }
                     }
                 }
-            }
                 .frame(width: position, alignment: .leading)
                 .clipped()
+                
+                Color.main
+                    .frame(width: 1, height: 42)
+                    .offset(x: position)
+                
+            }
+            .frame(height: 32)
             
-            Color.main
-                .frame(width: 1, height: 42)
-                .offset(x: position)
-            
+            HStack {
+                Text("0:00")
+                    .font(.system(size: 14, weight: .light))
+                Spacer()
+                Text("4:16")
+                    .font(.system(size: 14, weight: .light))
+            }
+            .padding(.horizontal, 32)
         }
-        .frame(height: 32)
     }
     
 }
