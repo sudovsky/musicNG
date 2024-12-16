@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 import MediaPlayer
+import SwiftUI
 
 final class MediaPlayer {
     
@@ -27,8 +28,19 @@ final class MediaPlayer {
     
     var paused = true
     
+    var timer = Timer()
+    
     private init() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true, block: { [weak self] tmr in
+            guard let self = self else {
+                tmr.invalidate()
+                return
+            }
+            
+            updateCurrentPos()
+        })
     }
     
     @objc func playerDidFinishPlaying(note: NSNotification) {
@@ -499,6 +511,35 @@ final class MediaPlayer {
                 }
             }
         }
+    }
+    
+    func updateCurrentPos() {
+        guard let allSeconds = MediaPlayer.shared.playerItem?.duration.seconds,
+              !allSeconds.isNaN,
+              let curPos = MediaPlayer.shared.playerItem?.currentTime().seconds,
+              !curPos.isNaN else {
+            return
+        }
+        
+        let step = UIScreen.waveWidth() / (allSeconds == 0 ? 1 : allSeconds)
+        let curStep = step * curPos + step
+        
+        withAnimation(.linear) {
+            PositionCoordinator.shared.position = curStep
+        }
+        
+        PositionCoordinator.shared.curTime = getTimeFromSeconds(MediaPlayer.shared.playerItem?.currentTime().seconds ?? 0)
+        PositionCoordinator.shared.endTime = getTimeFromSeconds(MediaPlayer.shared.playerItem?.duration.seconds ?? 0)
+    }
+    
+    func getTimeFromSeconds(_ seconds: Double) -> String {
+        if seconds.isNaN { return "0:00" }
+        
+        let rSeconds = seconds.rounded(.down)
+        
+        let min = rSeconds >= 60 ? (rSeconds / 60).rounded(.down) : 0
+        let sec = (rSeconds - (min * 60)).rounded(.down)
+        return "\(Int(min)):\(sec < 10 ? "0" : "")\(Int(sec))"
     }
     
 

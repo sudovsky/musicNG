@@ -35,6 +35,8 @@ class PositionCoordinator: ObservableObject {
 
     @Published var isPlaying = true
     @Published var position: CGFloat = 0
+    @Published var curTime: String = "0:00"
+    @Published var endTime: String = "0:00"
     @Published var peaks: [Peak] = Peak.empty
 
     static var shared = PositionCoordinator()

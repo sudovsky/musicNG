@@ -31,4 +31,8 @@ extension UIScreen {
         }
 
     }
+    
+    static func waveWidth() -> CGFloat {
+        return UIScreen.getSize().width - 64
+    }
 }

@@ -38,6 +38,8 @@ struct SongListView: View {
                             
                             let findx = fileList.firstIndex(where: { $0.id == file.id })
                             
+                            PositionCoordinator.shared.position = 0
+                            
                             MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0))
                         } label: {
                             SongTile(artistVisible: file.artist != nil, image: file.cover?.image(), artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)

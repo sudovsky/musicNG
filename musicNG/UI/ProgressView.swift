@@ -27,6 +27,15 @@ struct ProgressView: View {
                             pos.position = point.x < 0 ? 0 : point.x
                         }
                     }
+                    
+                    let xPos = point.x
+                    let duration = MediaPlayer.shared.playerItem?.duration.seconds ?? 0
+                    if duration.isNaN { return }
+                    
+                    let percentPos = xPos * 100 / UIScreen.waveWidth()
+                    let songTime = duration / 100 * percentPos
+                    MediaPlayer.shared.seek(positionTime: songTime)
+
                 }
                 .frame(width: pos.position, alignment: .leading)
                 .clipped()
@@ -39,10 +48,10 @@ struct ProgressView: View {
             .frame(height: 32)
             
             HStack {
-                Text("0:00")
+                Text(pos.curTime)
                     .font(.system(size: 14, weight: .light))
                 Spacer()
-                Text("4:16")
+                Text(pos.endTime)
                     .font(.system(size: 14, weight: .light))
             }
             .padding(.horizontal, 32)
