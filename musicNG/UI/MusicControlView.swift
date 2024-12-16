@@ -56,7 +56,7 @@ struct MusicControlView: View {
             
             Spacer()
             
-            ProgressView(peaks: variables.currentSong?.getPeaks() ?? Peak.empty, maxPeak: variables.currentSong?.maxPeak() ?? 1)
+            ProgressView(peaks: variables.currentSong?.peaks.peaks ?? Peak.empty, maxPeak: variables.currentSong?.peaks.maxPeak ?? 1)
                 .padding(.bottom, 22)
             
             HStack(alignment: .center, spacing: 25) {

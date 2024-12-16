@@ -31,6 +31,12 @@ final class MediaPlayer {
             DispatchQueue.main.async {
                 PositionCoordinator.shared.isPlaying = !newValue
             }
+            
+            if !newValue {
+                setupTimer()
+            } else {
+                stopTimer()
+            }
         }
     }
     
@@ -38,7 +44,9 @@ final class MediaPlayer {
     
     private init() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: nil)
-        
+    }
+    
+    func setupTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true, block: { [weak self] tmr in
             guard let self = self else {
                 tmr.invalidate()
@@ -47,6 +55,10 @@ final class MediaPlayer {
             
             updateCurrentPos()
         })
+    }
+    
+    func stopTimer() {
+        timer.invalidate()
     }
     
     @objc func playerDidFinishPlaying(note: NSNotification) {

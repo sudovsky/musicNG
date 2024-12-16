@@ -41,7 +41,7 @@ struct PeaksView: View {
     }
     
     static func peakCount() -> Int {
-        return Int(UIScreen.waveWidth() / (3 * 2 - 3))
+        return Int(UIScreen.waveWidth() / (3 * 2))
     }
     
 }

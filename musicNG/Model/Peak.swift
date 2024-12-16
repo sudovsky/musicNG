@@ -23,4 +23,35 @@ struct Peak: Identifiable {
     }
 }
 
+extension Array where Element == Peak {
+    
+    var floatValues: [Float] {
+        return self.map { Float($0.value) }
+    }
 
+    var maxPeak: CGFloat {
+        
+        let maxX = self.max { (firstElement, secondElement) -> Bool in
+            return firstElement.value < secondElement.value
+        }
+        
+        return CGFloat(maxX?.value ?? 1)
+    }
+    
+}
+
+extension Array where Element == Float {
+    
+    var peaks: [Peak] {
+        var result = [Peak]()
+        for i in 0..<self.count {
+            result.append(Peak(id: i, value: CGFloat(self[i] * self[i] * self[i])))
+        }
+        return result
+    }
+    
+    var maxPeak: CGFloat {
+        return peaks.maxPeak
+    }
+    
+}
