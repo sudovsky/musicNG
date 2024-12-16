@@ -12,7 +12,9 @@ struct MusicControlView: View {
     @Environment(\.dismiss) var dismiss
 
     @ObservedObject var variables = Variables.shared
-    
+
+    @State var position: CGFloat = 0
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -56,8 +58,8 @@ struct MusicControlView: View {
             
             Spacer()
             
-            ProgressView(peaks: variables.currentSong?.getPeaks() ?? Peak.test, maxPeak: variables.currentSong?.maxPeak() ?? 1)
-                .padding(.bottom, 22)            
+            ProgressView(peaks: variables.currentSong?.getPeaks() ?? Peak.test, maxPeak: variables.currentSong?.maxPeak() ?? 1, position: $position)
+                .padding(.bottom, 22)
             
             HStack(alignment: .center, spacing: 25) {
                 
@@ -116,6 +118,8 @@ struct MusicControlView: View {
         } else {
             Variables.shared.currentSong = sl[0]
         }
+        
+        position = 0
     }
     
     func prevSong() {
@@ -130,6 +134,8 @@ struct MusicControlView: View {
         } else {
             Variables.shared.currentSong = sl[sl.count - 1]
         }
+        
+        position = 0
     }
 
 }

@@ -11,7 +11,7 @@ struct ProgressView: View {
     
     var peaks: [Peak] = Peak.test
     var maxPeak: CGFloat = 1
-    @State var position: CGFloat = 0
+    @Binding var position: CGFloat
 
     var body: some View {
         VStack(spacing: 8) {
@@ -51,5 +51,5 @@ struct ProgressView: View {
 }
 
 #Preview {
-    ProgressView()
+    ProgressView(position: .constant(0))
 }
