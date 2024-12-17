@@ -12,7 +12,7 @@ struct VinylView: View {
     @ObservedObject var variables = Variables.shared
 
     @State private var rotate = false
-    @State private var cover = noImage
+    @State private var cover = Variables.shared.currentSong?.cover?.image() ?? noImage
 
     var body: some View {
         ZStack {
