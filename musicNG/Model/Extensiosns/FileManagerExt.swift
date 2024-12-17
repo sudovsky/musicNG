@@ -16,6 +16,7 @@ extension FileManager {
     static var temp: URL { FileManager.default.getUrlForTemp() }
     static var playlistsSettings: URL { FileManager.default.getUrlForPlaylistsSettings() }
     static var metaDB: URL { FileManager.default.getUrlForMetaDB() }
+    static var appSettings: URL { FileManager.default.urlForAppSettings() }
 
     private func getUrlForMetaDB() -> URL {
         let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!

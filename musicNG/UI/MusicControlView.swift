@@ -62,19 +62,18 @@ struct MusicControlView: View {
             HStack(alignment: .center, spacing: 25) {
                 
                 Button {
-                    
+                    _ = MediaPlayer.shared.switchShuffle()
                 } label: {
                     Image(systemName: "shuffle")
                         .foregroundStyle(.main)
                         .font(.system(size: 17))
                 }
                 .buttonStyle(GrowingButton())
+                .opacity(MediaPlayer.shared.shuffled == .off ? 0.3 : 1)
                 .shadowed()
                 
                 PlayControlButton(imageName: "backward.end.fill") {
-                    withAnimation {
-                        MediaPlayer.shared.prevFile()
-                    }
+                    MediaPlayer.shared.prevFile()
                 }
                 .frame(width: 44, height: 44)
                 PlayControlButton(isBig: true) {
@@ -86,20 +85,19 @@ struct MusicControlView: View {
                 }
                 .frame(width: 74, height: 74)
                 PlayControlButton(imageName: "forward.end.fill") {
-                    withAnimation {
-                        MediaPlayer.shared.nextFile()
-                    }
+                    MediaPlayer.shared.nextFile()
                 }
                 .frame(width: 44, height: 44)
                 
                 Button {
-                    
+                    _ = MediaPlayer.shared.switchRepeat()
                 } label: {
-                    Image(systemName: "repeat")
+                    Image(systemName: MediaPlayer.shared.repeated == .one ? "repeat.1" : "repeat")
                         .foregroundStyle(.main)
                         .font(.system(size: 17))
                 }
                 .buttonStyle(GrowingButton())
+                .opacity(MediaPlayer.shared.repeated == .off ? 0.3 : 1)
                 .shadowed()
                 
             }
