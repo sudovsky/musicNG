@@ -12,7 +12,8 @@ struct MusicControlView: View {
     @Environment(\.dismiss) var dismiss
     
     @ObservedObject var variables = Variables.shared
-    
+    @ObservedObject var pb = PlaybackCoordinator.shared
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -69,7 +70,7 @@ struct MusicControlView: View {
                         .font(.system(size: 17))
                 }
                 .buttonStyle(GrowingButton())
-                .opacity(MediaPlayer.shared.shuffled == .off ? 0.3 : 1)
+                .opacity(pb.shuffleMode == 0 ? 0.3 : 1)
                 .shadowed()
                 
                 PlayControlButton(imageName: "backward.end.fill") {
@@ -92,12 +93,12 @@ struct MusicControlView: View {
                 Button {
                     _ = MediaPlayer.shared.switchRepeat()
                 } label: {
-                    Image(systemName: MediaPlayer.shared.repeated == .one ? "repeat.1" : "repeat")
+                    Image(systemName: pb.repeatMode == 1 ? "repeat.1" : "repeat")
                         .foregroundStyle(.main)
                         .font(.system(size: 17))
                 }
                 .buttonStyle(GrowingButton())
-                .opacity(MediaPlayer.shared.repeated == .off ? 0.3 : 1)
+                .opacity(pb.repeatMode == 0 ? 0.3 : 1)
                 .shadowed()
                 
             }

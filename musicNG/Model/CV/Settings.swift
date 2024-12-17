@@ -26,8 +26,18 @@ class Settings: Codable {
     var address = ""
     var shareName = ""
     
-    var repeatMode: Int = 0
-    var shuffleMode: Int = 0
+    var repeatMode: Int = 0 {
+        didSet {
+            PlaybackCoordinator.shared.repeatMode = repeatMode
+            save()
+        }
+    }
+    var shuffleMode: Int = 0 {
+        didSet {
+            PlaybackCoordinator.shared.shuffleMode = shuffleMode
+            save()
+        }
+    }
     
     var sort: SortType = .userDefined
     

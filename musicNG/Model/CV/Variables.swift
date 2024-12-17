@@ -47,6 +47,8 @@ class PositionCoordinator: ObservableObject {
 class PlaybackCoordinator: ObservableObject {
 
     @Published var isPlaying = false
+    @Published var repeatMode: Int = 0
+    @Published var shuffleMode: Int = 0
 
     static var shared = PlaybackCoordinator()
     
