@@ -12,18 +12,19 @@ struct VinylView: View {
     @ObservedObject var variables = Variables.shared
 
     @State private var rotate = false
-    
+    @State private var cover = noImage
+
     var body: some View {
         ZStack {
             Circle()
-                .overlay {
-                    (Variables.shared.currentSong?.cover?.image() ?? noImage)
+                .foregroundStyle(.clear)
+                .background(content: {
+                    cover
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                }
+                })
                 .aspectRatio(contentMode: .fit)
                 .rotationEffect(.degrees(rotate ? 360 : 0))
-                .animation(.linear(duration: 30).repeatForever(autoreverses: false), value: rotate)
 
             Image(.vinyl)
                 .resizable()
@@ -35,9 +36,13 @@ struct VinylView: View {
                 .foregroundStyle(Color.clear)
         }
         .clipShape(Circle())
-        //.border(Circle(), width: 2)
         .onAppear() {
-            rotate.toggle()
+            withAnimation(.linear(duration: 30).repeatForever(autoreverses: false)) {
+                rotate.toggle()
+            }
+        }
+        .onReceive(variables.$currentSong) { pub in
+            cover = pub?.cover?.image() ?? noImage
         }
     }
 }
