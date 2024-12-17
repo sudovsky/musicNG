@@ -44,7 +44,10 @@ extension Array where Element == Float {
     
     var peaks: [Peak] {
         var result = [Peak]()
-        for i in 0..<self.count {
+        
+        let count = self.count > PeaksView.peakCount() ? PeaksView.peakCount() : self.count
+        
+        for i in 0..<count {
             result.append(Peak(id: i, value: CGFloat(self[i] * self[i] * self[i])))
         }
         return result

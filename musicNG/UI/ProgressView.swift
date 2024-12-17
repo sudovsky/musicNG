@@ -32,7 +32,7 @@ struct ProgressView: View {
                     let duration = MediaPlayer.shared.playerItem?.duration.seconds ?? 0
                     if duration.isNaN { return }
                     
-                    let percentPos = xPos * 100 / UIScreen.waveWidth()
+                    let percentPos = xPos * 100 / CGFloat(PeaksView.width())
                     let songTime = duration / 100 * percentPos
                     MediaPlayer.shared.seek(positionTime: songTime)
 

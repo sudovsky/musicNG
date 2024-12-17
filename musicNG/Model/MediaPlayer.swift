@@ -73,6 +73,9 @@ final class MediaPlayer {
             currentFile += 1
             let nextFile = playlist[currentFile]
             play(file: nextFile)
+            withAnimation {
+                Variables.shared.currentSong = nextFile
+            }
             return
         }
         
@@ -200,14 +203,18 @@ final class MediaPlayer {
         if currentFile < playlist.count - 1 {
             currentFile += 1
             let nextFile = playlist[currentFile]
-            Variables.shared.currentSong = nextFile
-            PositionCoordinator.shared.position = 0
+            withAnimation {
+                Variables.shared.currentSong = nextFile
+                PositionCoordinator.shared.position = 0
+            }
             play(file: nextFile)
         } else if playlist.count > 0{
             currentFile = 0
             let nextFile = playlist[currentFile]
-            Variables.shared.currentSong = nextFile
-            PositionCoordinator.shared.position = 0
+            withAnimation {
+                Variables.shared.currentSong = nextFile
+                PositionCoordinator.shared.position = 0
+            }
             play(file: nextFile)
         }
     }
@@ -218,14 +225,18 @@ final class MediaPlayer {
         if currentFile > 0, playlist.count > 0 {
             currentFile -= 1
             let nextFile = playlist[currentFile]
-            Variables.shared.currentSong = nextFile
-            PositionCoordinator.shared.position = 0
+            withAnimation {
+                Variables.shared.currentSong = nextFile
+                PositionCoordinator.shared.position = 0
+            }
             play(file: nextFile)
         } else if playlist.count > 0{
             currentFile = playlist.count - 1
             let nextFile = playlist[currentFile]
-            Variables.shared.currentSong = nextFile
-            PositionCoordinator.shared.position = 0
+            withAnimation {
+                Variables.shared.currentSong = nextFile
+                PositionCoordinator.shared.position = 0
+            }
             play(file: nextFile)
         }
     }
@@ -545,15 +556,15 @@ final class MediaPlayer {
             return
         }
         
-        let step = UIScreen.waveWidth() / (allSeconds == 0 ? 1 : allSeconds)
-        let curStep = step * curPos + step / 2
+        let step = PeaksView.width() / (allSeconds == 0 ? 1 : allSeconds)
+        let curStep = step * curPos// + step / 2
         
         withAnimation(.linear) {
             PositionCoordinator.shared.position = curStep
         }
         
         PositionCoordinator.shared.curTime = getTimeFromSeconds(MediaPlayer.shared.playerItem?.currentTime().seconds ?? 0)
-        PositionCoordinator.shared.endTime = getTimeFromSeconds((MediaPlayer.shared.playerItem?.duration.seconds ?? 0) - (MediaPlayer.shared.playerItem?.currentTime().seconds ?? 0))
+        PositionCoordinator.shared.endTime = getTimeFromSeconds(MediaPlayer.shared.playerItem?.duration.seconds ?? 0)
     }
     
     func getTimeFromSeconds(_ seconds: Double) -> String {

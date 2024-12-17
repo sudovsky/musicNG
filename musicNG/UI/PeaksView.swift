@@ -41,7 +41,11 @@ struct PeaksView: View {
     }
     
     static func peakCount() -> Int {
-        return Int(UIScreen.waveWidth() / (3 * 2))
+        return Int((UIScreen.waveWidth() / (3 * 2)).rounded(.down)) - 1
+    }
+    
+    static func width() -> CGFloat {
+        CGFloat(PeaksView.peakCount() * (3 * 2) - 3)
     }
     
 }
