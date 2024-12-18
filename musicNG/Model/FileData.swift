@@ -5,7 +5,7 @@
 //  Created by Max Sudovsky on 10.11.2024.
 //
 
-import Foundation
+import SwiftUI
 
 class FileData: Codable, Identifiable {
     
@@ -44,17 +44,51 @@ class FileData: Codable, Identifiable {
     
     func readMetadata() {
         
-        
         if let fdbl = FilesMetaDB.getDataForPath(path) {
             title = fdbl.title
             artist = fdbl.artist
-            cover = fdbl.cover?.jpg
+            cover = fdbl.cover
             if let p = fdbl.peaks {
                 slowPeaks = p
             }
             return
         }
 
+        MediaPlayer.dataFromFile(file: self, updateDB: true, local: true) { t, a, c, p in
+            self.title = t
+            self.artist = a ?? ""
+            self.cover = c
+            if let p = p {
+                self.slowPeaks = p
+            }
+        }
+        
+        if peaks.isEmpty {
+            MediaPlayer.shared.readBuffer(fileURL(), notify: false) { fast, data in
+                if fast {
+                    self.fastPeaks = data
+                    
+                    if Variables.shared.currentSong?.id == self.id {
+                        withAnimation {
+                            Variables.shared.currentSong = self
+                        }
+                    }
+                } else {
+                    self.slowPeaks = data
+
+                    if Variables.shared.currentSong?.id == self.id {
+                        withAnimation {
+                            Variables.shared.currentSong = self
+                        }
+                    }
+
+                    if let dataLine = FilesMetaDB.data.first(where: {$0.path == self.path}) {
+                        dataLine.peaks = data
+                    }
+                }
+            }
+        }
+        
 //
 //        if async {
 //            DispatchQueue.global().async {

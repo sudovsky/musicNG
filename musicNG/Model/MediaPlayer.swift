@@ -262,7 +262,7 @@ final class MediaPlayer {
         }
     }
     
-    static func dataFromFile(file: FileData, updateDB: Bool, completion: @escaping (String?, String?, UIImage?, [Float]?) -> Void = { _,_,_,_ in }){
+    static func dataFromFile(file: FileData, updateDB: Bool, local: Bool = false, completion: @escaping (String?, String?, Data?, [Float]?) -> Void = { _,_,_,_ in }){
         
         if let fdbl = FilesMetaDB.getDataForPath(file.path) {
             completion(fdbl.title, fdbl.artist, fdbl.cover, fdbl.peaks)
@@ -271,10 +271,11 @@ final class MediaPlayer {
         
         file.getData { data in
             let components = file.name.components(separatedBy: ".")
-            let url = FileManager.default.createTempFile(data: data!, ext: components.last ?? "")
+            let url = local ? file.fileURL() : FileManager.default.createTempFile(data: data!, ext: components.last ?? "")
             let pi = AVPlayerItem(url: url)
             let data = dataFromPlayerItem(item: pi)
-            FileManager.default.deleteTempFile(url: url)
+            
+            if !local { FileManager.default.deleteTempFile(url: url) }
             
             if updateDB {
                 FilesMetaDB.appendData(path: file.path, title: data.0 ?? file.name, artist: data.1 ?? "Unknown", cover: data.2)
@@ -284,10 +285,10 @@ final class MediaPlayer {
         }
     }
     
-    static func dataFromPlayerItem(item: AVPlayerItem) -> (String?, String?, UIImage?) {
+    static func dataFromPlayerItem(item: AVPlayerItem) -> (String?, String?, Data?) {
         var title: String? = nil
         var artist: String? = nil
-        var cover: UIImage? = nil
+        var cover: Data? = nil
         
         if let metadataList = item.asset.metadata as? [AVMetadataItem] {
             for item in metadataList {
@@ -301,7 +302,7 @@ final class MediaPlayer {
                 case "artist": artist = value as? String
                 case "artwork" where value is Data:
                     if let value = value as? Data {
-                        cover = UIImage(data: value)
+                        cover = value
                     }
                 default:
                     continue
@@ -329,7 +330,9 @@ final class MediaPlayer {
             let metadata = MediaPlayer.dataFromPlayerItem(item: item)
             title = metadata.0 ?? (file?.name ?? "Unknown track")
             artist = metadata.1 ?? "Unknown artist"
-            cover = metadata.2 ?? UIImage(resource: .no)
+            if let metaCover = metadata.2 {
+                cover = UIImage(data: metaCover) ?? UIImage(resource: .no)
+            }
         }
         
         var nowPlayingInfo = [String : Any]()

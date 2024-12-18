@@ -31,7 +31,7 @@ class FilesMetaDB {
         data.append(dataLine)
     }
     
-    static func appendData(path: String, title: String, artist: String, cover: UIImage? = nil, peaks: [Float]? = nil) {
+    static func appendData(path: String, title: String, artist: String, cover: Data? = nil, peaks: [Float]? = nil) {
         if FilesMetaDB.data.contains(where: { $0.path == path }) { return }
         
         let fdbl = FilesMetaDBLine()

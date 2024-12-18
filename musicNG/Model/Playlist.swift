@@ -83,6 +83,7 @@ class Playlist: Hashable, Codable, Identifiable {
         while i < files.count {
             let file = files[i]
             if listFromDisk.first(where: {$0 == file.name || $0 == file.name.nameWithoutDot()}) == nil {
+                FilesMetaDB.removeData(path: file.path)
                 files.remove(at: i)
                 needRewrite = true
             }

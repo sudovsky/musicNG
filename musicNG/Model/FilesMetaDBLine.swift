@@ -13,15 +13,15 @@ class FilesMetaDBLine: Codable {
     var path = ""
     var title = ""
     var artist = ""
-    var cover: UIImage? { loadCover() }
+    var cover: Data? { loadCover() }
     var peaks: [Float]? = nil
 
     init() {}
     
-    func saveCover(image: UIImage?) {
+    func saveCover(image: Data?) {
         let fileURL = FileManager.covers.appendingPathComponent(id).appendingPathExtension("jpg")
         do {
-            if let data = image?.jpegData(compressionQuality: 1) {
+            if let data = image {
                 try data.write(to: fileURL, options: .atomic)
             }
         } catch let error {
@@ -29,7 +29,7 @@ class FilesMetaDBLine: Codable {
         }
     }
     
-    private func loadCover() -> UIImage? {
+    private func loadCover() -> Data? {
         let fileURL = FileManager.covers.appendingPathComponent(id).appendingPathExtension("jpg")
         
         if !FileManager.default.fileExists(atPath: fileURL.path) {
@@ -37,8 +37,7 @@ class FilesMetaDBLine: Codable {
         }
         
         do {
-            let data = try Data(contentsOf: fileURL)
-            return UIImage(data: data)
+            return try Data(contentsOf: fileURL)
         } catch let error {
             print(error.localizedDescription)
             return nil
