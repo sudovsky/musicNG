@@ -22,7 +22,7 @@ struct MusicControlView: View {
                     .hidden()
                 
                 Text(Variables.shared.currentPlaylist.name)
-                    .font(.system(size: 20))
+                    .font(trackFont)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 8)
                 
@@ -44,16 +44,14 @@ struct MusicControlView: View {
             
             Text((variables.currentSong?.title ?? variables.currentSong?.name) ?? "")
                 .multilineTextAlignment(.center)
-                .font(.system(size: 20))
+                .font(mcTrackFont)
                 .padding(.horizontal, 16)
             
-            if let artist = variables.currentSong?.artist {
-                Text(artist)
-                    .multilineTextAlignment(.center)
-                    .font(.system(size: 18))
-                    .padding(.top, 8)
-                    .padding(.horizontal, 16)
-            }
+            Text(variables.currentSong?.artist ?? "Unknown Artist")
+                .multilineTextAlignment(.center)
+                .font(mcArtistFont)
+                .padding(.top, 8)
+                .padding(.horizontal, 16)
             
             Spacer()
             

@@ -28,14 +28,14 @@ struct CurrentSongView: View {
                     .padding(.trailing, 12)
                 
                 VStack(spacing: 0) {
-                    Text(variables.currentSong?.title ?? "Unknown Title")
-                        .font(.system(size: 19, weight: .light))
+                    Text(variables.currentSong?.title ?? (variables.currentSong?.name ?? "Unknown Title"))
+                        .font(csTrackFont)
                         .lineLimit(1)
                         .padding(.trailing, 16)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Text(variables.currentSong?.artist ?? "Unknown Artist")
-                        .font(.system(size: 17, weight: .medium))
+                        .font(csArtistFont)
                         .lineLimit(1)
                         .padding(.trailing, 16)
                         .frame(maxWidth: .infinity, alignment: .leading)

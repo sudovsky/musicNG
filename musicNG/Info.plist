@@ -15,6 +15,15 @@
 			</array>
 		</dict>
 	</array>
+    <key>UIAppFonts</key>
+    <array>
+        <string>OpenGOSTtypeA-Regular.ttf</string>
+        <string>avanti.ttf</string>
+        <string>Ampero-Light.ttf</string>
+        <string>Enthalpy 298.ttf</string>
+        <string>Ampero-Regular.ttf</string>
+        <string>OpenGOSTtypeB-Regular.ttf</string>
+    </array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

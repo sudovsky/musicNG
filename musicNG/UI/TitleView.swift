@@ -33,7 +33,7 @@ public struct TitleView: View {
             }
             
             Text(title)
-                .font(.system(size: 25, weight: .light))
+                .font(titleFont)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 .padding(.leading, backButtonVisible ? 0 : 16)

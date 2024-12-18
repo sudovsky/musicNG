@@ -14,8 +14,13 @@ let commonShadowColor: Color = Color(.main.withAlphaComponent(0.25))
 let comonTextColor: Color = .white
 let commonGradientColor: Color = .black.opacity(0.2)
 
-let artistFont: Font = .system(size: 18, weight: .regular)
-let trackFont: Font = .system(size: 19, weight: .regular)
+let titleFont: Font = .custom("avanti", size: 32) //.system(size: 19, weight: .regular)
+let trackFont: Font = .custom("avanti", size: 19) //.system(size: 19, weight: .regular)
+let artistFont: Font = .custom("Ampero-Regular", size: 18) //.system(size: 18, weight: .regular)
+let mcTrackFont: Font = .custom("avanti", size: 28) //.system(size: 19, weight: .regular)
+let mcArtistFont: Font = .custom("Ampero-Regular", size: 21) //.system(size: 18, weight: .regular)
+let csTrackFont: Font = .custom("avanti", size: 19) //.system(size: 19, weight: .regular)
+let csArtistFont: Font = .custom("Ampero-Regular", size: 18) //.system(size: 18, weight: .regular)
 
 let noImage = Image("NoImage")
     .resizable()
