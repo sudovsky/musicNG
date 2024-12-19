@@ -41,6 +41,8 @@ public struct PlayListView: View {
                 TitleView(backButtonVisible: PlaylistCoordinator.shared.currentPlaylist != nil,
                           title: "Настройки")
                 
+                SettingsView()
+                
                 Spacer()
                     .onAppear {
                         PlaylistCoordinator.shared.currentPlaylist = nil
@@ -90,7 +92,7 @@ public struct PlayListView: View {
     }
     
     func bottomView() -> some View {
-        BottomView {
+        BottomView(page: $currentFrame) {
             currentFrame = 1
         } saction: {
             currentFrame = 2
