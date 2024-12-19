@@ -11,22 +11,22 @@ public struct TitleView: View {
 
     @Environment(\.dismiss) var dismiss
 
-    @ObservedObject var playlist = PlaylistCoordinator.shared
+    @Binding var backButtonVisible: Bool
+    @Binding var title: String
+    @Binding var actionsVisible: Bool
 
-    @State var backButtonVisible = false
     @State var actionImage: Image? = nil
     @State var secondActionImage: Image? = nil
-    
-    var title = "Плейлисты"
 
     var action = {}
     var secondAction = {}
+    var backAction = {}
 
     public var body: some View {
         HStack(spacing: 0) {
             if backButtonVisible {
                 Button {
-                    playlist.currentPlaylist = nil
+                    backAction()
                 } label: {
                     Image(systemName: "chevron.left")
                         .titleButtonImage(.leading)
@@ -34,7 +34,7 @@ public struct TitleView: View {
                 .frame(width: 44, alignment: .center)
             }
             
-            Text(playlist.currentPlaylist?.name ?? title)
+            Text(title)
                 .font(titleFont)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
@@ -51,6 +51,7 @@ public struct TitleView: View {
                         .titleButtonImage(.trailing)
                 }
                 .frame(width: 44, alignment: .center)
+                .opacity(actionsVisible ? 1 : 0)
             }
             
             if let secondActionImage = secondActionImage {
@@ -61,19 +62,15 @@ public struct TitleView: View {
                         .titleButtonImage(.trailing)
                 }
                 .frame(width: 44, alignment: .center)
+                .opacity(actionsVisible ? 1 : 0)
             }
                 
         }
         .frame(maxWidth: .infinity, minHeight: 44)
-        .onReceive(playlist.$currentPlaylist) { plist in
-            withAnimation {
-                backButtonVisible = plist?.id != nil
-            }
-        }
 
     }
 }
 
 #Preview {
-    TitleView()
+    TitleView(backButtonVisible: .constant(false), title: .constant("Preview"), actionsVisible: .constant(true))
 }

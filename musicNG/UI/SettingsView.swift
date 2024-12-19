@@ -93,8 +93,9 @@ struct SettingsView: View {
                     .padding(.horizontal, 16)
             }
 
-
+            Spacer()
         }
+        .background(.back)
         .onDisappear {
             DispatchQueue.global().async {
                 Settings.shared.save()
