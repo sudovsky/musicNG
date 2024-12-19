@@ -10,9 +10,9 @@ import Extensions
 
 struct SongTile: View {
     
-    @State var artistVisible = true
+    var image: Image
+    var artistVisible = true
     
-    var image: Image? = nil
     var artist: String = "Unknown"
     var track: String = "Unknown"
     var shadow: Bool = true
@@ -20,7 +20,8 @@ struct SongTile: View {
     
     var body: some View {
         ZStack {
-            getImage()
+            image
+                .resizable()
                 .scaledToFill()
                 .frame(minWidth: 0, maxWidth: .infinity)
                 .aspectRatio(1, contentMode: .fill)
@@ -59,16 +60,8 @@ struct SongTile: View {
         .shadowed(use: shadow)
     }
     
-    func getImage() -> Image {
-        guard let image = image else {
-            return noImage
-        }
-        
-        return image
-            .resizable()
-    }
 }
 
 #Preview {
-    SongTile()
+    SongTile(image: noImage)
 }

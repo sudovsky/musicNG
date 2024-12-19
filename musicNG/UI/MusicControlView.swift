@@ -38,7 +38,7 @@ struct MusicControlView: View {
             Spacer()
             
             VinylView()
-                .scaleEffect(0.8)
+                .scaleEffect(0.85)
             
             Spacer()
             
@@ -46,14 +46,14 @@ struct MusicControlView: View {
                 .multilineTextAlignment(.center)
                 .font(mcTrackFont)
                 .padding(.horizontal, 16)
+                .padding(.top, 24)
             
             Text(variables.currentSong?.artist ?? "Unknown Artist")
                 .multilineTextAlignment(.center)
                 .font(mcArtistFont)
                 .padding(.top, 8)
                 .padding(.horizontal, 16)
-            
-            Spacer()
+                .padding(.bottom, 42)
             
             ProgressView(peaks: variables.currentSong?.peaks.peaks ?? Peak.empty, maxPeak: variables.currentSong?.peaks.maxPeak ?? 1)
                 .padding(.bottom, 22)

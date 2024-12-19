@@ -24,18 +24,17 @@ class Playlist: Hashable, Codable, Identifiable {
     
     var sortKey = 0
     
-    var cover: Data? {
-        if let url = urlForPlaylistCover() {
-            return try? Data(contentsOf: url)
-        } else {
-            return nil
-        }
-    }
+    var cover: Data?
     
     init() {}
     
     init(name: String) {
         self.name = name
+    }
+    
+    func getCoverFromSongs(_ source: [FileData]? = nil) -> Data? {
+        let files = source ?? getDownloads(readMetadata: true)
+        return files.first(where: { $0.cover != nil })?.cover
     }
     
     func urlForPlaylistCover() -> URL? {
@@ -49,8 +48,10 @@ class Playlist: Hashable, Codable, Identifiable {
     }
 
     func updateCover() {
-        DispatchQueue.global().async {
-            
+        if let url = urlForPlaylistCover() {
+            cover = try? Data(contentsOf: url)
+        } else {
+            cover = getCoverFromSongs()
         }
     }
     

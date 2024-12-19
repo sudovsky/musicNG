@@ -25,7 +25,7 @@ struct PlayListGrid: View {
                             NavigationLink {
                                 SongListView(playlist: playlist)
                             } label: {
-                                PlaylistTile(playlist: playlist)
+                                PlaylistTile(playlist: playlist, image: playlist.cover?.image() ?? noImage)
                             }
                         }
                         Color(.back)
