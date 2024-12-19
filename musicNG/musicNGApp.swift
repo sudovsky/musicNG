@@ -22,8 +22,10 @@ struct musicNGApp: App {
         .onChange(of: scenePhase) { (newScenePhase) in
             switch newScenePhase {
             case .inactive:
+                Settings.shared.save()
                 FilesMetaDB.save()
             case .background:
+                Settings.shared.save()
                 FilesMetaDB.save()
             default: break
             }
