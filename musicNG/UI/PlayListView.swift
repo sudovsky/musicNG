@@ -72,6 +72,7 @@ public struct PlayListView: View {
         .onReceive(playlistCoordinator.$currentPlaylist) { plist in
             withAnimation {
                 backButtonVisible = (plist?.id != nil) && currentFrame == 1
+                title = plist?.name ?? "Плейлисты"
             }
         }
 
