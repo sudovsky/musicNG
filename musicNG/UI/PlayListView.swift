@@ -72,7 +72,7 @@ public struct PlayListView: View {
                 
                 let path = FileManager.playlistsSettings
                 
-                let plsts = load(path) ?? [] as! [Playlist]
+                let plsts = load(path) ?? [Playlist(), Playlist(), Playlist()] as! [Playlist]
                 
                 plsts.updatedPlaylists { newLists in
                     for playlist in newLists {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class FileData: Codable, Identifiable {
+class FileData: Hashable, Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case name
@@ -147,5 +147,12 @@ class FileData: Codable, Identifiable {
         return FileManager.root.appendingPathComponent(path)
     }
     
+    static func == (lhs: FileData, rhs: FileData) -> Bool {
+        lhs.id == rhs.id || lhs.path == rhs.path
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 
 }

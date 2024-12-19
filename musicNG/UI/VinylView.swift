@@ -42,9 +42,9 @@ struct VinylView: View {
             }
         }
         .onReceive(variables.$currentSong) { pub in
-            withAnimation {
+            //withAnimation {
                 cover = pub?.cover?.image() ?? noImage
-            }
+            //}
         }
     }
 }

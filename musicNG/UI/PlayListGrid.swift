@@ -11,25 +11,32 @@ struct PlayListGrid: View {
 
     @State var playlists: [Playlist] = []
     
-    let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
-    ]
-
     var body: some View {
         VStack(spacing: 0) {
             NavigationView {
                 ScrollView {
-                    LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
-                        ForEach(playlists) { playlist in
-                            NavigationLink {
-                                SongListView(playlist: playlist)
-                            } label: {
-                                PlaylistTile(playlist: playlist, image: playlist.cover?.image() ?? noImage)
+                    let mars = playlists.getManyArrays()
+                    VStack(alignment: .center, spacing: 16) {
+                        ForEach(mars, id: \.self) { elem in
+                            HStack(alignment: .center, spacing: 16) {
+                                
+                                ForEach(elem, id: \.self) { first in
+                                    NavigationLink {
+                                        SongListView(playlist: first)
+                                    } label: {
+                                        PlaylistTile(playlist: first, image: first.cover?.image() ?? noImage)
+                                    }
+                                }
+                                
+                                if elem.count == 1 {
+                                    PlaylistTile(playlist: Playlist(), image: Playlist().cover?.image() ?? noImage)
+                                        .opacity(0)
+                                }
                             }
+                            .padding(.horizontal, 16)
                         }
-                        Color(.back)
-                    }.padding(16)
+                    }
+                    .padding(.vertical, 16)
                 }
             }
         }
