@@ -9,6 +9,10 @@ import SwiftUI
 
 struct SongListView: View {
 
+    @Environment(\.dismiss) var dismiss
+
+    @ObservedObject var plist = PlaylistCoordinator.shared
+
     var playlist: Playlist = Playlist()
     @State var fileList: [FileData] = []
 
@@ -23,11 +27,27 @@ struct SongListView: View {
                 }
                 .padding(.vertical, 16)
             }
+
+            if plist.currentPlaylist == nil {
+                Spacer()
+                    .onAppear {
+                        //withAnimation {
+                            dismiss()
+                        //}
+                    }
+            }
+
         }
         .navigationBarHidden(true)
         .onAppear {
             if fileList.isEmpty {
                 fileList = playlist.getDownloads(readMetadata: true)
+                PlaylistCoordinator.shared.currentPlaylist = playlist
+            }
+        }
+        .onDisappear {
+            if plist.currentPlaylist != nil {
+                PlaylistCoordinator.shared.currentPlaylist = nil
             }
         }
     }

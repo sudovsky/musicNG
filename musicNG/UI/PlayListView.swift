@@ -38,10 +38,13 @@ public struct PlayListView: View {
                 PlayListGrid(playlists: playlists)
 
             } else if currentFrame == 2 {
-                TitleView(backButtonVisible: false,
+                TitleView(backButtonVisible: PlaylistCoordinator.shared.currentPlaylist != nil,
                           title: "Настройки")
                 
                 Spacer()
+                    .onAppear {
+                        PlaylistCoordinator.shared.currentPlaylist = nil
+                    }
                 
             }
             if variables.currentSong != nil {

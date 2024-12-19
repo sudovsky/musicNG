@@ -55,3 +55,13 @@ class PlaybackCoordinator: ObservableObject {
     private init() {}
     
 }
+
+class PlaylistCoordinator: ObservableObject {
+
+    @Published var currentPlaylist: Playlist? = nil
+
+    static var shared = PlaylistCoordinator()
+    
+    private init() {}
+    
+}

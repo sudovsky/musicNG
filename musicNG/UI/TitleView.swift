@@ -11,6 +11,8 @@ public struct TitleView: View {
 
     @Environment(\.dismiss) var dismiss
 
+    @ObservedObject var playlist = PlaylistCoordinator.shared
+
     @State var backButtonVisible = false
     @State var actionImage: Image? = nil
     @State var secondActionImage: Image? = nil
@@ -24,7 +26,7 @@ public struct TitleView: View {
         HStack(spacing: 0) {
             if backButtonVisible {
                 Button {
-                    dismiss()
+                    playlist.currentPlaylist = nil
                 } label: {
                     Image(systemName: "chevron.left")
                         .titleButtonImage(.leading)
@@ -32,11 +34,14 @@ public struct TitleView: View {
                 .frame(width: 44, alignment: .center)
             }
             
-            Text(title)
+            Text(playlist.currentPlaylist?.name ?? title)
                 .font(titleFont)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 .padding(.leading, backButtonVisible ? 0 : 16)
+                .padding(.trailing, 16)
+                .lineLimit(1)
+                .minimumScaleFactor(0.3)
             
             if let actionImage = actionImage {
                 Button {
@@ -60,6 +65,11 @@ public struct TitleView: View {
                 
         }
         .frame(maxWidth: .infinity, minHeight: 44)
+        .onReceive(playlist.$currentPlaylist) { plist in
+            withAnimation {
+                backButtonVisible = plist?.id != nil
+            }
+        }
 
     }
 }
