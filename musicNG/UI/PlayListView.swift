@@ -115,6 +115,10 @@ public struct PlayListView: View {
                     playlistCoordinator.currentPlaylist = nil
                     title = "Плейлисты"
                 }
+                
+                DispatchQueue.global().async {
+                    Settings.shared.save()
+                }
             }
         } saction: {
             if currentFrame == 2 { return }
