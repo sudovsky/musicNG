@@ -9,6 +9,14 @@ import Foundation
 
 class Playlist: Hashable, Codable, Identifiable {
     
+    enum CodingKeys: CodingKey {
+        case id
+        case name
+        case date
+        case songsSort
+        case sortKey
+    }
+    
     var id = UUID().uuidString
     var name = "Неизвестный"
     var date = Date()
@@ -22,6 +30,12 @@ class Playlist: Hashable, Codable, Identifiable {
         } else {
             return nil
         }
+    }
+    
+    init() {}
+    
+    init(name: String) {
+        self.name = name
     }
     
     func urlForPlaylistCover() -> URL? {
@@ -119,4 +133,65 @@ class Playlist: Hashable, Codable, Identifiable {
         hasher.combine(id)
     }
 
+}
+
+extension Array where Element: Playlist {
+    
+    func updatedPlaylists(onDone: @escaping ([Playlist]) -> Void) {
+
+        var result: [Playlist] = self
+        
+        DispatchQueue.global().async {
+            
+            var listsFromDisk = [String]()
+            
+            let directoryContents = try? FileManager.default.contentsOfDirectory(at: FileManager.root, includingPropertiesForKeys: nil, options: .skipsHiddenFiles)
+            
+            for url in directoryContents ?? [] {
+                if !url.isDirectory {
+                    continue
+                }
+                
+                listsFromDisk.append(url.lastPathComponent)
+            }
+            
+            let toRemove = result.compactMap { playlist in
+                listsFromDisk.first(where: { $0 == playlist.name }) == nil ? playlist : nil
+            }
+            
+            let new = listsFromDisk.compactMap { el in
+                first(where: {$0.name == el})?.name == nil ? el : nil
+            }
+            
+            for name in new {
+                result.append(Playlist(name: name))
+            }
+            
+            for playlist in toRemove {
+                result.removeAll(where: { $0.id == playlist.id })
+            }
+            
+            if !toRemove.isEmpty {
+                for removeItem in toRemove {
+                    FilesMetaDB.data.removeAll(where: { $0.path.hasPrefix(removeItem.name) })
+                }
+                
+                DispatchQueue.global(qos: .background).async {
+                    FilesMetaDB.save()
+                }
+            }
+            
+            if !new.isEmpty || !toRemove.isEmpty {
+                DispatchQueue.global(qos: .background).async {
+                    try? result.save(FileManager.playlistsSettings)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                onDone(result)
+            }
+        }
+
+    }
+    
 }

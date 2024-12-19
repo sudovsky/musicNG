@@ -13,6 +13,11 @@ struct musicNGApp: App {
     var body: some Scene {
         WindowGroup {
             PlayListView()
+                .onAppear {
+                    if FilesMetaDB.data.isEmpty {
+                        FilesMetaDB.restore()
+                    }
+                }
         }
         .onChange(of: scenePhase) { (newScenePhase) in
             switch newScenePhase {

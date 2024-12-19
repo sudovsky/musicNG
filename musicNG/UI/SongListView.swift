@@ -19,15 +19,6 @@ struct SongListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            TitleView(backButtonVisible: true,
-                      actionImage: Image(systemName: "network"),
-                      secondActionImage: Image(.plus),
-                      title: playlist.name) {
-                print(1);
-            } secondAction: {
-                print(2)
-            }
-            
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     ForEach(fileList) { file in

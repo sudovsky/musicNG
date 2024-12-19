@@ -26,9 +26,17 @@ public struct PlayListView: View {
                 Spacer()
                 prepareData()
             } else if currentFrame == 1 {
-                NavigationView {
-                    plView()
+                TitleView(backButtonVisible: false,
+                          actionImage: Image(systemName: "network"),
+                          secondActionImage: Image(.plus),
+                          title: "Плейлисты") {
+                    print(1);
+                } secondAction: {
+                    print(2)
                 }
+                
+                PlayListGrid(playlists: playlists)
+
             } else if currentFrame == 2 {
                 TitleView(backButtonVisible: false,
                           title: "Настройки")
@@ -39,7 +47,10 @@ public struct PlayListView: View {
             if variables.currentSong != nil {
                 CurrentSongView()
             }
-            bottomView()
+            
+            if currentFrame != 0 {
+                bottomView()
+            }
         }
         .background {
             Color.back
@@ -59,17 +70,18 @@ public struct PlayListView: View {
             .onAppear {
                 if !playlists.isEmpty { return }
                 
-                FilesMetaDB.restore()
-                
                 let path = FileManager.playlistsSettings
                 
-                playlists = load(path) ?? [Playlist(), Playlist(), Playlist()] as! [Playlist]
+                let plsts = load(path) ?? [Playlist(), Playlist(), Playlist()] as! [Playlist]
                 
-                for playlist in playlists {
-                    playlist.updateDownloads()
+                plsts.updatedPlaylists { newLists in
+                    for playlist in newLists {
+                        playlist.updateDownloads()
+                    }
+                    
+                    playlists = newLists
+                    currentFrame = 1
                 }
-                
-                currentFrame = 1
             }
     }
     
@@ -81,32 +93,6 @@ public struct PlayListView: View {
         }
     }
     
-    func plView() -> some View {
-        return VStack(spacing: 0) {
-            TitleView(backButtonVisible: false,
-                      actionImage: Image(systemName: "network"),
-                      secondActionImage: Image(.plus),
-                      title: "Плейлисты") {
-                print(1);
-            } secondAction: {
-                print(2)
-            }
-
-            ScrollView {
-                LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
-                    ForEach(playlists) { playlist in
-                        NavigationLink {
-                            SongListView(playlist: playlist)
-                        } label: {
-                            PlaylistTile(playlist: playlist)
-                        }
-                    }
-                    Color(.back)
-                }.padding(16)
-            }
-
-        }
-    }
 }
 
 #Preview {
