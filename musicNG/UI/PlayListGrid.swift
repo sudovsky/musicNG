@@ -21,7 +21,7 @@ struct PlayListGrid: View {
             NavigationView {
                 ScrollView {
                     LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
-                        ForEach(playlists) { playlist in
+                        ForEach(playlists, id: \.self) { playlist in
                             NavigationLink {
                                 SongListView(playlist: playlist)
                             } label: {

@@ -26,7 +26,7 @@ struct SongListView: View {
         VStack(spacing: 0) {
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
-                    ForEach(fileList) { file in
+                    ForEach(fileList, id: \.self) { file in
                         Button {
                             Variables.shared.currentPlaylist = playlist
                             Variables.shared.songList = fileList

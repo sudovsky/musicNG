@@ -332,6 +332,8 @@ final class MediaPlayer {
             artist = metadata.1 ?? "Unknown artist"
             if let metaCover = metadata.2 {
                 cover = UIImage(data: metaCover) ?? UIImage(resource: .no)
+            } else {
+                cover = UIImage(resource: .no)
             }
         }
         
