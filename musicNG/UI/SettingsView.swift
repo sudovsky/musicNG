@@ -30,6 +30,7 @@ struct SettingsView: View {
                 TextField("Логин", text: $login)
                     .textContentType(.username)
                     .font(.system(size: 19))
+                    .autocorrectionDisabled()
                     .onChange(of: login) { newValue in
                         Settings.shared.username = newValue
                     }
@@ -63,6 +64,7 @@ struct SettingsView: View {
                 TextField("IP-адрес", text: $ip)
                     .textContentType(.username)
                     .font(.system(size: 19))
+                    .autocorrectionDisabled()
                     .onChange(of: ip) { newValue in
                         Settings.shared.address = newValue
                     }
@@ -78,6 +80,7 @@ struct SettingsView: View {
                 TextField("Начальный каталог", text: $shareName)
                     .textContentType(.username)
                     .font(.system(size: 19))
+                    .autocorrectionDisabled()
                     .onChange(of: shareName) { newValue in
                         Settings.shared.shareName = newValue
                     }

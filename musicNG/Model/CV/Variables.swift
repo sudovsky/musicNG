@@ -65,3 +65,9 @@ class PlaylistCoordinator: ObservableObject {
     private init() {}
     
 }
+
+class ViewUpdater: ObservableObject {
+    func reloadView() {
+        objectWillChange.send()
+    }
+}

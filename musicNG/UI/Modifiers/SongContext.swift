@@ -1,0 +1,71 @@
+//
+//  SongContext.swift
+//  musicNG
+//
+//  Created by Max Sudovsky on 20.12.2024.
+//
+
+import SwiftUI
+
+struct SongContext: ViewModifier {
+    var file: FileData
+    var updateAction: () -> Void
+    
+    func body(content: Content) -> some View {
+        return AnyView(content
+            .contextMenu {
+                Section("Перетаскивание элементов доступно только при сортировке \"Пользовательская\"") {
+                    
+                    if file.fileURL().pathExtension.lowercased() == "mp3" {
+                        Button {
+                            file.updateTags {
+                                updateAction()
+                            }
+                        } label: {
+                            Label("Обновить", systemImage: "arrow.triangle.2.circlepath")
+                        }
+                        Button {
+                            print(1)
+                        } label: {
+                            Label("Изменить название", systemImage: "pencil")
+                        }
+                        Button {
+                            print(1)
+                        } label: {
+                            Label("Изменить исполнителя", systemImage: "pencil")
+                        }
+                        Button {
+                            print(1)
+                        } label: {
+                            Label("Изменить обложку", systemImage: "photo")
+                        }
+                    }
+                    
+                    Button {
+                        print(1)
+                    } label: {
+                        Label("Поделиться", systemImage: "square.and.arrow.up")
+                    }
+                    Button {
+                        print(1)
+                    } label: {
+                        Label("Переместить", systemImage: "play.square.stack.fill")
+                    }
+                }
+
+                Button(role: .destructive) {
+                    print(1)
+                } label: {
+                    Label("Удалить", systemImage: "trash")
+                }
+            }
+        )
+
+    }
+}
+
+extension View {
+    func songContext(file: FileData, updateAction: @escaping () -> Void) -> some View {
+        modifier(SongContext(file: file, updateAction: updateAction))
+    }
+}

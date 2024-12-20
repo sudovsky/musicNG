@@ -147,6 +147,22 @@ class FileData: Hashable, Codable, Identifiable {
         return FileManager.root.appendingPathComponent(path)
     }
     
+    func updateTags(completion: @escaping () -> Void = {}) {
+        if !isDirectory {
+            FilesMetaDB.removeData(path: path)
+            MediaPlayer.dataFromFile(file: self, updateDB: true) { [weak self] t, a, c, p in
+                guard let self = self else { return }
+                title = t
+                artist = a ?? ""
+                cover = c
+                slowPeaks = p ?? []
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
+        }
+    }
+    
     static func == (lhs: FileData, rhs: FileData) -> Bool {
         lhs.id == rhs.id || lhs.path == rhs.path
     }
