@@ -15,7 +15,7 @@ struct PlayListGrid: View {
         VStack(spacing: 0) {
             NavigationView {
                 ScrollView {
-                    let mars = playlists.getManyArrays()
+                    let mars = playlists.sorted(by: { $0.sortKey < $1.sortKey }).getManyArrays()
                     VStack(alignment: .center, spacing: 16) {
                         ForEach(mars, id: \.self) { elem in
                             HStack(alignment: .center, spacing: 16) {

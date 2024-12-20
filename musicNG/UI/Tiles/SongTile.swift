@@ -20,12 +20,20 @@ struct SongTile: View {
     
     var body: some View {
         ZStack {
-            image
-                .resizable()
-                .scaledToFill()
-                .frame(minWidth: 0, maxWidth: .infinity)
-                .aspectRatio(1, contentMode: .fill)
-                .clipped()
+            RoundedRectangle(cornerSize: CGSize(width: commonCornerRadius, height: commonCornerRadius))
+                .foregroundStyle(.clear)
+                .background(content: {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .clipped()
+                })
+                .aspectRatio(contentMode: .fill)
+//            image
+//                .resizable()
+//                .aspectRatio(contentMode: .fill)
+//                .frame(width: UIScreen.getSize().width / 2 - 24, height: UIScreen.getSize().width / 2 - 24)
+//                .clipped()
             if gradient {
                 LinearGradient(colors: [commonGradientColor, .clear], startPoint: UnitPoint.bottom, endPoint: UnitPoint.top)
             }
@@ -52,6 +60,7 @@ struct SongTile: View {
             }
         }
         .aspectRatio(contentMode: .fit)
+        .tileImageFrame()
         .cornerRadius(commonCornerRadius)
         .overlay(
             RoundedRectangle(cornerRadius: commonCornerRadius)

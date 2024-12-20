@@ -16,7 +16,10 @@ struct PlaylistTile: View {
         ZStack {
             image
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .scaledToFill()
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .aspectRatio(1, contentMode: .fill)
+                .clipped()
                 .cornerRadius(commonCornerRadius)
                 .overlay(
                     RoundedRectangle(cornerRadius: commonCornerRadius)
@@ -26,7 +29,10 @@ struct PlaylistTile: View {
                 .opacity(0.2)
             image
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .scaledToFill()
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .aspectRatio(1, contentMode: .fill)
+                .clipped()
                 .cornerRadius(commonCornerRadius)
                 .overlay(
                     RoundedRectangle(cornerRadius: commonCornerRadius)
@@ -39,6 +45,8 @@ struct PlaylistTile: View {
                 .padding([.trailing, .bottom], 6)
             
         }
+        .aspectRatio(contentMode: .fit)
+//        .cornerRadius(commonCornerRadius)
         .shadowed()
     }
 }

@@ -20,8 +20,8 @@ struct CurrentSongView: View {
             HStack(spacing: 0) {
                 (variables.currentSong?.cover?.image() ?? Image(.no))
                     .resizable()
-                    .frame(width: 58, height: 58)
                     .aspectRatio(contentMode: .fill)
+                    .frame(width: 58, height: 58)
                     .cornerRadius(10)
                     .shadow(radius: 3)
                     .padding(.leading, 16)
