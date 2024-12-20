@@ -104,6 +104,17 @@ struct MusicControlView: View {
             
             
         }
+        .gesture(
+            DragGesture(minimumDistance: 20)
+                .onEnded({ val in
+                    let distX = val.location.x - val.startLocation.x
+                    let disty = val.location.y - val.startLocation.y
+                    
+                    if abs(distX) < abs(disty), disty > 0 {
+                        dismiss()
+                    }
+                })
+        )
         .transition(.opacity.animation(.spring))
     }
     

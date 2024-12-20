@@ -22,7 +22,7 @@ struct PeaksView: View {
             }
         }
         .frame(height: 32, alignment: .bottom)
-        .gesture(
+        .highPriorityGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged({ val in
                     onClick?(val.location)

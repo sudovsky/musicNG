@@ -72,6 +72,7 @@ struct SongListView: View {
         } label: {
             SongTile(image: file.cover?.image() ?? noImage, artistVisible: file.artist != nil, artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
         }
+        .buttonStyle(GrowingButton())
     }
     
     func action(file: FileData) {
