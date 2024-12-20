@@ -28,6 +28,7 @@ struct PlayListGrid: View {
                                 PlaylistTile(playlist: playlist, image: playlist.cover?.image() ?? noImage)
                             }
                         }
+                        .id(UUID())
                         Color(.white)
                     }.padding(16)
                 }

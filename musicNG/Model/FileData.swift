@@ -50,6 +50,8 @@ class FileData: Hashable, Codable, Identifiable {
             cover = fdbl.cover
             if let p = fdbl.peaks {
                 slowPeaks = p
+            } else {
+                updatePeaks(slowOnly: true)
             }
             return
         }
@@ -63,66 +65,36 @@ class FileData: Hashable, Codable, Identifiable {
             }
         }
         
-        if peaks.isEmpty {
-            MediaPlayer.shared.readBuffer(fileURL(), notify: false) { fast, data in
-                if fast {
-                    self.fastPeaks = data
-                    
-                    if Variables.shared.currentSong?.id == self.id {
-                        withAnimation {
-                            Variables.shared.currentSong = self
-                        }
+        if peaks.isEmpty { updatePeaks() }
+        
+    }
+    
+    func updatePeaks(slowOnly: Bool = false) {
+        MediaPlayer.shared.readBuffer(fileURL(), notify: false) { fast, data in
+            if fast {
+                if slowOnly { return }
+                
+                self.fastPeaks = data
+                
+                if Variables.shared.currentSong?.id == self.id {
+                    withAnimation {
+                        Variables.shared.currentSong = self
                     }
-                } else {
-                    self.slowPeaks = data
+                }
+            } else {
+                self.slowPeaks = data
 
-                    if Variables.shared.currentSong?.id == self.id {
-                        withAnimation {
-                            Variables.shared.currentSong = self
-                        }
+                if Variables.shared.currentSong?.id == self.id {
+                    withAnimation {
+                        Variables.shared.currentSong = self
                     }
+                }
 
-                    if let dataLine = FilesMetaDB.data.first(where: {$0.path == self.path}) {
-                        dataLine.peaks = data
-                    }
+                if let dataLine = FilesMetaDB.data.first(where: {$0.path == self.path}) {
+                    dataLine.peaks = data
                 }
             }
         }
-        
-//
-//        if async {
-//            DispatchQueue.global().async {
-//                for file in plist {
-//                    if !file.isDirectory, file.title == nil, file.artist == nil {
-//                        MediaPlayer.dataFromFile(file: file, updateDB: true) { t, a, c, p in
-//                            file.title = t
-//                            file.artist = a ?? ""
-//                            file.cover = c
-//                            if let p = p {
-//                                file.slowPeaks = p
-//                            }
-//                        }
-//                    }
-//                }
-//                DispatchQueue.main.async {
-//                    readedData()
-//                }
-//            }
-//            return
-//        }
-//        
-//        for file in plist {
-//            if !file.isDirectory, file.title == nil, file.artist == nil {
-//                MediaPlayer.dataFromFile(file: file, updateDB: true) { t, a, c, p in
-//                    file.title = t
-//                    file.artist = a ?? ""
-//                    file.cover = c
-//                    if let p = p {
-//                        file.slowPeaks = p
-//                    }
-//                }
-//            }
-//        }
     }
 
     func getData(completion: @escaping (Data?) -> Void = { _ in }) {
