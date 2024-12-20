@@ -17,6 +17,7 @@ struct SongTile: View {
     var track: String = "Unknown"
     var shadow: Bool = true
     var gradient: Bool = true
+    var dif: CGFloat = 0
     
     var body: some View {
         ZStack {
@@ -29,11 +30,6 @@ struct SongTile: View {
                         .clipped()
                 })
                 .aspectRatio(contentMode: .fill)
-//            image
-//                .resizable()
-//                .aspectRatio(contentMode: .fill)
-//                .frame(width: UIScreen.getSize().width / 2 - 24, height: UIScreen.getSize().width / 2 - 24)
-//                .clipped()
             if gradient {
                 LinearGradient(colors: [commonGradientColor, .clear], startPoint: UnitPoint.bottom, endPoint: UnitPoint.top)
             }
@@ -60,7 +56,7 @@ struct SongTile: View {
             }
         }
         .aspectRatio(contentMode: .fit)
-        .tileImageFrame()
+        .tileImageFrame(dif: dif)
         .cornerRadius(commonCornerRadius)
         .overlay(
             RoundedRectangle(cornerRadius: commonCornerRadius)

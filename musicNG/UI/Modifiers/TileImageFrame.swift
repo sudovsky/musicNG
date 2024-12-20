@@ -8,15 +8,17 @@
 import SwiftUI
 
 struct TileImageFrame: ViewModifier {
+    var dif: CGFloat = 0
+    
     func body(content: Content) -> some View {
         return AnyView(content
-            .frame(width: UIScreen.getSize().width / 2 - 24, height: UIScreen.getSize().width / 2 - 24)
+            .frame(width: UIScreen.getSize().width / 2 - 24 - dif, height: UIScreen.getSize().width / 2 - 24 - dif)
 )
     }
 }
 
 extension View {
-    func tileImageFrame() -> some View {
-        modifier(TileImageFrame())
+    func tileImageFrame(dif: CGFloat = 0) -> some View {
+        modifier(TileImageFrame(dif: dif))
     }
 }

@@ -46,7 +46,7 @@ struct PlaylistTile: View {
             
         }
         .aspectRatio(contentMode: .fit)
-//        .cornerRadius(commonCornerRadius)
+        .cornerRadius(commonCornerRadius)
         .shadowed()
     }
 }
