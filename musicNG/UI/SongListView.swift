@@ -55,10 +55,6 @@ struct SongListView: View {
                                     currentTag = tag
                                     currentFile = file
                                     updateTag()
-                                    
-                                    if tag == 3 {
-                                        importing = true
-                                    }
                                 }
                         }
                         .buttonStyle(GrowingButton())

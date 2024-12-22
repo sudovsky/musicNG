@@ -16,6 +16,10 @@ extension SongListView {
             updateTitle()
         case 2:
             updateArtist()
+        case 3:
+            importing = true
+        case 4:
+            shareFile()
         default:
             break
         }
@@ -84,4 +88,28 @@ extension SongListView {
         }
     }
     
+    func shareFile() {
+        guard let fileData = currentFile else { return }
+        
+        share(items: [fileData.fileURL()])
+    }
+    
+}
+
+@discardableResult
+func share(
+    items: [Any],
+    excludedActivityTypes: [UIActivity.ActivityType]? = nil
+) -> Bool {
+    guard let source = UIApplication.window?.rootViewController else {
+        return false
+    }
+    let vc = UIActivityViewController(
+        activityItems: items,
+        applicationActivities: nil
+    )
+    vc.excludedActivityTypes = excludedActivityTypes
+    vc.popoverPresentationController?.sourceView = source.view
+    source.present(vc, animated: true)
+    return true
 }
