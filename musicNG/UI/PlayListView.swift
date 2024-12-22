@@ -11,7 +11,8 @@ public struct PlayListView: View {
 
     @ObservedObject var variables = Variables.shared
     @ObservedObject var playlistCoordinator = PlaylistCoordinator.shared
-    
+    @ObservedObject var playlistSelectionCoordinator = PlaylistSelectionCoordinator.shared
+
     @State private var showingDetail: Bool = false
     @State private var currentFrame: Int = 0
     @State private var playlists: [Playlist] = []
@@ -19,6 +20,8 @@ public struct PlayListView: View {
     @State private var backButtonVisible: Bool = false
     @State private var title: String = "Плейлисты"
     @State private var actionsVisible: Bool = true
+
+    @State private var showListSelection: Bool = false
 
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -61,19 +64,16 @@ public struct PlayListView: View {
         .background {
             Color.back
         }
+        .playListSelection(visible: $showListSelection)
         .navigationBarHidden(true)
-        .onAppear {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                withAnimation(.easeOut.speed(1.8)) {
-//                    variables.currentSong = FileData()
-//                }
-//            }
-        }
         .onReceive(playlistCoordinator.$currentPlaylist) { plist in
             withAnimation {
                 backButtonVisible = (plist?.id != nil) && currentFrame == 1
                 title = plist?.name ?? "Плейлисты"
             }
+        }
+        .onReceive(playlistSelectionCoordinator.$needShowSelection) { plist in
+            showListSelection = plist
         }
 
     }
@@ -83,16 +83,7 @@ public struct PlayListView: View {
             .onAppear {
                 if !playlists.isEmpty { return }
                 
-                let path = FileManager.playlistsSettings
-                
-                let plsts = load(path) ?? [Playlist(), Playlist(), Playlist()] as! [Playlist]
-                
-                plsts.updatedPlaylists { newLists in
-                    for playlist in newLists {
-                        playlist.updateDownloads()
-                        playlist.updateCover()
-                    }
-                    
+                _ = Playlist.getAll() { newLists in
                     playlists = newLists
                     currentFrame = 1
                 }

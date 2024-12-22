@@ -20,6 +20,10 @@ extension SongListView {
             importing = true
         case 4:
             shareFile()
+        case 5:
+            withAnimation {
+                PlaylistSelectionCoordinator.shared.needShowSelection = true
+            }
         case 6:
             deleteFile()
         default:

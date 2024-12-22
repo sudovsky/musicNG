@@ -134,6 +134,29 @@ class Playlist: Hashable, Codable, Identifiable {
         hasher.combine(id)
     }
 
+    static func getAll(withCovers: Bool = true, updatedResult: (([Playlist]) -> Void)? = nil) -> [Playlist] {
+        
+        let path = FileManager.playlistsSettings
+        
+        let plsts = load(path) ?? [Playlist(), Playlist(), Playlist()] as! [Playlist]
+        
+        if updatedResult != nil {
+            plsts.updatedPlaylists { newLists in
+                for playlist in newLists {
+                    playlist.updateDownloads()
+                    playlist.updateCover()
+                }
+                
+                updatedResult?(newLists)
+            }
+        } else if withCovers {
+            for playlist in plsts {
+                playlist.updateCover()
+            }
+        }
+
+        return plsts
+    }
 }
 
 extension Array where Element: Playlist {

@@ -66,6 +66,16 @@ class PlaylistCoordinator: ObservableObject {
     
 }
 
+class PlaylistSelectionCoordinator: ObservableObject {
+
+    @Published var needShowSelection = false
+
+    static var shared = PlaylistSelectionCoordinator()
+    
+    private init() {}
+    
+}
+
 class ViewUpdater: ObservableObject {
     func reloadView() {
         objectWillChange.send()

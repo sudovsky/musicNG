@@ -10,6 +10,12 @@ import Extensions
 
 struct SongTile: View {
     
+    enum SongTileDestination {
+        case song
+        case playlist
+        case plSelection
+    }
+    
     var image: Image
     var artistVisible = true
     
@@ -17,7 +23,7 @@ struct SongTile: View {
     var track: String = "Unknown"
     var shadow: Bool = true
     var gradient: Bool = true
-    var dif: CGFloat = 0
+    var destination: SongTileDestination = .song
     
     var body: some View {
         ZStack {
@@ -57,7 +63,7 @@ struct SongTile: View {
             }
         }
         .aspectRatio(contentMode: .fit)
-        .tileImageFrame(dif: dif)
+        .tileImageFrame(destination: destination)
         .cornerRadius(commonCornerRadius)
         .overlay(
             RoundedRectangle(cornerRadius: commonCornerRadius)

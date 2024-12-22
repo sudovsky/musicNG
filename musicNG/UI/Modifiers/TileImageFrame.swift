@@ -8,17 +8,26 @@
 import SwiftUI
 
 struct TileImageFrame: ViewModifier {
-    var dif: CGFloat = 0
+    var destination: SongTile.SongTileDestination = .song
     
     func body(content: Content) -> some View {
-        return AnyView(content
-            .frame(width: UIScreen.getSize().width / 2 - 24 - dif, height: UIScreen.getSize().width / 2 - 24 - dif)
-)
+        switch destination {
+        case .playlist:
+            return AnyView(content
+                .frame(width: UIScreen.getSize().width / 2 - 30, height: UIScreen.getSize().width / 2 - 30))
+        case .plSelection:
+            return AnyView(content
+                .frame(width: (UIScreen.getSize().width - 32) / 3 - 24,
+                       height: (UIScreen.getSize().width - 32) / 3 - 24))
+        default:
+            return AnyView(content
+                .frame(width: UIScreen.getSize().width / 2 - 24, height: UIScreen.getSize().width / 2 - 24))
+        }
     }
 }
 
 extension View {
-    func tileImageFrame(dif: CGFloat = 0) -> some View {
-        modifier(TileImageFrame(dif: dif))
+    func tileImageFrame(destination: SongTile.SongTileDestination = .song) -> some View {
+        modifier(TileImageFrame(destination: destination))
     }
 }
