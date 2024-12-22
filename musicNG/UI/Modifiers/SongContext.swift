@@ -36,26 +36,26 @@ struct SongContext: ViewModifier {
                             Label("Изменить исполнителя", systemImage: "pencil")
                         }
                         Button {
-                            print(1)
+                            action(3, file)
                         } label: {
                             Label("Изменить обложку", systemImage: "photo")
                         }
                     }
                     
                     Button {
-                        print(1)
+                        action(4, file)
                     } label: {
                         Label("Поделиться", systemImage: "square.and.arrow.up")
                     }
                     Button {
-                        print(1)
+                        action(5, file)
                     } label: {
                         Label("Переместить", systemImage: "play.square.stack.fill")
                     }
                 }
 
                 Button(role: .destructive) {
-                    print(1)
+                    action(6, file)
                 } label: {
                     Label("Удалить", systemImage: "trash")
                 }

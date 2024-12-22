@@ -19,6 +19,7 @@ struct SongListView: View {
     
     @State private var firstAppear = true
     @State var showAlert = false
+    @State var importing = false
     @State var alertText: String = ""
 
     @State var title: String = ""
@@ -54,6 +55,10 @@ struct SongListView: View {
                                     currentTag = tag
                                     currentFile = file
                                     updateTag()
+                                    
+                                    if tag == 3 {
+                                        importing = true
+                                    }
                                 }
                         }
                         .buttonStyle(GrowingButton())
@@ -63,13 +68,15 @@ struct SongListView: View {
             }
 
             if plist.currentPlaylist == nil, !firstAppear {
-                Spacer()
+                EmptyView()
                     .onAppear {
                         //withAnimation {
                             dismiss()
                         //}
                     }
             }
+            
+            ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))
 
         }
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)

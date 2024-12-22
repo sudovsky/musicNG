@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		06B17A942CD556E600380AA6 /* AMSMB2 in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 06D5B1BC2CD1B255000BC4A0 /* AMSMB2 */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		06C6E6492D1879E3005B081C /* ImagePickerView in Frameworks */ = {isa = PBXBuildFile; productRef = 06C6E6482D1879E3005B081C /* ImagePickerView */; };
 		06D5B1BD2CD1B255000BC4A0 /* AMSMB2 in Frameworks */ = {isa = PBXBuildFile; productRef = 06D5B1BC2CD1B255000BC4A0 /* AMSMB2 */; };
 		06D5B1C02CD1B46F000BC4A0 /* ID3TagEditor in Frameworks */ = {isa = PBXBuildFile; productRef = 06D5B1BF2CD1B46F000BC4A0 /* ID3TagEditor */; };
 		06D5B22D2CD2B21F000BC4A0 /* Extensions in Frameworks */ = {isa = PBXBuildFile; productRef = 06D5B22C2CD2B21F000BC4A0 /* Extensions */; };
@@ -89,6 +90,7 @@
 				06D5B22D2CD2B21F000BC4A0 /* Extensions in Frameworks */,
 				06D5B1BD2CD1B255000BC4A0 /* AMSMB2 in Frameworks */,
 				06D5B1C02CD1B46F000BC4A0 /* ID3TagEditor in Frameworks */,
+				06C6E6492D1879E3005B081C /* ImagePickerView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +155,7 @@
 				06D5B1BC2CD1B255000BC4A0 /* AMSMB2 */,
 				06D5B1BF2CD1B46F000BC4A0 /* ID3TagEditor */,
 				06D5B22C2CD2B21F000BC4A0 /* Extensions */,
+				06C6E6482D1879E3005B081C /* ImagePickerView */,
 			);
 			productName = musicNG;
 			productReference = 0612F0382CD127B100816A76 /* musicNG.app */;
@@ -240,6 +243,7 @@
 				06D5B1BB2CD1B255000BC4A0 /* XCRemoteSwiftPackageReference "AMSMB2" */,
 				06D5B1BE2CD1B46F000BC4A0 /* XCRemoteSwiftPackageReference "ID3TagEditor" */,
 				06D5B22B2CD2B21F000BC4A0 /* XCRemoteSwiftPackageReference "Extensions" */,
+				06C6E6472D1879E3005B081C /* XCRemoteSwiftPackageReference "ImagePickerView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0612F0392CD127B100816A76 /* Products */;
@@ -620,6 +624,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		06C6E6472D1879E3005B081C /* XCRemoteSwiftPackageReference "ImagePickerView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/rebeloper/ImagePickerView.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.2;
+			};
+		};
 		06D5B1BB2CD1B255000BC4A0 /* XCRemoteSwiftPackageReference "AMSMB2" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/amosavian/AMSMB2.git";
@@ -647,6 +659,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		06C6E6482D1879E3005B081C /* ImagePickerView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 06C6E6472D1879E3005B081C /* XCRemoteSwiftPackageReference "ImagePickerView" */;
+			productName = ImagePickerView;
+		};
 		06D5B1BC2CD1B255000BC4A0 /* AMSMB2 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 06D5B1BB2CD1B255000BC4A0 /* XCRemoteSwiftPackageReference "AMSMB2" */;

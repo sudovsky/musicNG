@@ -66,4 +66,22 @@ extension SongListView {
         showAlert.toggle()
     }
     
+    func updateImage(imageData: Data) {
+        guard let fileData = currentFile else { return }
+        
+        fileData.updateCover(imageData: imageData) { newData in
+            fileData.saveData(data: newData)
+            fileData.updateTags()
+            fileData.updatePeaks(slowOnly: true)
+            
+            DispatchQueue.main.async {
+                viewUpdater.reloadView()
+            }
+            
+            DispatchQueue.global().async {
+                FilesMetaDB.save()
+            }
+        }
+    }
+    
 }
