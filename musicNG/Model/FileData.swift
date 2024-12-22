@@ -135,6 +135,39 @@ class FileData: Hashable, Codable, Identifiable {
         }
     }
     
+    func saveData(data: Data) {
+        // TODO: - проверить нужно ли писать в фоне
+        //DispatchQueue.global().async {
+            do {
+                let url = fileURL(needCreate: true)
+                try data.write(to: url, options: .atomic)
+            } catch {
+        //        DispatchQueue.main.async {
+                    print(error.localizedDescription, "Can'not save local db")
+        //        }
+            }
+        //}
+    }
+
+    func deleteData() {
+        do {
+            if fileDownloaded {
+                try FileManager.default.removeItem(at: fileURL())
+            }
+        } catch {
+            print(error.localizedDescription, "Can'not load local db")
+        }
+    }
+    
+    func removeDownload() {
+        do {
+            try FileManager.default.removeItem(at: fileURL())
+        } catch let error {
+            print(error.localizedDescription)
+        }
+    }
+    
+
     static func == (lhs: FileData, rhs: FileData) -> Bool {
         lhs.id == rhs.id || lhs.path == rhs.path
     }

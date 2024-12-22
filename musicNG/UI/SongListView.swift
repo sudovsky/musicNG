@@ -16,6 +16,17 @@ struct SongListView: View {
 
     var playlist: Playlist = Playlist()
     @State var fileList: [FileData] = []
+    
+    @State private var firstAppear = true
+    @State var showAlert = false
+    @State var alertText: String = ""
+
+    @State var title: String = ""
+    @State var subtitle: String = ""
+    @State var placeholder: String = ""
+    
+    @State var currentTag = 0
+    @State var currentFile: FileData? = nil
 
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -39,7 +50,11 @@ struct SongListView: View {
                             MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0))
                         } label: {
                             SongTile(image: file.cover?.image() ?? noImage, artistVisible: file.artist != nil, artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
-                                .songContext(file: file) { viewUpdater.reloadView() }
+                                .songContext(file: file) { viewUpdater.reloadView() } action: { tag, file in
+                                    currentTag = tag
+                                    currentFile = file
+                                    updateTag()
+                                }
                         }
                         .buttonStyle(GrowingButton())
                     }
@@ -47,7 +62,7 @@ struct SongListView: View {
                 }.padding(16)
             }
 
-            if plist.currentPlaylist == nil {
+            if plist.currentPlaylist == nil, !firstAppear {
                 Spacer()
                     .onAppear {
                         //withAnimation {
@@ -57,11 +72,13 @@ struct SongListView: View {
             }
 
         }
+        .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
         .navigationBarHidden(true)
         .onAppear {
+            plist.currentPlaylist = playlist
+            firstAppear = false
             if fileList.isEmpty {
                 fileList = playlist.getDownloads(readMetadata: true)
-                PlaylistCoordinator.shared.currentPlaylist = playlist
             }
         }
         .onDisappear {

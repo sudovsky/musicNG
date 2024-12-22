@@ -10,6 +10,7 @@ import SwiftUI
 struct SongContext: ViewModifier {
     var file: FileData
     var updateAction: () -> Void
+    var action: (Int, FileData) -> Void = { _,_ in }
     
     func body(content: Content) -> some View {
         return AnyView(content
@@ -25,12 +26,12 @@ struct SongContext: ViewModifier {
                             Label("Обновить", systemImage: "arrow.triangle.2.circlepath")
                         }
                         Button {
-                            print(1)
+                            action(1, file)
                         } label: {
                             Label("Изменить название", systemImage: "pencil")
                         }
                         Button {
-                            print(1)
+                            action(2, file)
                         } label: {
                             Label("Изменить исполнителя", systemImage: "pencil")
                         }
@@ -65,7 +66,7 @@ struct SongContext: ViewModifier {
 }
 
 extension View {
-    func songContext(file: FileData, updateAction: @escaping () -> Void) -> some View {
-        modifier(SongContext(file: file, updateAction: updateAction))
+    func songContext(file: FileData, updateAction: @escaping () -> Void, action: @escaping (Int, FileData) -> Void = { _,_ in }) -> some View {
+        modifier(SongContext(file: file, updateAction: updateAction, action: action))
     }
 }
