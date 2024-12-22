@@ -16,7 +16,7 @@ struct PlayListSelection: ViewModifier {
                 ZStack {
                     content
                         .blur(radius: 10)
-                    PlaylistSelectionView()
+                    PlaylistSelectionView(use: $use)
                 }
             )
         } else {

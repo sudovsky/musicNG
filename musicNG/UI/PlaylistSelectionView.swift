@@ -9,9 +9,12 @@ import SwiftUI
 
 struct PlaylistSelectionView: View {
 
-    private var playlists: [Playlist] = Playlist.getAll(withCovers: true)
+    @Binding var use: Bool
 
     var canCreate = true
+
+    var playlists: [Playlist] = Playlist.getAll(withCovers: true)
+
     var onSelect: (Playlist?, Bool) -> Void = { _,_ in }
 
     let columns = [
@@ -24,7 +27,7 @@ struct PlaylistSelectionView: View {
         ZStack {
             Button {
                 withAnimation {
-                    PlaylistSelectionCoordinator.shared.needShowSelection = false
+                    use = false
                 }
             } label: {
                 Color.main
@@ -43,7 +46,7 @@ struct PlaylistSelectionView: View {
                             ForEach(playlists, id: \.self) { playlist in
                                 Button {
                                     withAnimation {
-                                        PlaylistSelectionCoordinator.shared.needShowSelection = false
+                                        use = false
                                     }
                                     onSelect(playlist, false)
                                 } label: {
@@ -59,7 +62,7 @@ struct PlaylistSelectionView: View {
                     if canCreate {
                         Button {
                             withAnimation {
-                                PlaylistSelectionCoordinator.shared.needShowSelection = false
+                                use = false
                             }
                             onSelect(nil, true)
                         } label: {
@@ -88,5 +91,5 @@ struct PlaylistSelectionView: View {
 }
 
 #Preview {
-    PlaylistSelectionView()
+    PlaylistSelectionView(use: .constant(true))
 }
