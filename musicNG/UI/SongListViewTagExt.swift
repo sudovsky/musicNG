@@ -20,6 +20,8 @@ extension SongListView {
             importing = true
         case 4:
             shareFile()
+        case 6:
+            deleteFile()
         default:
             break
         }
@@ -92,6 +94,22 @@ extension SongListView {
         guard let fileData = currentFile else { return }
         
         share(items: [fileData.fileURL()])
+    }
+    
+    func deleteFile() {
+        guard let fileData = currentFile else { return }
+        
+        if fileData.isDirectory { return }
+        
+        FilesMetaDB.removeData(path: fileData.path)
+        fileData.removeDownload()
+        
+        fileList.removeAll { $0.path == fileData.path }
+        
+        currentFile = nil
+        
+        playlist.updateDownloads()
+        viewUpdater.reloadView()
     }
     
 }
