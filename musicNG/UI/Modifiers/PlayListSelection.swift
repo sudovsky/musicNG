@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PlayListSelection: ViewModifier {
     @Binding var use: Bool
+    var onSelect: (Playlist?, Bool) -> Void = { _,_ in }
     
     func body(content: Content) -> some View {
         if use {
@@ -16,7 +17,7 @@ struct PlayListSelection: ViewModifier {
                 ZStack {
                     content
                         .blur(radius: 10)
-                    PlaylistSelectionView(use: $use)
+                    PlaylistSelectionView(use: $use, onSelect: onSelect)
                 }
             )
         } else {
@@ -26,7 +27,7 @@ struct PlayListSelection: ViewModifier {
 }
 
 extension View {
-    func playListSelection(visible: Binding<Bool>) -> some View {
-        modifier(PlayListSelection(use: visible))
+    func playListSelection(visible: Binding<Bool>, onSelect: @escaping (Playlist?, Bool) -> Void = { _,_ in }) -> some View {
+        modifier(PlayListSelection(use: visible, onSelect: onSelect))
     }
 }

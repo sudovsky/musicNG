@@ -64,7 +64,15 @@ public struct PlayListView: View {
         .background {
             Color.back
         }
-        .playListSelection(visible: $showListSelection)
+        .playListSelection(visible: $showListSelection) { pl, isNew in
+            guard let fileToMove = PlaylistSelectionCoordinator.shared.fileToMove, let playlistFromMove = PlaylistSelectionCoordinator.shared.playlistFromMove else { return }
+            
+            moveFile(source: playlistFromMove, destination: pl, file: fileToMove)
+            
+            PlaylistSelectionCoordinator.shared.fileToMove = nil
+            PlaylistSelectionCoordinator.shared.playlistFromMove = nil
+            
+        }
         .navigationBarHidden(true)
         .onReceive(playlistCoordinator.$currentPlaylist) { plist in
             withAnimation {
@@ -124,6 +132,69 @@ public struct PlayListView: View {
         }
     }
     
+    func moveFile(source: Playlist, destination: Playlist?, file: FileData) {
+        
+        var playlist = destination
+        if destination == nil {
+            let list = Playlist()
+            let title = file.title ?? file.name
+            let artist = file.artist ?? "Unknown"
+            list.name = "\(artist) - \(title)"
+            list.sortKey = playlists.count
+//            FileData.playlists.append(list)
+            playlists.append(list)
+//            FileData.savePlaylists()
+            try? playlists.save(FileManager.playlistsSettings)
+            
+            _ = FileManager.default.urlForPlaylistSettings(name: list.name)
+            
+            playlist = list
+        }
+
+        guard let pl = playlist else { return }
+
+        do {
+            try FileManager.default.moveItem(at: file.fileURL(), to: FileManager.default.urlForPlaylist(name: pl.name).appendingPathComponent(file.name))
+
+            if let data = FilesMetaDB.getDataForPath(file.path) {
+                FilesMetaDB.removeData(path: file.path)
+                file.path = "\(pl.name)/\(file.name)"
+                data.path = file.path
+                FilesMetaDB.appendData(dataLine: data)
+            } else {
+                file.path = "\(pl.name)/\(file.name)"
+            }
+            
+            pl.updateDownloads()
+            file.customSortKey = pl.getDownloads().count
+            
+            source.updateDownloads()
+            source.updateCover()
+            pl.updateCover()
+            
+            file.updateTags()
+            file.updatePeaks()
+
+            MediaPlayer.shared.originalPlaylist.removeAll(where: {$0.path == file.path})
+            MediaPlayer.shared.playlist.removeAll(where: {$0.path == file.path})
+        } catch {
+            //TODO: - сделать метод показа сообщения
+//            error.localizedDescription.showStandartOkMessage(title: "Ошибка перемещения файла")
+            print(error)
+            return
+        }
+        
+//        if let controller = UIApplication.getTopViewController() as? CDowloadedController {
+//            if let index = controller.files.firstIndex(where: {$0.path == file.path}) {
+//                controller.files.remove(at: index)
+//            }
+//            if let index = controller.ffiles.firstIndex(where: {$0.path == file.path}) {
+//                controller.ffiles.remove(at: index)
+//                controller.collectionView.deleteItems(at: [IndexPath(item: index, section: 0)])
+//            }
+//        }
+
+    }
 }
 
 #Preview {

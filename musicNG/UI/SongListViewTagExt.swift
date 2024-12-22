@@ -21,6 +21,8 @@ extension SongListView {
         case 4:
             shareFile()
         case 5:
+            PlaylistSelectionCoordinator.shared.fileToMove = currentFile
+            PlaylistSelectionCoordinator.shared.playlistFromMove = playlist
             withAnimation {
                 PlaylistSelectionCoordinator.shared.needShowSelection = true
             }
@@ -105,6 +107,9 @@ extension SongListView {
         
         if fileData.isDirectory { return }
         
+        MediaPlayer.shared.originalPlaylist.removeAll(where: {$0.path == fileData.path})
+        MediaPlayer.shared.playlist.removeAll(where: {$0.path == fileData.path})
+
         FilesMetaDB.removeData(path: fileData.path)
         fileData.removeDownload()
         

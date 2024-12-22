@@ -45,10 +45,10 @@ struct PlaylistSelectionView: View {
                         LazyVGrid(columns: columns, alignment: .center, spacing: 12) {
                             ForEach(playlists, id: \.self) { playlist in
                                 Button {
+                                    onSelect(playlist, false)
                                     withAnimation {
                                         use = false
                                     }
-                                    onSelect(playlist, false)
                                 } label: {
                                     SongTile(image: playlist.cover?.image() ?? noImage, artistVisible: false, track: playlist.name, shadow: true, gradient: true, destination: .plSelection)
                                 }
@@ -61,10 +61,10 @@ struct PlaylistSelectionView: View {
 
                     if canCreate {
                         Button {
+                            onSelect(nil, true)
                             withAnimation {
                                 use = false
                             }
-                            onSelect(nil, true)
                         } label: {
                             ZStack {
                                 RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))

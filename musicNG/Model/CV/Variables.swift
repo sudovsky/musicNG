@@ -69,6 +69,8 @@ class PlaylistCoordinator: ObservableObject {
 class PlaylistSelectionCoordinator: ObservableObject {
 
     @Published var needShowSelection = false
+    var playlistFromMove: Playlist? = nil
+    var fileToMove: FileData? = nil
 
     static var shared = PlaylistSelectionCoordinator()
     
