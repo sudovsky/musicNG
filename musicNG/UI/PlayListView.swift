@@ -23,6 +23,8 @@ public struct PlayListView: View {
     @State private var actionsVisible: Bool = true
 
     @State private var showListSelection: Bool = false
+    
+    @Binding var needUpdatePL: Bool
 
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -91,6 +93,19 @@ public struct PlayListView: View {
         .onReceive(playlistSelectionCoordinator.$needShowSelection) { plist in
             showListSelection = plist
         }
+        .onChange(of: needUpdatePL) { newValue in
+            if !newValue { return }
+            
+            if currentFrame == 0 {
+                needUpdatePL = false
+                return
+            }
+            
+            _ = Playlist.getAll() { newLists in
+                playlists = newLists
+            }
+            needUpdatePL = false
+        }
     }
     
     func prepareData() -> some View {
@@ -142,6 +157,6 @@ public struct PlayListView: View {
 }
 
 #Preview {
-    PlayListView()
+    PlayListView(needUpdatePL: .constant(false))
 }
 
