@@ -71,26 +71,20 @@ struct SongListView: View {
             Color.back
         }
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
-        .navigationBarHidden(true)
         .onAppear {
             if fileList.isEmpty {
                 fileList = playlist?.getDownloads(readMetadata: true) ?? [FileData]()
             }
         }
-        .onDisappear {
-            if plist.currentPlaylist != nil {
-                PlaylistCoordinator.shared.currentPlaylist = nil
-            }
-        }
         .highPriorityGesture(
-            DragGesture(minimumDistance: 100)
+            DragGesture(minimumDistance: 50)
                 .onEnded({ val in
                     let distX = val.location.x - val.startLocation.x
                     let disty = val.location.y - val.startLocation.y
                     
                     if abs(distX) > abs(disty) {
                         withAnimation {
-                            playlist = nil
+                            PlaylistCoordinator.shared.currentPlaylist = nil
                         }
                     }
                 })

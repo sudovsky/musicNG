@@ -56,8 +56,9 @@ struct PlaylistSelectionView: View {
                             }
                             .id(UUID())
                         }
+                        .padding([.horizontal, .bottom], 16)
                     }
-                    .padding([.horizontal, .bottom], 16)
+                    .padding(.bottom, 16)
 
                     if canCreate {
                         Button {
@@ -83,6 +84,7 @@ struct PlaylistSelectionView: View {
                 .frame(maxHeight: 600)
                 .background(Color.back)
                 .cornerRadius(10)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
                 .padding()
                 .shadowed()
             }

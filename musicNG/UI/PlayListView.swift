@@ -53,7 +53,7 @@ public struct PlayListView: View {
                         .opacity(visiblePlaylist == nil ? 1 : 0)
                         .scaleEffect(visiblePlaylist == nil ? 1 : 0.9)
                 if visiblePlaylist != nil {
-                        SongListView(playlist: $visiblePlaylist)
+                    SongListView(playlist: $visiblePlaylist)
                         .transition(.move(edge: .trailing).combined(with: .opacity))                    }
                     SettingsView()
                         .opacity(currentFrame == 2 ? 1 : 0)
