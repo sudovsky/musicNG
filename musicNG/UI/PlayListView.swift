@@ -48,12 +48,12 @@ public struct PlayListView: View {
                 }
                 
                 ZStack {
-                    PlayListGrid(playlists: playlists)
-                        .opacity(visiblePlaylist == nil ? 1 : 0)
-                    if visiblePlaylist != nil {
+                    if visiblePlaylist == nil {
+                        PlayListGrid(playlists: playlists)
+                            .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                    } else {
                         SongListView(playlist: $visiblePlaylist)
-                            .opacity(visiblePlaylist != nil ? 1 : 0)
-                    }
+                        .transition(.move(edge: .trailing).combined(with: .opacity))                    }
                     SettingsView()
                         .opacity(currentFrame == 2 ? 1 : 0)
                 }
@@ -90,7 +90,6 @@ public struct PlayListView: View {
         .onReceive(playlistSelectionCoordinator.$needShowSelection) { plist in
             showListSelection = plist
         }
-
     }
     
     func prepareData() -> some View {
