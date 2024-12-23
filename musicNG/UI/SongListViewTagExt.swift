@@ -117,7 +117,7 @@ extension SongListView {
         
         currentFile = nil
         
-        playlist.updateDownloads()
+        playlist?.updateDownloads()
         viewUpdater.reloadView()
     }
     

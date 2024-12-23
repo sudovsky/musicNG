@@ -14,10 +14,9 @@ struct SongListView: View {
     @ObservedObject var viewUpdater = ViewUpdater()
     @ObservedObject var plist = PlaylistCoordinator.shared
 
-    var playlist: Playlist = Playlist()
+    @Binding var playlist: Playlist?
     @State var fileList: [FileData] = []
     
-    @State private var firstAppear = true
     @State var showAlert = false
     @State var importing = false
     @State var alertText: String = ""
@@ -40,7 +39,9 @@ struct SongListView: View {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     ForEach(fileList, id: \.self) { file in
                         Button {
-                            Variables.shared.currentPlaylist = playlist
+                            guard let pl = playlist else { return }
+                            
+                            Variables.shared.currentPlaylist = pl
                             Variables.shared.songList = fileList
                             Variables.shared.currentSong = file
                             
@@ -63,25 +64,17 @@ struct SongListView: View {
                 }.padding(16)
             }
 
-            if plist.currentPlaylist == nil, !firstAppear {
-                EmptyView()
-                    .onAppear {
-                        //withAnimation {
-                            dismiss()
-                        //}
-                    }
-            }
-            
             ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))
 
+        }
+        .background {
+            Color.back
         }
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
         .navigationBarHidden(true)
         .onAppear {
-            plist.currentPlaylist = playlist
-            firstAppear = false
             if fileList.isEmpty {
-                fileList = playlist.getDownloads(readMetadata: true)
+                fileList = playlist?.getDownloads(readMetadata: true) ?? [FileData]()
             }
         }
         .onDisappear {
@@ -89,10 +82,23 @@ struct SongListView: View {
                 PlaylistCoordinator.shared.currentPlaylist = nil
             }
         }
+        .highPriorityGesture(
+            DragGesture(minimumDistance: 100)
+                .onEnded({ val in
+                    let distX = val.location.x - val.startLocation.x
+                    let disty = val.location.y - val.startLocation.y
+                    
+                    if abs(distX) > abs(disty) {
+                        withAnimation {
+                            playlist = nil
+                        }
+                    }
+                })
+        )
     }
     
 }
 
 #Preview {
-    SongListView(playlist: Playlist())
+    SongListView(playlist: .constant(Playlist()))
 }

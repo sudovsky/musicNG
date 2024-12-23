@@ -17,6 +17,7 @@ public struct PlayListView: View {
     @State private var currentFrame: Int = 0
     @State var playlists: [Playlist] = []
 
+    @State private var visiblePlaylist: Playlist? = nil
     @State private var backButtonVisible: Bool = false
     @State private var title: String = "Плейлисты"
     @State private var actionsVisible: Bool = true
@@ -48,6 +49,11 @@ public struct PlayListView: View {
                 
                 ZStack {
                     PlayListGrid(playlists: playlists)
+                        .opacity(visiblePlaylist == nil ? 1 : 0)
+                    if visiblePlaylist != nil {
+                        SongListView(playlist: $visiblePlaylist)
+                            .opacity(visiblePlaylist != nil ? 1 : 0)
+                    }
                     SettingsView()
                         .opacity(currentFrame == 2 ? 1 : 0)
                 }
@@ -78,6 +84,7 @@ public struct PlayListView: View {
             withAnimation {
                 backButtonVisible = (plist?.id != nil) && currentFrame == 1
                 title = plist?.name ?? "Плейлисты"
+                visiblePlaylist = plist
             }
         }
         .onReceive(playlistSelectionCoordinator.$needShowSelection) { plist in

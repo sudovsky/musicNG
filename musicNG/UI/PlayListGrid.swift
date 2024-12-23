@@ -18,20 +18,19 @@ struct PlayListGrid: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            NavigationView {
-                ScrollView {
-                    LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
-                        ForEach(playlists, id: \.self) { playlist in
-                            NavigationLink {
-                                SongListView(playlist: playlist)
-                            } label: {
-                                PlaylistTile(playlist: playlist, image: playlist.cover?.image() ?? noImage)
-                            }
+            ScrollView {
+                LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
+                    ForEach(playlists, id: \.self) { playlist in
+                        Button {
+                            PlaylistCoordinator.shared.currentPlaylist = playlist
+                        } label: {
+                            PlaylistTile(playlist: playlist, image: playlist.cover?.image() ?? noImage)
                         }
-                        .id(UUID())
-                        Color(.white)
-                    }.padding(16)
-                }
+                        .buttonStyle(GrowingButton())
+                    }
+                    .id(UUID())
+                    Color(.white)
+                }.padding(16)
             }
         }
         .onAppear {
