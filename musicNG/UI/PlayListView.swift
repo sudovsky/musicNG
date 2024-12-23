@@ -48,10 +48,11 @@ public struct PlayListView: View {
                 }
                 
                 ZStack {
-                    if visiblePlaylist == nil {
-                        PlayListGrid(playlists: playlists)
-                            .transition(.opacity.combined(with: .scale(scale: 0.9)))
-                    } else {
+                    
+                PlayListGrid(playlists: playlists)
+                        .opacity(visiblePlaylist == nil ? 1 : 0)
+                        .scaleEffect(visiblePlaylist == nil ? 1 : 0.9)
+                if visiblePlaylist != nil {
                         SongListView(playlist: $visiblePlaylist)
                         .transition(.move(edge: .trailing).combined(with: .opacity))                    }
                     SettingsView()
