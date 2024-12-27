@@ -60,7 +60,9 @@ class Playlists: ObservableObject {
     }
 
     func reloadView() {
-        objectWillChange.send()
+        DispatchQueue.main.async {
+            self.objectWillChange.send()
+        }
     }
 }
 

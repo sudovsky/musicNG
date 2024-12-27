@@ -58,6 +58,8 @@ extension PlayListGrid {
         //TODO: - view updation not working
         playlists.reloadView()
         
+        currentPL = nil
+        
     }
     
 
@@ -93,10 +95,14 @@ extension PlayListGrid {
 
         //TODO: - view updation not working
         playlists.reloadView()
+        
+        currentPL = nil
     }
     
     func shareFile() {
+        guard let playlist = currentPL else { return }
         
+        share(items: playlist.getDownloads().map { $0.fileURL() } )
     }
     
     func deleteFile() {
