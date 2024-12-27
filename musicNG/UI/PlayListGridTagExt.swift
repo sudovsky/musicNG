@@ -71,6 +71,29 @@ extension PlayListGrid {
         
         showAlert.toggle()
     }
+
+    func updateImage(imageData: Data) {
+        guard let playlistToChangeImage = currentPL else { return }
+        
+        let coversUrl = FileManager.covers
+
+        let fileURL = coversUrl.appendingPathComponent(playlistToChangeImage.id).appendingPathExtension("jpg")
+        do {
+            try imageData.write(to: fileURL, options: .atomic)
+        } catch let error {
+            print(error.localizedDescription)
+//            error.localizedDescription.showStandartOkMessage()
+        }
+        
+        playlistToChangeImage.cover = imageData
+        
+        playlists.all.first(where: { $0.id == playlistToChangeImage.id })?.cover = imageData
+        
+        playlists.save()
+
+        //TODO: - view updation not working
+        playlists.reloadView()
+    }
     
     func shareFile() {
         

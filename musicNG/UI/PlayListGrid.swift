@@ -52,6 +52,9 @@ struct PlayListGrid: View {
                     Color(.white)
                 }.padding(16)
             }
+            
+            ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))
+
         }
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
         .onAppear {

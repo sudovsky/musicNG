@@ -17,7 +17,7 @@ struct PlaylistTile: View {
             image
                 .resizable()
                 .scaledToFill()
-                .frame(minWidth: 0, maxWidth: .infinity)
+                .tileImageFrame(destination: .playlist)
                 .aspectRatio(1, contentMode: .fill)
                 .clipped()
                 .cornerRadius(commonCornerRadius)
@@ -30,7 +30,7 @@ struct PlaylistTile: View {
             image
                 .resizable()
                 .scaledToFill()
-                .frame(minWidth: 0, maxWidth: .infinity)
+                .tileImageFrame(destination: .playlist)
                 .aspectRatio(1, contentMode: .fill)
                 .clipped()
                 .cornerRadius(commonCornerRadius)
