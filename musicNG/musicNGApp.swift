@@ -11,12 +11,11 @@ import SwiftUI
 struct musicNGApp: App {
     @Environment(\.scenePhase) private var scenePhase
     
-    @State private var needUpdatePL: Bool = false
     @State var firstRun = true
     
     var body: some Scene {
         WindowGroup {
-            PlayListView(needUpdatePL: $needUpdatePL)
+            PlayListView()
                 .onAppear {
                     if FilesMetaDB.data.isEmpty {
                         FilesMetaDB.restore()
@@ -37,7 +36,7 @@ struct musicNGApp: App {
                     return
                 }
                 
-                needUpdatePL = true
+                Playlists.shared.reload()
             default: break
             }
         }

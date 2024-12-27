@@ -17,9 +17,9 @@ extension PlayListView {
             let title = file.title ?? file.name
             let artist = file.artist ?? "Unknown"
             list.name = "\(artist) - \(title)"
-            list.sortKey = playlists.count
-            playlists.append(list)
-            try? playlists.save(FileManager.playlistsSettings)
+            list.sortKey = playlists.all.count
+            playlists.all.append(list)
+            playlists.save()
             
             _ = FileManager.default.urlForPlaylistSettings(name: list.name)
             
@@ -52,6 +52,8 @@ extension PlayListView {
             
             MediaPlayer.shared.originalPlaylist.removeAll(where: {$0.path == file.path})
             MediaPlayer.shared.playlist.removeAll(where: {$0.path == file.path})
+            
+            playlists.reloadView()
         } catch {
             //TODO: - сделать метод показа сообщения
             //            error.localizedDescription.showStandartOkMessage(title: "Ошибка перемещения файла")

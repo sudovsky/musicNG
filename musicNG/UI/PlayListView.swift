@@ -12,10 +12,10 @@ public struct PlayListView: View {
     @ObservedObject var variables = Variables.shared
     @ObservedObject var playlistCoordinator = PlaylistCoordinator.shared
     @ObservedObject var playlistSelectionCoordinator = PlaylistSelectionCoordinator.shared
+    @ObservedObject var playlists = Playlists.shared
 
     @State private var showingDetail: Bool = false
     @State private var currentFrame: Int = 0
-    @State var playlists: [Playlist] = []
 
     @State private var visiblePlaylist: Playlist? = nil
     @State private var backButtonVisible: Bool = false
@@ -23,8 +23,6 @@ public struct PlayListView: View {
     @State private var actionsVisible: Bool = true
 
     @State private var showListSelection: Bool = false
-    
-    @Binding var needUpdatePL: Bool
 
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -51,7 +49,7 @@ public struct PlayListView: View {
                 
                 ZStack {
                     
-                PlayListGrid(playlists: playlists)
+                    PlayListGrid()
                         .opacity(visiblePlaylist == nil ? 1 : 0)
                         .scaleEffect(visiblePlaylist == nil ? 1 : 0.9)
                 if visiblePlaylist != nil {
@@ -93,28 +91,14 @@ public struct PlayListView: View {
         .onReceive(playlistSelectionCoordinator.$needShowSelection) { plist in
             showListSelection = plist
         }
-        .onChange(of: needUpdatePL) { newValue in
-            if !newValue { return }
-            
-            if currentFrame == 0 {
-                needUpdatePL = false
-                return
-            }
-            
-            _ = Playlist.getAll() { newLists in
-                playlists = newLists
-            }
-            needUpdatePL = false
-        }
     }
     
     func prepareData() -> some View {
         Spacer()
             .onAppear {
-                if !playlists.isEmpty { return }
+                if !playlists.all.isEmpty { return }
                 
-                _ = Playlist.getAll() { newLists in
-                    playlists = newLists
+                playlists.reload { _ in
                     currentFrame = 1
                 }
             }
@@ -157,6 +141,6 @@ public struct PlayListView: View {
 }
 
 #Preview {
-    PlayListView(needUpdatePL: .constant(false))
+    PlayListView()
 }
 

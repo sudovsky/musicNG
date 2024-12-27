@@ -19,6 +19,50 @@ extension EnvironmentValues {
 //    static let defaultValue: Binding<FileData?> = .constant(nil)
 //}
 
+class Playlists: ObservableObject {
+
+    @Published var all: [Playlist] = []
+
+    static var shared = Playlists()
+    
+    private init() { }
+    
+    func reload(updatedResult: (([Playlist]) -> Void)? = nil) {
+        _ = Playlist.getAll() { newLists in
+            self.all = newLists
+            updatedResult?(newLists)
+        }
+    }
+
+    func save() {
+        DispatchQueue.global().async {
+            try? self.all.save(FileManager.playlistsSettings)
+
+            self.updateGlobalFiles()
+        }
+    }
+    
+    func updateGlobalFiles() {
+        let currentDirPath = FileManager.globalPlaylistsDir
+
+        if FileManager.default.fileExists(atPath: currentDirPath.path) {
+            try? FileManager.default.removeItem(at: currentDirPath)
+            try? FileManager.default.createDirectory(at: currentDirPath, withIntermediateDirectories: true)
+        }
+
+        for list in all {
+            if let cover = list.cover {
+                try? cover.write(to: currentDirPath.appendingPathComponent(list.name).appendingPathExtension("jpg"))
+            }
+        }
+
+        try? self.all.save(FileManager.globalPlaylistsSettingsFile)
+    }
+
+    func reloadView() {
+        objectWillChange.send()
+    }
+}
 
 class Variables: ObservableObject {
     @Published var currentSong: FileData?

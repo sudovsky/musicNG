@@ -76,19 +76,19 @@ struct SongListView: View {
                 fileList = playlist?.getDownloads(readMetadata: true) ?? [FileData]()
             }
         }
-        .highPriorityGesture(
-            DragGesture(minimumDistance: 50)
-                .onEnded({ val in
-                    let distX = val.location.x - val.startLocation.x
-                    let disty = val.location.y - val.startLocation.y
-                    
-                    if abs(distX) > abs(disty) {
-                        withAnimation {
-                            PlaylistCoordinator.shared.currentPlaylist = nil
-                        }
-                    }
-                })
-        )
+//        .highPriorityGesture(
+//            DragGesture(minimumDistance: 50)
+//                .onEnded({ val in
+//                    let distX = val.location.x - val.startLocation.x
+//                    let disty = val.location.y - val.startLocation.y
+//                    
+//                    if abs(distX) > abs(disty) {
+//                        withAnimation {
+//                            PlaylistCoordinator.shared.currentPlaylist = nil
+//                        }
+//                    }
+//                })
+//        )
     }
     
 }
