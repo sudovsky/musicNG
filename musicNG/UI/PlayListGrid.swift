@@ -10,8 +10,9 @@ import SwiftUI
 struct PlayListGrid: View {
 
     @ObservedObject var playlists = Playlists.shared
-
     @ObservedObject var viewUpdater = ViewUpdater()
+
+    @State var pls: [Playlist] = []
 
     @State var currentTag = 0
     @State var currentPL: Playlist? = nil
@@ -23,6 +24,7 @@ struct PlayListGrid: View {
     @State var title: String = ""
     @State var subtitle: String = ""
     @State var placeholder: String = ""
+    @State var reorder = true
 
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -33,7 +35,7 @@ struct PlayListGrid: View {
         VStack(spacing: 0) {
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
-                    ForEach(playlists.all, id: \.self) { playlist in
+                    ReorderableForEach($pls, allowReordering: $reorder) { playlist, isDragged in
                         Button {
                             PlaylistCoordinator.shared.currentPlaylist = playlist
                         } label: {
@@ -47,6 +49,21 @@ struct PlayListGrid: View {
                                 }
                         }
                         .buttonStyle(GrowingButton())
+                        .overlay(isDragged ? Color.white.opacity(0.6) : Color.clear)
+                    }
+                    onDone: {
+                        DispatchQueue.global().async {
+                            var index = 0
+                            pls.forEach { pl in
+                                pl.sortKey = index
+                                index += 1
+                            }
+                            
+                            DispatchQueue.main.async {
+                                playlists.all = pls
+                                playlists.save()
+                            }
+                        }
                     }
                     .id(UUID())
                     Color(.white)
@@ -56,6 +73,9 @@ struct PlayListGrid: View {
             ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))
 
         }
+        .onReceive(playlists.$all, perform: { value in
+            pls = value
+        })
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
         .onAppear {
             
