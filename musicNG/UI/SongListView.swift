@@ -28,6 +28,8 @@ struct SongListView: View {
     @State var currentTag = 0
     @State var currentFile: FileData? = nil
 
+    @State var reorder = true
+
     let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
@@ -37,7 +39,7 @@ struct SongListView: View {
         VStack(spacing: 0) {
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
-                    ForEach(fileList, id: \.self) { file in
+                    ReorderableForEach($fileList, allowReordering: $reorder) { file, isDragged in
                         Button {
                             guard let pl = playlist else { return }
                             
@@ -59,6 +61,19 @@ struct SongListView: View {
                                 }
                         }
                         .buttonStyle(GrowingButton())
+                        .overlay(isDragged ? Color.white.opacity(0.6) : Color.clear)
+                    } onDone: {
+                        DispatchQueue.global().async {
+                            var index = 0
+                            for file in fileList {
+                                file.customSortKey = index
+                                index += 1
+                            }
+                            
+                            guard let name = playlist?.name else { return }
+                            
+                            try? fileList.save(FileManager.default.urlForPlaylistSettings(name: name))
+                        }
                     }
                     Color(.back)
                 }.padding(16)
