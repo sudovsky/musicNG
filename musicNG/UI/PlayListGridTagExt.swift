@@ -106,7 +106,26 @@ extension PlayListGrid {
     }
     
     func deleteFile() {
-        
+        guard let playlist = currentPL else { return }
+
+        let fileURL = FileManager.default.urlForPlaylist(name: playlist.name)
+        do {
+            if playlist.cover != nil {
+                let coverUrl = FileManager.covers
+                let coverFileURL = coverUrl.appendingPathComponent(playlist.id).appendingPathExtension("jpg")
+                try FileManager.default.removeItem(at: coverFileURL)
+            }
+        } catch {
+            print(error)
+        }
+
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+            playlists.all.removeAll(where: { $0.id == playlist.id })
+            playlists.save()
+        } catch {
+            print(error)
+        }
     }
 
 }
