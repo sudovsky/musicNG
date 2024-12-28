@@ -119,6 +119,18 @@ extension PlayListGrid {
             print(error)
         }
 
+        let paths = playlist.getDownloads().map(\.path)
+        DispatchQueue.global().async {
+            for path in paths {
+                MediaPlayer.shared.originalPlaylist.removeAll(where: {$0.path == path})
+                MediaPlayer.shared.playlist.removeAll(where: {$0.path == path})
+
+                FilesMetaDB.removeData(path: path)
+            }
+            
+            FilesMetaDB.save()
+        }
+        
         do {
             try FileManager.default.removeItem(at: fileURL)
             playlists.all.removeAll(where: { $0.id == playlist.id })
