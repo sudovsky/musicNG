@@ -119,15 +119,11 @@ extension PlayListGrid {
             print(error)
         }
 
-        let paths = playlist.getDownloads().map(\.path)
-        DispatchQueue.global().async {
-            for path in paths {
-                MediaPlayer.shared.originalPlaylist.removeAll(where: {$0.path == path})
-                MediaPlayer.shared.playlist.removeAll(where: {$0.path == path})
+        FilesMetaDB.data.removeAll(where: {$0.path.starts(with: playlist.name + "/")})
+        MediaPlayer.shared.originalPlaylist.removeAll(where: {$0.path.starts(with: playlist.name + "/")})
+        MediaPlayer.shared.playlist.removeAll(where: {$0.path.starts(with: playlist.name + "/")})
 
-                FilesMetaDB.removeData(path: path)
-            }
-            
+        DispatchQueue.global().async {
             FilesMetaDB.save()
         }
         
