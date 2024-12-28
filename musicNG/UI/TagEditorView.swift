@@ -159,11 +159,15 @@ struct TagEditorView: View {
 
     func updateImage(imageData: Data) {
         for file in files {
+            if !file.isChecked { continue }
+            
             file.fileData.updateCover(imageData: imageData) { newData in
                 file.fileData.saveData(data: newData)
                 file.fileData.updateTags()
             }
         }
+        
+        Playlists.shared.reload()
         
         DispatchQueue.global().async {
             FilesMetaDB.save()
