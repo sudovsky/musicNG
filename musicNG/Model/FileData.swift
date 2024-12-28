@@ -5,7 +5,7 @@
 //  Created by Max Sudovsky on 10.11.2024.
 //
 
-import SwiftUI
+import Foundation
 
 class FileData: Hashable, Codable, Identifiable {
     
@@ -69,34 +69,6 @@ class FileData: Hashable, Codable, Identifiable {
         
     }
     
-    func updatePeaks(slowOnly: Bool = false) {
-        MediaPlayer.shared.readBuffer(fileURL(), notify: false) { fast, data in
-            if fast {
-                if slowOnly { return }
-                
-                self.fastPeaks = data
-                
-                if Variables.shared.currentSong?.id == self.id {
-                    withAnimation {
-                        Variables.shared.currentSong = self
-                    }
-                }
-            } else {
-                self.slowPeaks = data
-
-                if Variables.shared.currentSong?.id == self.id {
-                    withAnimation {
-                        Variables.shared.currentSong = self
-                    }
-                }
-
-                if let dataLine = FilesMetaDB.data.first(where: {$0.path == self.path}) {
-                    dataLine.peaks = data
-                }
-            }
-        }
-    }
-
     func getData(completion: @escaping (Data?) -> Void = { _ in }) {
         if isDirectory {
             return
@@ -167,6 +139,67 @@ class FileData: Hashable, Codable, Identifiable {
         }
     }
     
+    func getTagFromName(sourceTemplate: String, tagName: String) -> String? {
+        guard let url = URL(string: name.trim().lowercased()), url.pathExtension == "mp3" else { return nil }
+        
+        var template = sourceTemplate
+        guard var tagRange = template.range(of: tagName) else { return nil }
+        var firstPart = String(template[..<tagRange.lowerBound])
+        
+        while let fp = firstTagFromString(source: firstPart) {
+            let newFp = getTagFromName(sourceTemplate: template, tagName: fp) ?? ""
+            template = template.replacingOccurrences(of: fp, with: newFp)
+            tagRange = template.range(of: tagName, options: .widthInsensitive) ?? tagRange
+            firstPart = String(template[..<tagRange.lowerBound])
+        }
+        
+        var stringBeforeNext = ""
+        for i in template[tagRange.upperBound...] {
+            if i == "%" { break }
+            stringBeforeNext += String(i)
+        }
+
+        var cname = name
+        let crange = cname.range(of: cname)!
+        if crange.upperBound < tagRange.lowerBound {
+            return nil
+        }
+
+        if String(cname[..<tagRange.lowerBound]) == firstPart {
+            cname = String(cname[tagRange.lowerBound...])
+        } else {
+            return nil
+        }
+        
+        guard let nextStringRange = cname.range(of: stringBeforeNext) else { return cname }
+
+        let finalString = String(cname[..<nextStringRange.lowerBound])
+        
+        return finalString
+    }
+
+    func firstTagFromString(source: String) -> String? {
+        if !source.contains(where: {$0 == "%"}) {
+            return nil
+        }
+        
+        var result = ""
+        var needUpdate = false
+        for i in source {
+            if needUpdate { result += String(i) }
+            
+            if i == "%" {
+                if needUpdate {
+                    break
+                } else {
+                    result += String(i)
+                    needUpdate = true
+                }
+            }
+        }
+        
+        return result.count > 2 ? result : nil
+    }
 
     static func == (lhs: FileData, rhs: FileData) -> Bool {
         lhs.id == rhs.id || lhs.path == rhs.path

@@ -15,6 +15,7 @@ public struct TitleView: View {
     @Binding var title: String
     @Binding var actionsVisible: Bool
 
+    @State var backButtonImage: Image? = nil
     @State var actionImage: Image? = nil
     @State var secondActionImage: Image? = nil
 
@@ -28,7 +29,7 @@ public struct TitleView: View {
                 Button {
                     backAction()
                 } label: {
-                    Image(systemName: "chevron.left")
+                    (backButtonImage ?? Image(systemName: "chevron.left"))
                         .titleButtonImage(.leading)
                 }
                 .frame(width: 44, alignment: .center)

@@ -12,7 +12,7 @@ extension PlayListGrid {
     func updateTag() {
         switch currentTag {
         case 0:
-            break
+            showingTagEditor = true
         case 1:
             updateTitle()
         case 2:

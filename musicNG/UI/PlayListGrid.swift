@@ -26,6 +26,8 @@ struct PlayListGrid: View {
     @State var placeholder: String = ""
     @State var reorder = true
 
+    @State var showingTagEditor: Bool = false
+
     let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
@@ -73,6 +75,7 @@ struct PlayListGrid: View {
             ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))
 
         }
+        .tagEditorFrame(for: $currentPL, isVisible: $showingTagEditor)
         .onReceive(playlists.$all, perform: { value in
             pls = value
         })
