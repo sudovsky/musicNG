@@ -25,7 +25,7 @@ struct TagEditorView: View {
                       actionsVisible: .constant(true),
                       backButtonImage: Image(.close),
                       actionImage: Image(systemName: "photo.badge.plus")) {
-                
+                importing.toggle()
             } backAction: {
                 dismiss()
             }
@@ -124,10 +124,12 @@ struct TagEditorView: View {
         updateFiles()
         
         for file in files {
-            if let artist = file.fileData.getTagFromName(sourceTemplate: mask, tagName: "%artist%")?.capitalized {
+            file.fileData.artist = nil
+            file.fileData.title = nil
+            if let artist = file.fileData.getTagFromName(sourceTemplate: mask.lowercased(), tagName: "%artist%")?.capitalized {
                 file.fileData.artist = artist
             }
-            if let title = file.fileData.getTagFromName(sourceTemplate: mask, tagName: "%title%")?.capitalized {
+            if let title = file.fileData.getTagFromName(sourceTemplate: mask.lowercased(), tagName: "%title%")?.capitalized {
                 file.fileData.title = title
             }
         }

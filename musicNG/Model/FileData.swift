@@ -140,67 +140,87 @@ class FileData: Hashable, Codable, Identifiable {
     }
     
     func getTagFromName(sourceTemplate: String, tagName: String) -> String? {
-        guard let url = URL(string: name.trim().lowercased()), url.pathExtension == "mp3" else { return nil }
+        var result = name.lowercased()
+
+        var maskParts = getArrayOfTags(from: sourceTemplate.lowercased())
         
-        var template = sourceTemplate
-        guard var tagRange = template.range(of: tagName) else { return nil }
-        var firstPart = String(template[..<tagRange.lowerBound])
-        
-        while let fp = firstTagFromString(source: firstPart) {
-            let newFp = getTagFromName(sourceTemplate: template, tagName: fp) ?? ""
-            template = template.replacingOccurrences(of: fp, with: newFp)
-            tagRange = template.range(of: tagName, options: .widthInsensitive) ?? tagRange
-            firstPart = String(template[..<tagRange.lowerBound])
+        if let firstPart = maskParts.first, !firstPart.hasPrefix("%") {
+            if result.hasPrefix(firstPart) {
+                result = result.stringByReplacingFirstOccurrenceOfString(target: firstPart, withString: "")
+            }
+            maskParts.removeFirst()
         }
         
-        var stringBeforeNext = ""
-        for i in template[tagRange.upperBound...] {
-            if i == "%" { break }
-            stringBeforeNext += String(i)
+        if let lastPart = maskParts.last, !lastPart.hasPrefix("%") {
+            if result.hasSuffix(lastPart) {
+                result.removeLast(lastPart.count)
+            }
+            maskParts.removeLast()
+        }
+        
+        var preRes = [String:String]()
+        
+        //здесь по идее первый всегда тэг
+        while let firstPart = maskParts.first {
+            maskParts.removeFirst()
+
+            if maskParts.isEmpty {
+                if !result.isEmpty {
+                    preRes[firstPart] = result
+                }
+                break
+            }
+            
+            var tempStr = ""
+            let secondPart = maskParts.first!
+            maskParts.removeFirst()
+            while result.count > 0, !result.hasPrefix(secondPart) {
+                tempStr += String(result.removeFirst())
+            }
+            
+            if result.hasPrefix(secondPart) {
+                result.removeFirst(secondPart.count)
+            }
+            
+            if !tempStr.isEmpty {
+                preRes[firstPart] = tempStr
+            }
         }
 
-        var cname = name
-        let crange = cname.range(of: cname)!
-        if crange.upperBound < tagRange.lowerBound {
-            return nil
-        }
-
-        if String(cname[..<tagRange.lowerBound]) == firstPart {
-            cname = String(cname[tagRange.lowerBound...])
-        } else {
-            return nil
-        }
-        
-        guard let nextStringRange = cname.range(of: stringBeforeNext) else { return cname }
-
-        let finalString = String(cname[..<nextStringRange.lowerBound])
-        
-        return finalString
+        return preRes[tagName]
     }
 
-    func firstTagFromString(source: String) -> String? {
-        if !source.contains(where: {$0 == "%"}) {
-            return nil
+    func getArrayOfTags(from string: String) -> [String] {
+        let percentCount = string.count(where: { $0 == "%"})
+        if  percentCount == 0 || percentCount % 2 != 0 {
+            return []
         }
         
-        var result = ""
-        var needUpdate = false
-        for i in source {
-            if needUpdate { result += String(i) }
-            
-            if i == "%" {
-                if needUpdate {
-                    break
+        var result = [String]()
+        var currentStr = ""
+        var insideTag = false
+
+        for char in string {
+            if char == "%" {
+                if insideTag {
+                    result.append("%" + currentStr + "%")
                 } else {
-                    result += String(i)
-                    needUpdate = true
+                    result.append(currentStr)
                 }
+                currentStr = ""
+                insideTag.toggle()
+            } else {
+                currentStr.append(char)
             }
         }
         
-        return result.count > 2 ? result : nil
+        if !currentStr.isEmpty {
+            result.append(currentStr)
+        }
+        
+        return result
     }
-
+    
     static func == (lhs: FileData, rhs: FileData) -> Bool {
         lhs.id == rhs.id || lhs.path == rhs.path
     }
