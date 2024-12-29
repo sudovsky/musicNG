@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct PlayListView: View {
+public struct MainView: View {
 
     @ObservedObject var variables = Variables.shared
     @ObservedObject var playlistCoordinator = PlaylistCoordinator.shared
@@ -149,6 +149,6 @@ public struct PlayListView: View {
 }
 
 #Preview {
-    PlayListView()
+    MainView()
 }
 

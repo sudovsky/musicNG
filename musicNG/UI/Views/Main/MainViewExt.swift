@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension PlayListView {
+extension MainView {
     
     func moveFile(source: Playlist, destination: Playlist?, file: FileData) {
         

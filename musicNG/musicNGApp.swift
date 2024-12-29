@@ -15,7 +15,7 @@ struct musicNGApp: App {
     
     var body: some Scene {
         WindowGroup {
-            PlayListView()
+            MainView()
                 .onAppear {
                     if FilesMetaDB.data.isEmpty {
                         FilesMetaDB.restore()
