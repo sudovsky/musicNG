@@ -24,6 +24,13 @@ public struct PlayListView: View {
 
     @State private var showListSelection: Bool = false
 
+    @State var showAlert = false
+    @State var alertText: String = ""
+
+    @State var alertTitle: String = "Новый плейлист"
+    @State var alertSubtitle: String = "Введите название"
+    @State var alertPlaceholder: String = "Название"
+
     let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
@@ -42,7 +49,7 @@ public struct PlayListView: View {
                           secondActionImage: Image(.plus)) {
                     print(1);
                 } secondAction: {
-                    print(2)
+                    showAlert.toggle()
                 } backAction: {
                     playlistCoordinator.currentPlaylist = nil
                 }
@@ -71,6 +78,7 @@ public struct PlayListView: View {
         .background {
             Color.back
         }
+        .alertFrame(showingAlert: $showAlert, text: $alertText, title: $alertTitle, subtitle: $alertSubtitle, placeholder: $alertPlaceholder, onDone: createPlaylist)
         .playListSelection(visible: $showListSelection) { pl, isNew in
             guard let fileToMove = PlaylistSelectionCoordinator.shared.fileToMove, let playlistFromMove = PlaylistSelectionCoordinator.shared.playlistFromMove else { return }
             

@@ -63,4 +63,20 @@ extension PlayListView {
         
     }
     
+    func createPlaylist(_ name: String) {
+        let str = name.trim()
+        
+        let list = Playlist()
+        list.name = str.isEmpty ? "Untitled" : str
+        list.sortKey = Playlists.shared.all.count
+        Playlists.shared.all.append(list)
+
+        _ = FileManager.default.urlForPlaylist(name: list.name)
+        
+        Playlists.shared.save()
+        
+        Variables.shared.currentPlaylist = list
+        PlaylistCoordinator.shared.currentPlaylist = list
+    }
+    
 }
