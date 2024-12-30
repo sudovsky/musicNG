@@ -22,6 +22,9 @@ let mcArtistFont: Font = .custom("Ampero-Regular", size: 21) //.system(size: 18,
 let csTrackFont: Font = .custom("avanti", size: 19) //.system(size: 19, weight: .regular)
 let csArtistFont: Font = .custom("Ampero-Regular", size: 18) //.system(size: 18, weight: .regular)
 
+let remoteTrackFont: Font = .custom("avanti", size: 18) //.system(size: 19, weight: .regular)
+let remoteArtistFont: Font = .custom("Ampero-Regular", size: 18) //.system(size: 18, weight: .regular)
+
 let noImage = Image("NoImage")
     .resizable()
 

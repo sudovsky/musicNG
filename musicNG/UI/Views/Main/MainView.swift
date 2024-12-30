@@ -23,6 +23,7 @@ public struct MainView: View {
     @State private var actionsVisible: Bool = true
 
     @State private var showListSelection: Bool = false
+    @State private var showRemote: Bool = false
 
     @State var showAlert = false
     @State var alertText: String = ""
@@ -47,7 +48,7 @@ public struct MainView: View {
                           actionsVisible: $actionsVisible,
                           actionImage: Image(systemName: "network"),
                           secondActionImage: Image(.plus)) {
-                    print(1);
+                    showRemote.toggle()
                 } secondAction: {
                     showAlert.toggle()
                 } backAction: {
@@ -87,6 +88,9 @@ public struct MainView: View {
             PlaylistSelectionCoordinator.shared.fileToMove = nil
             PlaylistSelectionCoordinator.shared.playlistFromMove = nil
             
+        }
+        .fullScreenCover(isPresented: $showRemote) {
+            RemoteView()
         }
         .navigationBarHidden(true)
         .onReceive(playlistCoordinator.$currentPlaylist) { plist in

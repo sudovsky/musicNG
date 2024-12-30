@@ -36,6 +36,17 @@ class FileData: Hashable, Codable, Identifiable {
 
     init() { }
     
+    init(name: String, path: String, createdDate: Date? = nil, modifiedDate: Date? = nil, isDirectory: Bool = false, isHidden: Bool = false, size: Int64? = nil, customSortKey: Int? = nil) {
+        self.name = name
+        self.path = path
+        self.createdDate = createdDate ?? Date()
+        self.modifiedDate = modifiedDate
+        self.isDirectory = isDirectory
+        self.isHidden = isHidden
+        self.size = size
+        self.customSortKey = customSortKey ?? 0
+    }
+    
     init(name: String, path: String, customSortKey: Int) {
         self.name = name
         self.path = path
@@ -219,6 +230,11 @@ class FileData: Hashable, Codable, Identifiable {
         }
         
         return result
+    }
+    
+    static func isProper(filename: String) -> Bool {
+        let components = filename.components(separatedBy: ".")
+        return standarts.contains(components.last?.uppercased() ?? "")
     }
     
     static func == (lhs: FileData, rhs: FileData) -> Bool {
