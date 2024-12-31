@@ -13,7 +13,8 @@ struct RemoteView: View {
     
     @State var title: String = "Обзор"
     @State var searchStr: String = ""
-    
+    @State var currentPath = ""
+
     @State var files = [FileData]()
 
     let client = SMBClient()
@@ -23,27 +24,55 @@ struct RemoteView: View {
             TitleView(backButtonVisible: .constant(true),
                       title: $title,
                       actionsVisible: .constant(true),
-                      backButtonImage: Image(.close),
+                      backButtonImage: nil,
                       actionImage: Image(.plus)) {
                 
             } backAction: {
-                dismiss()
+                withAnimation() {
+                    currentPath == "" ? dismiss() : goBack()
+                }
             }
             
             TextField("Поиск", text: $searchStr)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
             
-            RemoteListView(files: $files)
+            RemoteListView(files: $files) { selectedFile in
+                if selectedFile.isDirectory {
+                    withAnimation {
+                        title = selectedFile.name
+                        currentPath = currentPath + "/" + selectedFile.name
+                    }
+                }
+            }
         }
-        .onAppear {
-            client.updateClient()
-            client.listDirectory(path: "") { error, data in
+        .onChange(of: currentPath) { newValue in
+            client.listDirectory(path: currentPath) { error, data in
                 files = data?.filter({!$0.isHidden}).sorted(by: {
                     ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)
                     
                 }) ?? []
             }
+        }
+        .onAppear {
+            client.updateClient()
+            client.listDirectory(path: currentPath) { error, data in
+                files = data?.filter({!$0.isHidden}).sorted(by: {
+                    ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)
+                    
+                }) ?? []
+            }
+        }
+    }
+    
+    func goBack() {
+        let index = currentPath.lastIndex(where: {$0 == "/"})
+        currentPath = String(currentPath[..<index!])
+        
+        if let index = currentPath.lastIndex(of: "/") {
+            title = String(currentPath[index...].dropFirst())
+        } else {
+            title = "Обзор"
         }
     }
 }
