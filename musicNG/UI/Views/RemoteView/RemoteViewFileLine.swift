@@ -18,9 +18,13 @@ struct RemoteViewFileLine: View {
             VStack(spacing: 0) {
                 Text(title)
                     .font(remoteTrackFont)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
                 if let artist = artist {
                     Text(artist)
                         .font(remoteArtistFont)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .multilineTextAlignment(.leading)
                 }
             }
             

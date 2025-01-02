@@ -26,6 +26,8 @@ final class MediaPlayer {
     var shuffled: MPShuffleType = MPShuffleType(rawValue: Settings.shared.shuffleMode) ?? .off
     var repeated: MPRepeatType = MPRepeatType(rawValue: Settings.shared.repeatMode) ?? .all
     
+    var client: SMBClient? = nil
+    
     var paused = true {
         willSet {
             DispatchQueue.main.async {
@@ -98,7 +100,9 @@ final class MediaPlayer {
         play(file: file)
     }
     
-    func initPlayback(playlist: [FileData], index: Int = 0) {
+    func initPlayback(playlist: [FileData], index: Int = 0, client: SMBClient? = nil) {
+        self.client = client
+        
         originalPlaylist = playlist
         self.playlist = originalPlaylist
         
@@ -133,12 +137,14 @@ final class MediaPlayer {
         paused = false
         player?.pause()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            file.getData { data in
+            file.getData(client: self.client) { data in
                 if file.fileDownloaded {
                     self.playerItem = AVPlayerItem(url: file.fileURL())
                 } else {
+                    guard let data = data else { return }
+                    
                     let components = file.name.components(separatedBy: ".")
-                    let nurl = FileManager.default.createTempFile(data: data!, ext: components.last ?? "")
+                    let nurl = FileManager.default.createTempFile(data: data, ext: components.last ?? "")
                     self.playerItem = AVPlayerItem(url: nurl)
                 }
                 self.player = AVPlayer(playerItem: MediaPlayer.shared.playerItem)

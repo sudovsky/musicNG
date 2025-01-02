@@ -31,6 +31,8 @@ struct musicNGApp: App {
                 Settings.shared.save()
                 FilesMetaDB.save()
             case .active:
+                try? FileManager.default.removeItem(at: FileManager.temp)
+                
                 if firstRun {
                     firstRun = false
                     return

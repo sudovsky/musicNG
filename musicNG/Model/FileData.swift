@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AMSMB2
 
 class FileData: Hashable, Codable, Identifiable {
     
@@ -80,7 +81,7 @@ class FileData: Hashable, Codable, Identifiable {
         
     }
     
-    func getData(completion: @escaping (Data?) -> Void = { _ in }) {
+    func getData(client: SMBClient? = nil, completion: @escaping (Data?) -> Void = { _ in }) {
         if isDirectory {
             return
         }
@@ -91,11 +92,16 @@ class FileData: Hashable, Codable, Identifiable {
         }
 
         //TODO: - dowload file
-//        client.getFileData(path: path) { error, data in
-//            guard let data = data else { return }
-//            //self.saveData(data: data)
-//            completion(data)
-//        }
+        guard let client = client else {
+            completion(nil)
+            return
+        }
+        
+        client.getFileData(path: path) { error, data in
+            guard let data = data else { return }
+            //self.saveData(data: data)
+            completion(data)
+        }
     }
 
     func fileURL(needCreate: Bool = false) -> URL {
