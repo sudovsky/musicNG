@@ -10,11 +10,48 @@ import SwiftUI
 struct MusicControlView: View {
     
     @Environment(\.dismiss) var dismiss
-    
+    @Environment(\.verticalSizeClass) private var verticalSizeClass: UserInterfaceSizeClass?
+
     @ObservedObject var variables = Variables.shared
     @ObservedObject var pb = PlaybackCoordinator.shared
 
     var body: some View {
+        if verticalSizeClass == .compact {
+            HStack(spacing: 0) {
+                VinylView()
+                    .scaleEffect(0.85)
+                verticalPart()
+            }
+            .gesture(
+                DragGesture(minimumDistance: 20)
+                    .onEnded({ val in
+                        let distX = val.location.x - val.startLocation.x
+                        let disty = val.location.y - val.startLocation.y
+                        
+                        if abs(distX) < abs(disty), disty > 0 {
+                            dismiss()
+                        }
+                    })
+            )
+            .transition(.opacity.animation(.spring))
+        } else {
+            verticalPart()
+                .gesture(
+                    DragGesture(minimumDistance: 20)
+                        .onEnded({ val in
+                            let distX = val.location.x - val.startLocation.x
+                            let disty = val.location.y - val.startLocation.y
+                            
+                            if abs(distX) < abs(disty), disty > 0 {
+                                dismiss()
+                            }
+                        })
+                )
+                .transition(.opacity.animation(.spring))
+        }
+    }
+    
+    func verticalPart() -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 Image(.close)
@@ -35,12 +72,15 @@ struct MusicControlView: View {
                 }
                 .frame(width: 44, alignment: .center)
             }
+            .padding(.vertical, verticalSizeClass == .compact ? 16 : 0)
             
             Spacer()
             
-            VinylView()
-                .scaleEffect(0.85)
-            
+            if verticalSizeClass != .compact {
+                VinylView()
+                    .scaleEffect(0.85)
+            }
+
             Spacer()
             
             Text((variables.currentSong?.title ?? variables.currentSong?.name) ?? "")
@@ -101,24 +141,9 @@ struct MusicControlView: View {
                 .shadowed()
                 
             }
-            .padding(.bottom, 35)
-            
-            
+            .padding(.bottom, verticalSizeClass == .compact ? 16 : 35)
         }
-        .gesture(
-            DragGesture(minimumDistance: 20)
-                .onEnded({ val in
-                    let distX = val.location.x - val.startLocation.x
-                    let disty = val.location.y - val.startLocation.y
-                    
-                    if abs(distX) < abs(disty), disty > 0 {
-                        dismiss()
-                    }
-                })
-        )
-        .transition(.opacity.animation(.spring))
     }
-    
 }
 
 #Preview {

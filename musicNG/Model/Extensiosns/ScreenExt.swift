@@ -33,6 +33,10 @@ extension UIScreen {
     }
     
     static func waveWidth() -> CGFloat {
-        return UIScreen.getSize().width - 64
+        if UIScreen.getSize().width < UIScreen.getSize().height {
+            return UIScreen.getSize().width - 64
+        } else {
+            return UIScreen.getSize().height - 64
+        }
     }
 }
