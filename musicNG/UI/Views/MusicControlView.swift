@@ -23,6 +23,7 @@ struct MusicControlView: View {
                 
                 Text(Variables.shared.currentPlaylist.name)
                     .font(trackFont)
+                    .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 8)
                 

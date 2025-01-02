@@ -46,6 +46,8 @@ struct RemoteView: View {
                 } else {
                     if let fileIndex = files.firstIndex(where: { $0.path == selectedFile.path }) {
                         
+                        Variables.shared.currentSong = files[fileIndex]
+                        
                         MediaPlayer.shared.initPlayback(playlist: files, index: fileIndex, client: client)
                     }
                 }

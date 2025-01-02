@@ -41,7 +41,7 @@ public struct TitleView: View {
                 .padding(.vertical, 8)
                 .padding(.leading, backButtonVisible ? 0 : 16)
                 .padding(.trailing, 16)
-                .lineLimit(1)
+                .lineLimit(2)
                 .minimumScaleFactor(0.3)
             
             if let actionImage = actionImage {
