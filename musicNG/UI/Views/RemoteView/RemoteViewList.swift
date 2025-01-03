@@ -23,10 +23,8 @@ struct RemoteListView: View {
                         RemoteViewDirectoryLine(name: file.name)
                     }
                 } else {
-                    Button {
-                        onChange?(file)
-                    } label: {
-                        RemoteViewFileLine(title: file.title ?? file.name, artist: file.artist, image: file.cover)
+                    RemoteViewFileLine(file: file) { selectedFile in
+                        onChange?(selectedFile)
                     }
                 }
                 

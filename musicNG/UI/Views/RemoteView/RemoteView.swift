@@ -48,7 +48,7 @@ struct RemoteView: View {
                         
                         Variables.shared.currentSong = files[fileIndex]
                         
-                        MediaPlayer.shared.initPlayback(playlist: files, index: fileIndex, client: client)
+                        MediaPlayer.shared.initPlayback(playlist: files, index: fileIndex)
                     }
                 }
             }
@@ -63,6 +63,7 @@ struct RemoteView: View {
         }
         .onAppear {
             client.updateClient()
+            MediaPlayer.shared.client = client
             client.listDirectory(path: currentPath) { error, data in
                 files = data?.filter({!$0.isHidden}).sorted(by: {
                     ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)

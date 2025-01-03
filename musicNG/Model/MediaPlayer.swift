@@ -100,9 +100,7 @@ final class MediaPlayer {
         play(file: file)
     }
     
-    func initPlayback(playlist: [FileData], index: Int = 0, client: SMBClient? = nil) {
-        self.client = client
-        
+    func initPlayback(playlist: [FileData], index: Int = 0) {
         originalPlaylist = playlist
         self.playlist = originalPlaylist
         
@@ -478,6 +476,7 @@ final class MediaPlayer {
         DispatchQueue.global().async {
             guard let file = try? AVAudioFile(forReading: audioUrl) else {
                 completion(true, [])
+                completion(false, [])
                 return
             }
             

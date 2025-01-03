@@ -17,16 +17,20 @@ extension FileData {
                 self.fastPeaks = data
                 
                 if Variables.shared.currentSong?.id == self.id {
-                    withAnimation {
-                        Variables.shared.currentSong = self
+                    DispatchQueue.main.async {
+                        withAnimation {
+                            Variables.shared.currentSong = self
+                        }
                     }
                 }
             } else {
                 self.slowPeaks = data
 
                 if Variables.shared.currentSong?.id == self.id {
-                    withAnimation {
-                        Variables.shared.currentSong = self
+                    DispatchQueue.main.async {
+                        withAnimation {
+                            Variables.shared.currentSong = self
+                        }
                     }
                 }
 

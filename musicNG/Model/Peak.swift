@@ -50,7 +50,7 @@ extension Array where Element == Float {
         for i in 0..<count {
             result.append(Peak(id: i, value: CGFloat(self[i] * self[i] * self[i])))
         }
-        return result
+        return result.count > 0 ? result : Peak.empty
     }
     
     var maxPeak: CGFloat {
