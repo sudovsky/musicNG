@@ -10,6 +10,7 @@ import SwiftUI
 struct RemoteViewFileLine: View {
 
     @ObservedObject var pb = PlaybackCoordinator.shared
+    @ObservedObject var variables = Variables.shared
 
     @State var file: FileData
     @State var imageName: String = "play.circle.fill"
@@ -48,7 +49,7 @@ struct RemoteViewFileLine: View {
             }
             
             Button {
-                if Variables.shared.currentSong?.name == file.name {
+                if variables.currentSong?.name == file.name {
                     if pb.isPlaying {
                         MediaPlayer.shared.pause()
                     } else {
@@ -65,7 +66,7 @@ struct RemoteViewFileLine: View {
         }
         .padding(.horizontal, 16)
         .onReceive(pb.$isPlaying) { ip in
-            if Variables.shared.currentSong?.name == file.name {
+            if variables.currentSong?.name == file.name {
                 imageName = ip ? "pause.circle.fill" : "play.circle.fill"
             } else {
                 imageName = "play.circle.fill"

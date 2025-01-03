@@ -28,6 +28,8 @@ final class MediaPlayer {
     
     var client: SMBClient? = nil
     
+    static var nurl: URL? = nil
+    
     var paused = true {
         willSet {
             DispatchQueue.main.async {
@@ -132,6 +134,7 @@ final class MediaPlayer {
     //https://stackoverflow.com/questions/52451454/ios-12-lock-screen-controls-for-music-app
     
     func play(file: FileData) {
+        MediaPlayer.nurl = nil
         paused = false
         player?.pause()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -144,6 +147,19 @@ final class MediaPlayer {
                     let components = file.name.components(separatedBy: ".")
                     let nurl = FileManager.default.createTempFile(data: data, ext: components.last ?? "")
                     self.playerItem = AVPlayerItem(url: nurl)
+                    
+                    MediaPlayer.nurl = nurl
+                    
+                    if let pi = self.playerItem {
+                        let rdata = MediaPlayer.dataFromPlayerItem(item: pi)
+                        file.title = rdata.0
+                        file.artist = rdata.1
+                        file.cover = rdata.2
+                        
+                        if file.slowPeaks == nil {
+                            file.updatePeaks()
+                        }
+                    }
                 }
                 self.player = AVPlayer(playerItem: MediaPlayer.shared.playerItem)
                 
@@ -474,7 +490,7 @@ final class MediaPlayer {
         }
         
         DispatchQueue.global().async {
-            guard let file = try? AVAudioFile(forReading: audioUrl) else {
+            guard let file = try? AVAudioFile(forReading: MediaPlayer.nurl ?? audioUrl) else {
                 completion(true, [])
                 completion(false, [])
                 return
