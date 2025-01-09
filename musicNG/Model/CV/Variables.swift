@@ -69,7 +69,7 @@ class Playlists: ObservableObject {
 class Variables: ObservableObject {
     @Published var currentSong: FileData?
 
-    var currentPlaylist = Playlist()
+    var currentPlaylist: Playlist? = nil
     var songList: [FileData] = []
 
     static var shared = Variables()

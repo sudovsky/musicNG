@@ -87,9 +87,13 @@ struct SongListView: View {
         }
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
         .onAppear {
+            Variables.shared.currentPlaylist = plist.currentPlaylist
             if fileList.isEmpty {
                 fileList = playlist?.getDownloads(readMetadata: true) ?? [FileData]()
             }
+        }
+        .onDisappear {
+            Variables.shared.currentPlaylist = nil
         }
 //        .highPriorityGesture(
 //            DragGesture(minimumDistance: 50)
