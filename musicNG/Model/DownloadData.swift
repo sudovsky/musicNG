@@ -1,3 +1,12 @@
+//
+//  DownloadData.swift
+//  musicNG
+//
+//  Created by Max Sudovsky on 10.01.2025.
+//
+
+import SwiftUI
+
 class DownloadData: ObservableObject, Identifiable, Hashable {
     enum DowloadState: Int {
         case idle = 0
@@ -11,13 +20,8 @@ class DownloadData: ObservableObject, Identifiable, Hashable {
     @Published var state: DowloadState = .idle
     var error: String? = nil
     
-    func download() {
+    func download(listName: String, onDone: @escaping (() -> Void)) {
         state = .downloading
-        guard let listName = Variables.shared.currentPlaylist?.name else {
-            state = .error
-            error = "No playlist selected"
-            return
-        }
         
         DispatchQueue.global().async { [self] in
             file.getData { [self] data, error in
@@ -25,7 +29,9 @@ class DownloadData: ObservableObject, Identifiable, Hashable {
                     state = .error
                     self.error = error
                     
-                    Downloads.startDownload()
+                    onDone()
+                    
+                    Downloads.startDownload(listName: listName)
                     return
                 }
                 
@@ -38,6 +44,8 @@ class DownloadData: ObservableObject, Identifiable, Hashable {
                     DispatchQueue.main.async { [self] in
                         state = .downloaded
                         
+                        onDone()
+                        
                         //TODO: - change to update current playlist only
                         Playlists.shared.reload()
                         
@@ -45,12 +53,14 @@ class DownloadData: ObservableObject, Identifiable, Hashable {
                             PlaylistCoordinator.shared.currentPlaylist = PlaylistCoordinator.shared.currentPlaylist
                         }
                         
-                        Downloads.startDownload()
+                        Downloads.startDownload(listName: listName)
                     }
                 } else {
                     DispatchQueue.main.async { [self] in
                         state = .error
                         self.error = "No data"
+
+                        onDone()
                     }
                 }
                 

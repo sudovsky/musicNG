@@ -26,8 +26,6 @@ final class MediaPlayer {
     var shuffled: MPShuffleType = MPShuffleType(rawValue: Settings.shared.shuffleMode) ?? .off
     var repeated: MPRepeatType = MPRepeatType(rawValue: Settings.shared.repeatMode) ?? .all
     
-    var client: SMBClient? = nil
-    
     static var nurl: URL? = nil
     
     var paused = true {
@@ -138,7 +136,7 @@ final class MediaPlayer {
         paused = false
         player?.pause()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            file.getData(client: self.client) { data in
+            file.getData { data, error in
                 if file.fileDownloaded {
                     self.playerItem = AVPlayerItem(url: file.fileURL())
                     if file.slowPeaks == nil {
@@ -292,7 +290,7 @@ final class MediaPlayer {
             return
         }
         
-        file.getData { data in
+        file.getData { data, error in
             let components = file.name.components(separatedBy: ".")
             let url = local ? file.fileURL() : FileManager.default.createTempFile(data: data!, ext: components.last ?? "")
             let pi = AVPlayerItem(url: url)

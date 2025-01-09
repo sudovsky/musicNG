@@ -82,26 +82,32 @@ class FileData: Hashable, Codable, Identifiable {
         //if peaks.isEmpty { updatePeaks() }
     }
     
-    func getData(client: SMBClient? = nil, completion: @escaping (Data?) -> Void = { _ in }) {
+    func getData(completion: @escaping (Data?, String?) -> Void = { _,_ in }) {
         if isDirectory {
             return
         }
         
-        if fileDownloaded, let dat = try? Data(contentsOf: fileURL()) {
-            completion(dat)
+        if fileDownloaded {
+            do {
+                let dat = try Data(contentsOf: fileURL())
+                completion(dat, nil)
+            } catch {
+                completion(nil, error.localizedDescription)
+            }
             return
         }
 
-        //TODO: - dowload file
-        guard let client = client else {
-            completion(nil)
-            return
-        }
-        
-        client.getFileData(path: path) { error, data in
-            guard let data = data else { return }
-            //self.saveData(data: data)
-            completion(data)
+        Downloads.shared.client.getFileData(path: path) { error, data in
+            if let error = error {
+                completion(nil, error)
+            }
+            
+            guard let data = data else {
+                completion(nil, "Unknown error")
+                return
+            }
+            
+            completion(data, nil)
         }
     }
 
@@ -125,18 +131,33 @@ class FileData: Hashable, Codable, Identifiable {
         }
     }
     
-    func saveData(data: Data) {
-        // TODO: - проверить нужно ли писать в фоне
-        //DispatchQueue.global().async {
+    func saveData(data: Data, async: Bool = true, completion: @escaping (String?) -> Void = { _ in }) {
+        if !async {
             do {
-                let url = fileURL(needCreate: true)
+                let url = self.fileURL(needCreate: true)
                 try data.write(to: url, options: .atomic)
+                completion(nil)
             } catch {
-        //        DispatchQueue.main.async {
-                    print(error.localizedDescription, "Can'not save local db")
-        //        }
+                print(error.localizedDescription, "Can'not save local db")
+                completion(error.localizedDescription)
             }
-        //}
+            return
+        }
+        
+        DispatchQueue.global().async {
+            do {
+                let url = self.fileURL(needCreate: true)
+                try data.write(to: url, options: .atomic)
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    print(error.localizedDescription, "Can'not save local db")
+                    completion(error.localizedDescription)
+                }
+            }
+        }
     }
 
     func deleteData() {
@@ -245,11 +266,11 @@ class FileData: Hashable, Codable, Identifiable {
     }
     
     static func == (lhs: FileData, rhs: FileData) -> Bool {
-        lhs.id == rhs.id || lhs.path == rhs.path
+        lhs.path == rhs.path
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(path)
     }
 
 }

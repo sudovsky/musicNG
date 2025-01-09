@@ -13,7 +13,7 @@ import ID3TagEditor
 extension FileData {
     
     func updateTextTags(title: String? = nil, artist: String? = nil, completion: @escaping (Data) -> Void = { _ in }) {
-        getData { data in
+        getData { data, error in
             guard let data = data else { return }
             
             do {
@@ -63,7 +63,7 @@ extension FileData {
 
         myGroup.enter()
 
-        getData { data in
+        getData { data, error in
             guard let data = data else { return }
             
             do {
@@ -95,7 +95,7 @@ extension FileData {
     }
     
     func updateCover(imageData: Data, completion: @escaping (Data) -> Void = { _ in }) {
-        getData { data in
+        getData { data, error in
             guard let data = data else { return }
             
             do {

@@ -11,9 +11,15 @@ struct RemoteViewFileLine: View {
 
     @ObservedObject var pb = PlaybackCoordinator.shared
     @ObservedObject var variables = Variables.shared
+    @ObservedObject var downloads = Downloads.shared
 
     @State var file: FileData
     @State var imageName: String = "play.circle.fill"
+    @State var dimageName: String = "arrow.down.circle"
+
+    @Binding var playlistSelection: Bool
+    @Binding var filesToSave: [FileData]
+    @Binding var readyToDownload: Bool
 
     var onPlay: ((FileData) -> Void)? = nil
     
@@ -42,9 +48,17 @@ struct RemoteViewFileLine: View {
             Spacer()
             
             Button {
-                
+                if let _ = variables.currentPlaylist {
+                    filesToSave = [file]
+                    readyToDownload = true
+                } else {
+                    filesToSave = [file]
+                    withAnimation {
+                        playlistSelection.toggle()
+                    }
+                }
             } label: {
-                Image(systemName: "arrow.down.circle.fill")
+                Image(systemName: dimageName)
                     .font(.title)
             }
             
@@ -72,9 +86,19 @@ struct RemoteViewFileLine: View {
                 imageName = "play.circle.fill"
             }
         }
+        .onReceive(downloads.$downloads) { dl in
+            guard let newFile = dl.first(where: { $0.file.path == file.path }) else { return }
+            
+            switch newFile.state {
+            case .downloaded: dimageName = "checkmark.circle.fill"
+            case .downloading: dimageName = "arrow.down.circle.fill"
+            case .error: dimageName = "exclamationmark.circle.fill"
+            default: break
+            }
+        }
     }
 }
 
 #Preview {
-    RemoteViewFileLine(file: FileData())
+    RemoteViewFileLine(file: FileData(), playlistSelection: .constant(false), filesToSave: .constant([]), readyToDownload: .constant(false))
 }

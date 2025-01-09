@@ -19,6 +19,38 @@ extension EnvironmentValues {
 //    static let defaultValue: Binding<FileData?> = .constant(nil)
 //}
 
+class Downloads: ObservableObject {
+    @Published var downloads: [DownloadData] = []
+    var client = SMBClient()
+
+    static var shared = Downloads()
+    
+    private init() {
+        client.updateClient()
+    }
+
+    static func append(_ files: [FileData]) {
+        for file in files {
+            let newDowload = DownloadData()
+            newDowload.file = file
+            Downloads.shared.downloads.append(newDowload)
+        }
+    }
+    
+    static func startDownload(listName: String) {
+        if Downloads.shared.downloads.first(where: { $0.state == .downloading }) != nil {
+            return
+        }
+
+        if let file = Downloads.shared.downloads.first(where: { $0.state == .idle }) {
+            file.download(listName: listName) {
+                Downloads.shared.downloads = Downloads.shared.downloads
+            }
+        }
+    }
+
+}
+
 class Playlists: ObservableObject {
 
     @Published var all: [Playlist] = []

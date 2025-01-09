@@ -17,7 +17,9 @@ struct RemoteView: View {
 
     @State var files = [FileData]()
 
-    let client = SMBClient()
+    @State var playlistSelection: Bool = false
+    @State var filesToSave = [FileData]()
+    @State var readyToDownload = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -37,7 +39,7 @@ struct RemoteView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
             
-            RemoteListView(files: $files) { selectedFile in
+            RemoteListView(files: $files, playlistSelection: $playlistSelection, filesToSave: $filesToSave, readyToDownload: $readyToDownload) { selectedFile in
                 if selectedFile.isDirectory {
                     withAnimation {
                         title = selectedFile.name
@@ -54,7 +56,7 @@ struct RemoteView: View {
             }
         }
         .onChange(of: currentPath) { newValue in
-            client.listDirectory(path: currentPath) { error, data in
+            Downloads.shared.client.listDirectory(path: currentPath) { error, data in
                 files = data?.filter({!$0.isHidden}).sorted(by: {
                     ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)
                     
@@ -62,17 +64,47 @@ struct RemoteView: View {
             }
         }
         .onAppear {
-            client.updateClient()
-            MediaPlayer.shared.client = client
-            client.listDirectory(path: currentPath) { error, data in
+            Downloads.shared.client.listDirectory(path: currentPath) { error, data in
                 files = data?.filter({!$0.isHidden}).sorted(by: {
                     ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)
                     
                 }) ?? []
             }
         }
+        .playListSelection(visible: $playlistSelection) { pl, isNew in
+            guard let name = filesToSave.first?.name else { return }
+            
+            if isNew {
+                let list = Playlist()
+                list.name = name
+                list.sortKey = Playlists.shared.all.count
+                Playlists.shared.all.append(list)
+                Playlists.shared.save()
+                
+                _ = FileManager.default.urlForPlaylistSettings(name: list.name)
+                
+                Variables.shared.currentPlaylist = list
+            } else {
+                Variables.shared.currentPlaylist = pl
+            }
+            
+            readyToDownload = true
+        }
+        .onChange(of: readyToDownload) { ready in
+            guard ready, filesToSave.count > 0 else {
+                readyToDownload = false
+                return
+            }
+            readyToDownload = false
+            startDownload()
+        }
     }
     
+    func startDownload() {
+        Downloads.append(filesToSave)
+        Downloads.startDownload(listName: Variables.shared.currentPlaylist!.name)
+    }
+
     func goBack() {
         let index = currentPath.lastIndex(where: {$0 == "/"})
         currentPath = String(currentPath[..<index!])
