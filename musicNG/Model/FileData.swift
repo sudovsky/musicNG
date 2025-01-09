@@ -63,7 +63,8 @@ class FileData: Hashable, Codable, Identifiable {
             if let p = fdbl.peaks {
                 slowPeaks = p
             } else {
-                updatePeaks(slowOnly: true)
+                // TODO: - make batch updation on launch
+                //updatePeaks(slowOnly: true)
             }
             return
         }
@@ -77,8 +78,8 @@ class FileData: Hashable, Codable, Identifiable {
             }
         }
         
-        if peaks.isEmpty { updatePeaks() }
-        
+        // TODO: - make batch updation on launch
+        //if peaks.isEmpty { updatePeaks() }
     }
     
     func getData(client: SMBClient? = nil, completion: @escaping (Data?) -> Void = { _ in }) {

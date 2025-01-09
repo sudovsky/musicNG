@@ -141,6 +141,9 @@ final class MediaPlayer {
             file.getData(client: self.client) { data in
                 if file.fileDownloaded {
                     self.playerItem = AVPlayerItem(url: file.fileURL())
+                    if file.slowPeaks == nil {
+                        file.updatePeaks()
+                    }
                 } else {
                     guard let data = data else { return }
                     

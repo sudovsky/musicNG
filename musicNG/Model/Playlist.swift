@@ -33,8 +33,16 @@ class Playlist: Hashable, Codable, Identifiable {
     }
     
     func getCoverFromSongs(_ source: [FileData]? = nil) -> Data? {
-        let files = source ?? getDownloads(readMetadata: true)
-        return files.first(where: { $0.cover != nil })?.cover
+        let files = source ?? getDownloads()
+        
+        for file in files {
+            file.readMetadata()
+            if let cover = file.cover {
+                return cover
+            }
+        }
+        
+        return nil
     }
     
     func urlForPlaylistCover() -> URL? {
