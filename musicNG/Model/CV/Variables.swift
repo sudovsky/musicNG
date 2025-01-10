@@ -8,7 +8,7 @@
 import SwiftUICore
 
 extension EnvironmentValues {
-    @Entry var currentPlaylist = Playlist()
+//    @Entry var currentPlaylist = Playlist()
 //    var currentSong: Binding<FileData?> {
 //        get { self[CurrentSongKey.self] }
 //        set { self[CurrentSongKey.self] = newValue }
@@ -33,6 +33,8 @@ class Downloads: ObservableObject {
         for file in files {
             let newDowload = DownloadData()
             newDowload.file = file
+            
+            Downloads.shared.downloads.removeAll { $0.file.path == file.path }
             Downloads.shared.downloads.append(newDowload)
         }
     }

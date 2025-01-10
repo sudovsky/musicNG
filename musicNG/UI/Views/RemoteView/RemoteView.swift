@@ -20,15 +20,15 @@ struct RemoteView: View {
     @State var playlistSelection: Bool = false
     @State var filesToSave = [FileData]()
     @State var readyToDownload = false
-
+    
     var body: some View {
         VStack(spacing: 0) {
             TitleView(backButtonVisible: .constant(true),
                       title: $title,
                       actionsVisible: .constant(true),
                       backButtonImage: nil,
-                      actionImage: Image(.plus)) {
-                
+                      actionImage: Image(systemName: "arrow.down.circle")) {
+                getFilesForDownload()
             } backAction: {
                 withAnimation() {
                     currentPath == "" ? dismiss() : goBack()
@@ -72,7 +72,7 @@ struct RemoteView: View {
             }
         }
         .playListSelection(visible: $playlistSelection) { pl, isNew in
-            guard let name = filesToSave.first?.name else { return }
+            guard let name = title.isEmpty ? filesToSave.first?.name : title else { return }
             
             if isNew {
                 let list = Playlist()
@@ -103,8 +103,18 @@ struct RemoteView: View {
     func startDownload() {
         Downloads.append(filesToSave)
         Downloads.startDownload(listName: Variables.shared.currentPlaylist!.name)
+        filesToSave = []
     }
 
+    func getFilesForDownload() {
+        filesToSave = files.filter { !$0.isDirectory }
+        if filesToSave.count == 0 { return }
+        
+        withAnimation {
+            playlistSelection.toggle()
+        }
+    }
+    
     func goBack() {
         let index = currentPath.lastIndex(where: {$0 == "/"})
         currentPath = String(currentPath[..<index!])

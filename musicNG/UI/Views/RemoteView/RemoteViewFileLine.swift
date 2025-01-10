@@ -15,7 +15,7 @@ struct RemoteViewFileLine: View {
 
     @State var file: FileData
     @State var imageName: String = "play.circle.fill"
-    @State var dimageName: String = "arrow.down.circle"
+    @State var dimageName: String = "arrow.down.circle.fill"
 
     @Binding var playlistSelection: Bool
     @Binding var filesToSave: [FileData]
@@ -48,6 +48,8 @@ struct RemoteViewFileLine: View {
             Spacer()
             
             Button {
+                if let download = downloads.downloads.first(where: { $0.file == file }), download.state == .idle { return }
+                
                 if let _ = variables.currentPlaylist {
                     filesToSave = [file]
                     readyToDownload = true
@@ -59,8 +61,9 @@ struct RemoteViewFileLine: View {
                 }
             } label: {
                 Image(systemName: dimageName)
-                    .font(.title)
+                    .font(.system(size: 27, weight: .light))
             }
+            .buttonStyle(GrowingButton())
             
             Button {
                 if variables.currentSong?.name == file.name {
@@ -75,8 +78,9 @@ struct RemoteViewFileLine: View {
                 }
             } label: {
                 Image(systemName: imageName)
-                    .font(.title)
+                    .font(.system(size: 27, weight: .light))
             }
+            .buttonStyle(GrowingButton())
         }
         .padding(.horizontal, 16)
         .onReceive(pb.$isPlaying) { ip in
@@ -89,11 +93,14 @@ struct RemoteViewFileLine: View {
         .onReceive(downloads.$downloads) { dl in
             guard let newFile = dl.first(where: { $0.file.path == file.path }) else { return }
             
-            switch newFile.state {
-            case .downloaded: dimageName = "checkmark.circle.fill"
-            case .downloading: dimageName = "arrow.down.circle.fill"
-            case .error: dimageName = "exclamationmark.circle.fill"
-            default: break
+            withAnimation {
+                switch newFile.state {
+                case .downloaded: dimageName = "checkmark.circle"
+                case .downloading: dimageName = "arrow.down.circle.dotted"
+                case .idle: dimageName = "circle.dotted"
+                case .error: dimageName = "exclamationmark.circle.fill"
+                @unknown default: break
+                }
             }
         }
     }

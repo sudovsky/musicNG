@@ -22,6 +22,7 @@ class DownloadData: ObservableObject, Identifiable, Hashable {
     
     func download(listName: String, onDone: @escaping (() -> Void)) {
         state = .downloading
+        onDone()
         
         DispatchQueue.global().async { [self] in
             file.getData { [self] data, error in
