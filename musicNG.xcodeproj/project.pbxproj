@@ -12,6 +12,7 @@
 		06D5B1BD2CD1B255000BC4A0 /* AMSMB2 in Frameworks */ = {isa = PBXBuildFile; productRef = 06D5B1BC2CD1B255000BC4A0 /* AMSMB2 */; };
 		06D5B1C02CD1B46F000BC4A0 /* ID3TagEditor in Frameworks */ = {isa = PBXBuildFile; productRef = 06D5B1BF2CD1B46F000BC4A0 /* ID3TagEditor */; };
 		06D5B22D2CD2B21F000BC4A0 /* Extensions in Frameworks */ = {isa = PBXBuildFile; productRef = 06D5B22C2CD2B21F000BC4A0 /* Extensions */; };
+		06FFA9292D3128B600079B74 /* shareExt.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 06FFA91F2D3128B600079B74 /* shareExt.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,13 @@
 			remoteGlobalIDString = 0612F0372CD127B100816A76;
 			remoteInfo = musicNG;
 		};
+		06FFA9272D3128B600079B74 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0612F0302CD127B100816A76 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 06FFA91E2D3128B600079B74;
+			remoteInfo = shareExt;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,12 +51,24 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		06FFA92A2D3128B600079B74 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				06FFA9292D3128B600079B74 /* shareExt.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0612F0382CD127B100816A76 /* musicNG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = musicNG.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0612F0482CD127B300816A76 /* musicNGTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = musicNGTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0612F0522CD127B300816A76 /* musicNGUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = musicNGUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		06FFA91F2D3128B600079B74 /* shareExt.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = shareExt.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -58,6 +78,24 @@
 				Info.plist,
 			);
 			target = 0612F0372CD127B100816A76 /* musicNG */;
+		};
+		06FFA92E2D3128B600079B74 /* Exceptions for "shareExt" folder in "shareExt" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 06FFA91E2D3128B600079B74 /* shareExt */;
+		};
+		06FFA9302D31295C00079B74 /* Exceptions for "musicNG" folder in "shareExt" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Model/Extensiosns/FileManagerExt.swift,
+				Model/Extensiosns/JSONExt.swift,
+				"Resources/Fonts/avanti bold.ttf",
+				Resources/Fonts/avanti.ttf,
+			);
+			target = 06FFA91E2D3128B600079B74 /* shareExt */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -76,8 +114,17 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				069DE8952CE01E6700C462A7 /* Exceptions for "musicNG" folder in "musicNG" target */,
+				06FFA9302D31295C00079B74 /* Exceptions for "musicNG" folder in "shareExt" target */,
 			);
 			path = musicNG;
+			sourceTree = "<group>";
+		};
+		06FFA9202D3128B600079B74 /* shareExt */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				06FFA92E2D3128B600079B74 /* Exceptions for "shareExt" folder in "shareExt" target */,
+			);
+			path = shareExt;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -108,6 +155,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		06FFA91C2D3128B600079B74 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -117,6 +171,7 @@
 				0612F0D72CD19DB000816A76 /* musicNG */,
 				0612F0CD2CD19DAE00816A76 /* musicNGTests */,
 				0612F0C92CD19DAB00816A76 /* musicNGUITests */,
+				06FFA9202D3128B600079B74 /* shareExt */,
 				0612F0392CD127B100816A76 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -127,6 +182,7 @@
 				0612F0382CD127B100816A76 /* musicNG.app */,
 				0612F0482CD127B300816A76 /* musicNGTests.xctest */,
 				0612F0522CD127B300816A76 /* musicNGUITests.xctest */,
+				06FFA91F2D3128B600079B74 /* shareExt.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -142,10 +198,12 @@
 				0612F0352CD127B100816A76 /* Frameworks */,
 				0612F0362CD127B100816A76 /* Resources */,
 				06B17A952CD556E600380AA6 /* Embed Frameworks */,
+				06FFA92A2D3128B600079B74 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				06FFA9282D3128B600079B74 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				0612F0D72CD19DB000816A76 /* musicNG */,
@@ -207,6 +265,28 @@
 			productReference = 0612F0522CD127B300816A76 /* musicNGUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		06FFA91E2D3128B600079B74 /* shareExt */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06FFA92D2D3128B600079B74 /* Build configuration list for PBXNativeTarget "shareExt" */;
+			buildPhases = (
+				06FFA91B2D3128B600079B74 /* Sources */,
+				06FFA91C2D3128B600079B74 /* Frameworks */,
+				06FFA91D2D3128B600079B74 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				06FFA9202D3128B600079B74 /* shareExt */,
+			);
+			name = shareExt;
+			packageProductDependencies = (
+			);
+			productName = shareExt;
+			productReference = 06FFA91F2D3128B600079B74 /* shareExt.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -214,7 +294,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1610;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					0612F0372CD127B100816A76 = {
@@ -227,6 +307,9 @@
 					0612F0512CD127B300816A76 = {
 						CreatedOnToolsVersion = 16.1;
 						TestTargetID = 0612F0372CD127B100816A76;
+					};
+					06FFA91E2D3128B600079B74 = {
+						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
@@ -253,6 +336,7 @@
 				0612F0372CD127B100816A76 /* musicNG */,
 				0612F0472CD127B300816A76 /* musicNGTests */,
 				0612F0512CD127B300816A76 /* musicNGUITests */,
+				06FFA91E2D3128B600079B74 /* shareExt */,
 			);
 		};
 /* End PBXProject section */
@@ -273,6 +357,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0612F0502CD127B300816A76 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06FFA91D2D3128B600079B74 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -303,6 +394,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		06FFA91B2D3128B600079B74 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -315,6 +413,11 @@
 			isa = PBXTargetDependency;
 			target = 0612F0372CD127B100816A76 /* musicNG */;
 			targetProxy = 0612F0532CD127B300816A76 /* PBXContainerItemProxy */;
+		};
+		06FFA9282D3128B600079B74 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 06FFA91E2D3128B600079B74 /* shareExt */;
+			targetProxy = 06FFA9272D3128B600079B74 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -584,6 +687,60 @@
 			};
 			name = Release;
 		};
+		06FFA92B2D3128B600079B74 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = shareExt/shareExt.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 78LY33A279;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = shareExt/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = shareExt;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.cloudunion.musicNG.shareExt;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		06FFA92C2D3128B600079B74 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = shareExt/shareExt.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 78LY33A279;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = shareExt/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = shareExt;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.cloudunion.musicNG.shareExt;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -619,6 +776,15 @@
 			buildConfigurations = (
 				0612F0632CD127B300816A76 /* Debug */,
 				0612F0642CD127B300816A76 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		06FFA92D2D3128B600079B74 /* Build configuration list for PBXNativeTarget "shareExt" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06FFA92B2D3128B600079B74 /* Debug */,
+				06FFA92C2D3128B600079B74 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
