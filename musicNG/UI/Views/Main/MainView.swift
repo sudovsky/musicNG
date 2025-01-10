@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct MainView: View {
+public struct MainView: View, KeyboardReadable {
 
     @ObservedObject var variables = Variables.shared
     @ObservedObject var playlistCoordinator = PlaylistCoordinator.shared
@@ -21,6 +21,8 @@ public struct MainView: View {
     @State private var backButtonVisible: Bool = false
     @State private var title: String = "Плейлисты"
     @State private var actionsVisible: Bool = true
+
+    @State private var bottomOpacity: CGFloat = 1
 
     @State private var showListSelection: Bool = false
     @State private var showRemote: Bool = false
@@ -103,6 +105,9 @@ public struct MainView: View {
         .onReceive(playlistSelectionCoordinator.$needShowSelection) { plist in
             showListSelection = plist
         }
+        .onReceive(keyboardPublisher) { newIsKeyboardVisible in
+            bottomOpacity = newIsKeyboardVisible ? 0 : 1
+        }
     }
     
     func prepareData() -> some View {
@@ -148,6 +153,7 @@ public struct MainView: View {
                 actionsVisible = false
             }
         }
+        .opacity(bottomOpacity)
     }
     
 }
