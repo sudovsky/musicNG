@@ -12,8 +12,7 @@ import UniformTypeIdentifiers
 class ShareViewController: UIViewController {
     
     var urls = [URL]()
-    var playlists = [[String:Any]]()
-    var images = [Int: Data?]()
+    var playlists = [SharePlaylist]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,9 +25,6 @@ class ShareViewController: UIViewController {
         }
         
         playlists = getPlaylistInfo()
-        for i in 0..<playlists.count {
-            images[i] = (playlists[i]["cover"] as? Data)
-        }
 
         let audioDataType = UTType.audio.identifier
         var index = 0
@@ -52,7 +48,7 @@ class ShareViewController: UIViewController {
                         
                         DispatchQueue.main.sync {
                             // host the SwiftU view
-                            let contentView = UIHostingController(rootView: ShareView(urls: self.urls, images: self.images))
+                            let contentView = UIHostingController(rootView: ShareView(urls: self.urls, playlists: self.playlists))
                             self.addChild(contentView)
                             self.view.addSubview(contentView.view)
                             
@@ -80,8 +76,8 @@ class ShareViewController: UIViewController {
         self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
     }
     
-    func getPlaylistInfo() -> [[String:Any]] {
-        var result = [[String:Any]]()
+    func getPlaylistInfo() -> [SharePlaylist] {
+        var result = [SharePlaylist]()
         
         let fileManager = FileManager.default
         guard let commonurl = fileManager.containerURL(forSecurityApplicationGroupIdentifier: "group.ru.cloudunion.music")?.appendingPathComponent("Playlists") else {
@@ -90,15 +86,15 @@ class ShareViewController: UIViewController {
         
         let url = commonurl.appendingPathComponent("Settings").appendingPathExtension("json")
         
-        let pl = readJsn(file: url, as: [String:Any].self)
-        let pList = pl?["sort"] as? [[String:Any]] ?? []
+        let pList = readJsn(file: url, as: [[String:Any]].self) ?? []
+        //let pList = pl?["sort"] as? [[String:Any]] ?? []
         
         for pl in pList {
             guard let name = pl["name"] as? String, let id = pl["id"] as? String else { continue }
-            if let data = try? Data(contentsOf: commonurl.appendingPathComponent(name).appendingPathExtension("jpg")) {
-                result.append(["id": id, "name": name, "cover": data])
+            if let data = try? Data(contentsOf: commonurl.appendingPathComponent(name).appendingPathExtension("jpg")), let cover = UIImage(data: data) {
+                result.append(SharePlaylist(id: id, name: name, cover: cover))
             } else {
-                result.append(["id": id, "name": name])
+                result.append(SharePlaylist(id: id, name: name))
             }
             
         }

@@ -5,7 +5,7 @@
 //  Created by Max Sudovsky on 10.11.2024.
 //
 
-import SwiftUICore
+import SwiftUI
 
 extension EnvironmentValues {
 //    @Entry var currentPlaylist = Playlist()
@@ -90,8 +90,8 @@ class Playlists: ObservableObject {
         }
 
         for list in all {
-            if let cover = list.cover {
-                try? cover.write(to: currentDirPath.appendingPathComponent(list.name).appendingPathExtension("jpg"))
+            if let cover = list.cover, let img = UIImage(data: cover)?.resizeImage(newSize: CGSize(width: 64, height: 64)), let data = img.jpegData(compressionQuality: 1) {
+                try? data.write(to: currentDirPath.appendingPathComponent(list.name).appendingPathExtension("jpg"))
             }
         }
 

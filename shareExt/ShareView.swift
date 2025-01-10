@@ -8,13 +8,18 @@
 
 import SwiftUI
 
+struct SharePlaylist: Identifiable {
+    var id: String
+    var name: String
+    var cover: UIImage?
+}
+
 struct ShareView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var urls: [URL]
     
-    @State var playlists = [[String:Any]]()
-    @State var images = [Int: Data?]()
+    @State var playlists = [SharePlaylist]()
     @State var listName: String? = nil
 
     let columns = [
@@ -32,24 +37,50 @@ struct ShareView: View {
                     .padding()
                 
                 ScrollView {
-//                    LazyVGrid(columns: columns, alignment: .center, spacing: 12) {
-//                        ForEach(playlists, id: \.self) { playlist in
-//                            Button {
-////                                onSelect(playlist, false)
-////                                withAnimation {
-////                                    use = false
-////                                }
-//                            } label: {
-//                                Image(.no)
-//                                    .resizable()
-//                                    .aspectRatio(contentMode: .fill)
-//                            }
-//                        }
-//                        .id(UUID())
-//                    }
-//                    .padding([.horizontal, .bottom], 16)
+                    LazyVGrid(columns: columns, alignment: .center, spacing: 12) {
+                        ForEach(playlists) { playlist in
+                            Button {
+//                                onSelect(playlist, false)
+//                                withAnimation {
+//                                    use = false
+//                                }
+                            } label: {
+                                ZStack {
+                                    if let data = playlist.cover {
+                                        Image(uiImage: data)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .cornerRadius(10)
+                                            .shadow(radius: 8)
+                                    } else {
+                                        Image(uiImage: UIImage(resource: .no))
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .cornerRadius(10)
+                                            .shadow(radius: 8)
+                                    }
+                                    
+                                    VStack(alignment: .leading) {
+                                        Spacer()
+                                        Text(playlist.name)
+                                            .frame(alignment: .bottom)
+                                            .minimumScaleFactor(0.3)
+                                            .font(.system(size: 18, weight: .medium))
+                                            .shadow(color: Color.main, radius: 3, x: 0, y: 0)
+                                            .foregroundStyle(.back)
+                                            .multilineTextAlignment(.center)
+                                            .lineLimit(3)
+                                    }
+//                                    .frame(alignment: .bottom)
+                                    .padding(8)
+                                    //.frame(maxWidth: 64, maxHeight: 64)
+                                }
+                            }
+                        }
+                        .id(UUID())
+                    }
+                    .padding([.horizontal, .bottom], 16)
                 }
-                .padding(.bottom, 16)
                 
                 Button {
                     saveFiles()
@@ -68,7 +99,6 @@ struct ShareView: View {
                 .onAppear {
                 }
             }
-            .frame(maxHeight: 600)
             .background(Color.back)
             .cornerRadius(10)
             .transition(.move(edge: .bottom).combined(with: .opacity))
