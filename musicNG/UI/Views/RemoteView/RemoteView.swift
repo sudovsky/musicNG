@@ -16,6 +16,7 @@ struct RemoteView: View {
     @State var currentPath = ""
 
     @State var files = [FileData]()
+    @State var filteredFiles = [FileData]()
 
     @State var playlistSelection: Bool = false
     @State var filesToSave = [FileData]()
@@ -40,8 +41,15 @@ struct RemoteView: View {
             TextField("Поиск", text: $searchStr)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
+                .onChange(of: searchStr) { text in
+                    if text.trim().isEmpty {
+                        filteredFiles = files
+                        return
+                    }
+                    filteredFiles = files.filter { $0.name.uppercased().contains(text.uppercased()) }
+                }
             
-            RemoteListView(files: $files, playlistSelection: $playlistSelection, filesToSave: $filesToSave, readyToDownload: $readyToDownload, playlistToSave: $playlistToSave) { selectedFile in
+            RemoteListView(files: $filteredFiles, playlistSelection: $playlistSelection, filesToSave: $filesToSave, readyToDownload: $readyToDownload, playlistToSave: $playlistToSave) { selectedFile in
                 if selectedFile.isDirectory {
                     withAnimation {
                         title = selectedFile.name
@@ -63,6 +71,9 @@ struct RemoteView: View {
                     ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)
                     
                 }) ?? []
+                filteredFiles = files
+                UIApplication.shared.endEditing()
+                searchStr = ""
             }
         }
         .onAppear {
@@ -71,6 +82,7 @@ struct RemoteView: View {
                     ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)
                     
                 }) ?? []
+                filteredFiles = files
             }
         }
         .playListSelection(visible: $playlistSelection) { pl, isNew in
