@@ -74,6 +74,8 @@ class Playlists: ObservableObject {
     }
 
     func save() {
+        if all.isEmpty { return }
+        
         DispatchQueue.global().async {
             try? self.all.save(FileManager.playlistsSettings)
 
