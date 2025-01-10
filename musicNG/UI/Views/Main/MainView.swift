@@ -27,6 +27,7 @@ public struct MainView: View, KeyboardReadable {
     @State private var showListSelection: Bool = false
     @State private var showRemote: Bool = false
 
+    @State var showSettingsAlert = false
     @State var showAlert = false
     @State var alertText: String = ""
 
@@ -50,7 +51,7 @@ public struct MainView: View, KeyboardReadable {
                           actionsVisible: $actionsVisible,
                           actionImage: Image(systemName: "network"),
                           secondActionImage: Image(systemName: "plus")) {
-                    showRemote.toggle()
+                    settingsOK() ? showRemote.toggle() : showSettingsAlert.toggle()
                 } secondAction: {
                     showAlert.toggle()
                 } backAction: {
@@ -81,6 +82,14 @@ public struct MainView: View, KeyboardReadable {
         .background {
             Color.back
         }
+        .okCancelMessage(showingAlert: $showSettingsAlert, title: .constant("Не заполнены настройки подключения"), subtitle: .constant("Перейти на страницу настроек?"), onOk: {
+            withAnimation(Animation.easeOut.speed(2.5)) {
+                currentFrame = 2
+                title = "Настройки"
+                backButtonVisible = false
+                actionsVisible = false
+            }
+        })
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $alertTitle, subtitle: $alertSubtitle, placeholder: $alertPlaceholder, onDone: createPlaylist)
         .playListSelection(visible: $showListSelection) { pl, isNew in
             guard let fileToMove = PlaylistSelectionCoordinator.shared.fileToMove, let playlistFromMove = PlaylistSelectionCoordinator.shared.playlistFromMove else { return }
@@ -156,6 +165,14 @@ public struct MainView: View, KeyboardReadable {
         .opacity(bottomOpacity)
     }
     
+    func settingsOK() -> Bool {
+        if Settings.shared.username.isEmpty { return false}
+        if Settings.shared.password.isEmpty { return false}
+        if Settings.shared.address.isEmpty { return false}
+        if Settings.shared.shareName.isEmpty { return false}
+        
+        return true
+    }
 }
 
 #Preview {
