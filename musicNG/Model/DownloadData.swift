@@ -17,22 +17,33 @@ class DownloadData: ObservableObject, Identifiable, Hashable {
     
     var id = UUID()
     @Published var file: FileData = FileData()
-    @Published var state: DowloadState = .idle
-    var error: String? = nil
+    @Published var state: DowloadState = .idle {
+        didSet {
+            Downloads.shared.stateUpdation()
+        }
+    }
+    var error: String? = nil {
+        didSet {
+            state = .error
+        }
+    }
+    var listName: String? = nil
     
-    func download(listName: String, onDone: @escaping (() -> Void)) {
+    func download() {
         state = .downloading
-        onDone()
         
-        DispatchQueue.global().async { [self] in
+        guard let listName = listName else {
+            error = "List name is nil"
+            Downloads.startDownload()
+            return
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
             file.getData { [self] data, error in
                 if let error = error {
-                    state = .error
                     self.error = error
                     
-                    onDone()
-                    
-                    Downloads.startDownload(listName: listName)
+                    Downloads.startDownload()
                     return
                 }
                 
@@ -45,8 +56,6 @@ class DownloadData: ObservableObject, Identifiable, Hashable {
                     DispatchQueue.main.async { [self] in
                         state = .downloaded
                         
-                        onDone()
-                        
                         //TODO: - change to update current playlist only
                         Playlists.shared.reload()
                         
@@ -54,14 +63,11 @@ class DownloadData: ObservableObject, Identifiable, Hashable {
                             PlaylistCoordinator.shared.currentPlaylist = PlaylistCoordinator.shared.currentPlaylist
                         }
                         
-                        Downloads.startDownload(listName: listName)
+                        Downloads.startDownload()
                     }
                 } else {
                     DispatchQueue.main.async { [self] in
-                        state = .error
                         self.error = "No data"
-
-                        onDone()
                     }
                 }
                 

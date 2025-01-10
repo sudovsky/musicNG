@@ -29,25 +29,30 @@ class Downloads: ObservableObject {
         client.updateClient()
     }
 
-    static func append(_ files: [FileData]) {
+    static func append(_ files: [FileData], listName: String) {
         for file in files {
             let newDowload = DownloadData()
             newDowload.file = file
+            newDowload.listName = listName
             
             Downloads.shared.downloads.removeAll { $0.file.path == file.path }
             Downloads.shared.downloads.append(newDowload)
         }
     }
     
-    static func startDownload(listName: String) {
+    static func startDownload() {
         if Downloads.shared.downloads.first(where: { $0.state == .downloading }) != nil {
             return
         }
 
         if let file = Downloads.shared.downloads.first(where: { $0.state == .idle }) {
-            file.download(listName: listName) {
-                Downloads.shared.downloads = Downloads.shared.downloads
-            }
+            file.download()
+        }
+    }
+    
+    func stateUpdation() {
+        DispatchQueue.main.async {
+            Downloads.shared.downloads = Downloads.shared.downloads
         }
     }
 

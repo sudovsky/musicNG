@@ -79,6 +79,7 @@ class SMBClient {
                                             isDirectory: (entry[.fileResourceTypeKey] as? URLFileResourceType) == .directory,
                                             isHidden: entry[.isHiddenKey] as? Bool ?? false,
                                             size: entry[.fileSizeKey] as? Int64)
+                    fileData.sourcePath = fileData.path
                     findedFiles.append(fileData)
                 }
                 DispatchQueue.main.async {

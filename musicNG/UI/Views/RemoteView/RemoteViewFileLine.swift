@@ -92,7 +92,7 @@ struct RemoteViewFileLine: View {
             }
         }
         .onReceive(downloads.$downloads) { dl in
-            guard let newFile = dl.first(where: { $0.file.path == file.path }) else { return }
+            guard let newFile = dl.first(where: { $0.file.path == file.path || $0.file.sourcePath == file.sourcePath }) else { return }
             
             withAnimation {
                 switch newFile.state {

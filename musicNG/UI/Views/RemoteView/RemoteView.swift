@@ -103,8 +103,8 @@ struct RemoteView: View {
     }
     
     func startDownload() {
-        Downloads.append(filesToSave)
-        Downloads.startDownload(listName: playlistToSave!.name)
+        Downloads.append(filesToSave, listName: playlistToSave!.name)
+        Downloads.startDownload()
         filesToSave = []
         
         if needClearPlaylistName {

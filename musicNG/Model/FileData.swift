@@ -19,6 +19,7 @@ class FileData: Hashable, Codable, Identifiable {
     var id = UUID().uuidString
     var name = ""
     var path = ""
+    var sourcePath = ""
     var size: Int64? = nil
     var createdDate: Date = Date()
     var modifiedDate: Date? = nil
