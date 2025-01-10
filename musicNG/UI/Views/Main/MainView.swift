@@ -49,7 +49,7 @@ public struct MainView: View, KeyboardReadable {
                           title: $title,
                           actionsVisible: $actionsVisible,
                           actionImage: Image(systemName: "network"),
-                          secondActionImage: Image(.plus)) {
+                          secondActionImage: Image(systemName: "plus")) {
                     showRemote.toggle()
                 } secondAction: {
                     showAlert.toggle()

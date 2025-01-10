@@ -24,6 +24,7 @@ struct AlertFrame: ViewModifier {
                 Button("OK", action: submit)
                 Button("Отмена", role: .cancel) { }
             } message: { if !subtitle.isEmpty { Text("Введите название песни") } }
+            .alertButtonTint(color: .main)
         )
         
         func submit() { onDone?(text) }

@@ -47,7 +47,7 @@ struct SongTile: View {
                     .padding([.horizontal], 8)
                     .padding([.bottom], artistVisible ? 0 : 6)
                     .foregroundStyle(comonTextColor)
-                    .shadow(color: .main, radius: 1)
+                    .shadow(color: .black, radius: 1)
                     .multilineTextAlignment(.leading)
                 
                 if artistVisible {
@@ -57,7 +57,7 @@ struct SongTile: View {
                         .padding([.horizontal], 8)
                         .padding([.bottom], 6)
                         .foregroundStyle(comonTextColor)
-                        .shadow(color: .main, radius: 1)
+                        .shadow(color: .black, radius: 1)
                         .multilineTextAlignment(.leading)
                 }
             }

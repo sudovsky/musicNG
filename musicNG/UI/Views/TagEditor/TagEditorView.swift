@@ -23,7 +23,7 @@ struct TagEditorView: View {
             TitleView(backButtonVisible: .constant(true),
                       title: .constant("Редактор mp3"),
                       actionsVisible: .constant(true),
-                      backButtonImage: Image(.close),
+                      backButtonImage: Image(systemName: "xmark"),
                       actionImage: Image(systemName: "photo.badge.plus")) {
                 importing.toggle()
             } backAction: {
@@ -50,24 +50,30 @@ struct TagEditorView: View {
                     applyChecked(true)
                 } label: {
                     Image(.checked)
+                        .renderingMode(.template)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .foregroundStyle(.main)
                 }
                 Spacer()
                 Button {
                     applyChecked(false)
                 } label: {
                     Image(.unchecked)
+                        .renderingMode(.template)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .foregroundStyle(.main)
                 }
                 Spacer()
                 Button {
                     applyChecked()
                 } label: {
                     Image(.checkInvert)
+                        .renderingMode(.template)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .foregroundStyle(.main)
                 }
                 Spacer()
             }

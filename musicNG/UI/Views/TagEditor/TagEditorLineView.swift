@@ -20,9 +20,11 @@ struct TagEditorLineView: View {
                 file.isChecked.toggle()
             } label: {
                 Image(file.isChecked ? .checked : .unchecked)
+                    .renderingMode(.template)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 28)
+                    .foregroundStyle(.main)
             }
             .padding(.horizontal, 16)
 

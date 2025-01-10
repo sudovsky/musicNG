@@ -9,8 +9,8 @@ import SwiftUI
 
 let commonCornerRadius: CGFloat = 11
 let commonBorderWidth: CGFloat = 1
-let commonBorderColor: Color = Color(.main.withAlphaComponent(0.2))
-let commonShadowColor: Color = Color(.main.withAlphaComponent(0.25))
+let commonBorderColor: Color = Color(.shadow.withAlphaComponent(0.2))
+let commonShadowColor: Color = Color(.shadow.withAlphaComponent(0.25))
 let comonTextColor: Color = .white
 let commonGradientColor: Color = .black.opacity(0.2)
 

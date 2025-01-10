@@ -66,8 +66,8 @@ struct ShareView: View {
                                             .frame(alignment: .bottom)
                                             .minimumScaleFactor(0.3)
                                             .font(.system(size: 18, weight: .medium))
-                                            .shadow(color: Color.main, radius: 3, x: 0, y: 0)
-                                            .foregroundStyle(.back)
+                                            .shadow(color: .shadow, radius: 3, x: 0, y: 0)
+                                            .foregroundStyle(.white)
                                             .multilineTextAlignment(.center)
                                             .lineLimit(3)
                                     }

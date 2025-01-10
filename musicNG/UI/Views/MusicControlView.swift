@@ -54,7 +54,7 @@ struct MusicControlView: View {
     func verticalPart() -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                Image(.close)
+                Image(systemName: "xmark")
                     .titleButtonImage(.leading)
                     .hidden()
                 
@@ -67,7 +67,7 @@ struct MusicControlView: View {
                 Button {
                     dismiss()
                 } label: {
-                    Image(.close)
+                    Image(systemName: "xmark")
                         .titleButtonImage(.trailing)
                 }
                 .frame(width: 44, alignment: .center)

@@ -51,7 +51,7 @@ struct PlayListGrid: View {
                                 }
                         }
                         .buttonStyle(GrowingButton())
-                        .overlay(isDragged ? Color.white.opacity(0.6) : Color.clear)
+                        .overlay(isDragged ? Color.back.opacity(0.6) : Color.clear)
                     }
                     onDone: {
                         DispatchQueue.global().async {
@@ -68,7 +68,7 @@ struct PlayListGrid: View {
                         }
                     }
                     .id(UUID())
-                    Color(.white)
+                    Color(.back)
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
