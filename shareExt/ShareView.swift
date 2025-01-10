@@ -34,7 +34,7 @@ struct ShareView: View {
             VStack(spacing: 0) {
                 Text("Выберите плейлист")
                     .font(.system(size: 21, weight: .light))
-                    .padding()
+                    .padding([.vertical, .horizontal])
                 
                 ScrollView {
                     LazyVGrid(columns: columns, alignment: .center, spacing: 12) {
@@ -51,13 +51,13 @@ struct ShareView: View {
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
                                             .cornerRadius(10)
-                                            .shadow(radius: 8)
+                                            .shadow(radius: 4)
                                     } else {
                                         Image(uiImage: UIImage(resource: .no))
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
                                             .cornerRadius(10)
-                                            .shadow(radius: 8)
+                                            .shadow(radius: 4)
                                     }
                                     
                                     VStack(alignment: .leading) {
@@ -79,7 +79,8 @@ struct ShareView: View {
                         }
                         .id(UUID())
                     }
-                    .padding([.horizontal, .bottom], 16)
+                    .padding([.horizontal], 16)
+                    .padding(.vertical, 8)
                 }
                 
                 Button {
@@ -93,16 +94,14 @@ struct ShareView: View {
                             .font(.system(size: 18, weight: .medium))
                             .foregroundStyle(.back)
                     }
-                    .padding([.horizontal, .bottom], 16)
-                }
-                .padding(16)
-                .onAppear {
+                    .padding(16)
                 }
             }
+            .frame(maxHeight: 600)
             .background(Color.back)
             .cornerRadius(10)
             .transition(.move(edge: .bottom).combined(with: .opacity))
-            .padding()
+            .padding(.horizontal, 8)
         }
     }
     

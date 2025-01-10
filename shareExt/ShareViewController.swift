@@ -49,6 +49,8 @@ class ShareViewController: UIViewController {
                         DispatchQueue.main.sync {
                             // host the SwiftU view
                             let contentView = UIHostingController(rootView: ShareView(urls: self.urls, playlists: self.playlists))
+                            contentView.view.isOpaque = false
+                            contentView.view.backgroundColor = UIColor.clear
                             self.addChild(contentView)
                             self.view.addSubview(contentView.view)
                             
