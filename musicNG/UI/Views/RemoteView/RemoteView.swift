@@ -20,7 +20,9 @@ struct RemoteView: View {
     @State var playlistSelection: Bool = false
     @State var filesToSave = [FileData]()
     @State var readyToDownload = false
-    
+    @State var playlistToSave: Playlist? = nil
+    @State private var needClearPlaylistName: Bool = false
+
     var body: some View {
         VStack(spacing: 0) {
             TitleView(backButtonVisible: .constant(true),
@@ -39,7 +41,7 @@ struct RemoteView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
             
-            RemoteListView(files: $files, playlistSelection: $playlistSelection, filesToSave: $filesToSave, readyToDownload: $readyToDownload) { selectedFile in
+            RemoteListView(files: $files, playlistSelection: $playlistSelection, filesToSave: $filesToSave, readyToDownload: $readyToDownload, playlistToSave: $playlistToSave) { selectedFile in
                 if selectedFile.isDirectory {
                     withAnimation {
                         title = selectedFile.name
@@ -83,9 +85,9 @@ struct RemoteView: View {
                 
                 _ = FileManager.default.urlForPlaylistSettings(name: list.name)
                 
-                Variables.shared.currentPlaylist = list
+                playlistToSave = list
             } else {
-                Variables.shared.currentPlaylist = pl
+                playlistToSave = pl
             }
             
             readyToDownload = true
@@ -102,14 +104,20 @@ struct RemoteView: View {
     
     func startDownload() {
         Downloads.append(filesToSave)
-        Downloads.startDownload(listName: Variables.shared.currentPlaylist!.name)
+        Downloads.startDownload(listName: playlistToSave!.name)
         filesToSave = []
+        
+        if needClearPlaylistName {
+            needClearPlaylistName = false
+            playlistToSave = nil
+        }
     }
 
     func getFilesForDownload() {
         filesToSave = files.filter { !$0.isDirectory }
         if filesToSave.count == 0 { return }
         
+        needClearPlaylistName = true
         withAnimation {
             playlistSelection.toggle()
         }

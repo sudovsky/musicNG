@@ -146,7 +146,7 @@ class Playlist: Hashable, Codable, Identifiable {
         
         let path = FileManager.playlistsSettings
         
-        let plsts = load(path) ?? [Playlist(), Playlist(), Playlist()] as! [Playlist]
+        let plsts = load(path) ?? [] as! [Playlist]
         
         if updatedResult != nil {
             plsts.updatedPlaylists { newLists in

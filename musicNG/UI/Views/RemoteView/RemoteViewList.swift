@@ -14,6 +14,7 @@ struct RemoteListView: View {
     @Binding var playlistSelection: Bool
     @Binding var filesToSave: [FileData]
     @Binding var readyToDownload: Bool
+    @Binding var playlistToSave: Playlist?
 
     var onChange: ((FileData) -> Void)? = nil
     
@@ -27,7 +28,7 @@ struct RemoteListView: View {
                         RemoteViewDirectoryLine(name: file.name)
                     }
                 } else {
-                    RemoteViewFileLine(file: file, playlistSelection: $playlistSelection, filesToSave: $filesToSave, readyToDownload: $readyToDownload) { selectedFile in
+                    RemoteViewFileLine(file: file, playlistSelection: $playlistSelection, filesToSave: $filesToSave, readyToDownload: $readyToDownload, playlistToSave: $playlistToSave) { selectedFile in
                         onChange?(selectedFile)
                     }
                 }
@@ -40,5 +41,5 @@ struct RemoteListView: View {
 }
 
 #Preview {
-    RemoteListView(files: .constant([]), playlistSelection: .constant(false), filesToSave: .constant([]), readyToDownload: .constant(false))
+    RemoteListView(files: .constant([]), playlistSelection: .constant(false), filesToSave: .constant([]), readyToDownload: .constant(false), playlistToSave: .constant(nil))
 }

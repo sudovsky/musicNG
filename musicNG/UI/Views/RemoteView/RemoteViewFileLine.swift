@@ -20,6 +20,7 @@ struct RemoteViewFileLine: View {
     @Binding var playlistSelection: Bool
     @Binding var filesToSave: [FileData]
     @Binding var readyToDownload: Bool
+    @Binding var playlistToSave: Playlist?
 
     var onPlay: ((FileData) -> Void)? = nil
     
@@ -50,7 +51,7 @@ struct RemoteViewFileLine: View {
             Button {
                 if let download = downloads.downloads.first(where: { $0.file == file }), download.state == .idle { return }
                 
-                if let _ = variables.currentPlaylist {
+                if let _ = playlistToSave {
                     filesToSave = [file]
                     readyToDownload = true
                 } else {
@@ -107,5 +108,5 @@ struct RemoteViewFileLine: View {
 }
 
 #Preview {
-    RemoteViewFileLine(file: FileData(), playlistSelection: .constant(false), filesToSave: .constant([]), readyToDownload: .constant(false))
+    RemoteViewFileLine(file: FileData(), playlistSelection: .constant(false), filesToSave: .constant([]), readyToDownload: .constant(false), playlistToSave: .constant(nil))
 }
