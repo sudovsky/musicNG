@@ -70,8 +70,7 @@ struct PlayListGrid: View {
                     .id(UUID())
                     Color(.back)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
+                .padding(16)
             }
             
             ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))

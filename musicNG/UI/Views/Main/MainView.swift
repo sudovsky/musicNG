@@ -163,6 +163,7 @@ public struct MainView: View, KeyboardReadable {
             }
         }
         .opacity(bottomOpacity)
+        .frame(maxHeight: bottomOpacity == 0 ? 0 : 44)
     }
     
     func settingsOK() -> Bool {
