@@ -82,6 +82,7 @@ struct ShareView: View {
                     .padding([.horizontal], 16)
                     .padding(.vertical, 8)
                 }
+                .padding(.bottom, 16)
                 
                 Button {
                     saveFiles()
@@ -94,12 +95,23 @@ struct ShareView: View {
                             .font(.system(size: 18, weight: .medium))
                             .foregroundStyle(.back)
                     }
-                    .padding(16)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 4)
+                }
+                Button {
+                    close()
+                } label: {
+                    Text("Отмена")
+                        .frame(height: 52)
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(.main)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 8)
                 }
             }
             .frame(maxHeight: 600)
             .background(Color.back)
-            .cornerRadius(10)
+            .cornerRadius(20)
             .transition(.move(edge: .bottom).combined(with: .opacity))
             .padding(.horizontal, 8)
         }

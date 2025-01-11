@@ -76,7 +76,8 @@ struct SongListView: View {
                         }
                     }
                     Color(.back)
-                }.padding(16)
+                }
+                .padding([.horizontal, .top], 16)
             }
 
             ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))

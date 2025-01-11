@@ -75,15 +75,30 @@ struct PlaylistSelectionView: View {
                                     .font(.system(size: 18, weight: .medium))
                                     .foregroundStyle(.back)
                             }
-                            .padding([.horizontal, .bottom], 16)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 4)
                         }
                         .buttonStyle(GrowingButton())
                     }
                     
+                    Button {
+                        withAnimation {
+                            use = false
+                        }
+                    } label: {
+                        Text("Отмена")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundStyle(.main)
+                            .frame(height: 52)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 8)
+                    }
+                    .buttonStyle(GrowingButton())
+                    
                 }
                 .frame(maxHeight: 600)
                 .background(Color.back)
-                .cornerRadius(10)
+                .cornerRadius(20)
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .padding()
                 .shadowed()
