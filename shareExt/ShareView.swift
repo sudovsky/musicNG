@@ -5,7 +5,6 @@
 //  Created by Max Sudovsky on 10.01.2025.
 //
 
-
 import SwiftUI
 
 struct SharePlaylist: Identifiable {
@@ -20,7 +19,6 @@ struct ShareView: View {
     var urls: [URL]
     
     @State var playlists = [SharePlaylist]()
-    @State var listName: String? = nil
 
     let columns = [
         GridItem(.flexible(), spacing: 12),
@@ -40,10 +38,7 @@ struct ShareView: View {
                     LazyVGrid(columns: columns, alignment: .center, spacing: 12) {
                         ForEach(playlists) { playlist in
                             Button {
-//                                onSelect(playlist, false)
-//                                withAnimation {
-//                                    use = false
-//                                }
+                                saveFiles(selectedList: playlist.name)
                             } label: {
                                 ZStack {
                                     if let data = playlist.cover {
@@ -71,9 +66,7 @@ struct ShareView: View {
                                             .multilineTextAlignment(.center)
                                             .lineLimit(3)
                                     }
-//                                    .frame(alignment: .bottom)
                                     .padding(8)
-                                    //.frame(maxWidth: 64, maxHeight: 64)
                                 }
                             }
                         }
@@ -121,7 +114,8 @@ struct ShareView: View {
         NotificationCenter.default.post(name: NSNotification.Name("close"), object: nil)
     }
 
-    private func saveFiles() {
+    private func saveFiles(selectedList: String? = nil) {
+        var listName = selectedList
         let commonurl = FileManager.globalDownloadsDir
 
         var settings = [String:[String]]()
