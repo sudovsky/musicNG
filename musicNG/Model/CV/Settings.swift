@@ -14,6 +14,7 @@ class Settings: Codable {
         case password
         case address
         case shareName
+        case initiated
         case repeatMode
         case shuffleMode
         case sort
@@ -26,6 +27,8 @@ class Settings: Codable {
     var address = ""
     var shareName = ""
     
+    var initiated = false
+
     var repeatMode: Int = 0 {
         didSet {
             PlaybackCoordinator.shared.repeatMode = repeatMode
@@ -56,10 +59,11 @@ class Settings: Codable {
         let pl = readJson(file: FileManager.appSettings, as: [String:Any].self)
         repeatMode = pl?["repeatMode"] as? Int ?? 2
         shuffleMode = pl?["shuffleMode"] as? Int ?? 0
-        shareName = pl?["shareName"] as? String ?? ""//"From PC"
-        username = pl?["username"] as? String ?? ""//"Max Sudovsky"
-        password = pl?["password"] as? String ?? ""//"DiR323123"
-        address = pl?["address"] as? String ?? ""//"192.168.1.130"
+        shareName = pl?["shareName"] as? String ?? ""
+        username = pl?["username"] as? String ?? ""
+        password = pl?["password"] as? String ?? ""
+        address = pl?["address"] as? String ?? ""
+        initiated = pl?["initiated"] as? Bool ?? false
         if let sortRaw = pl?["sort"] as? Int {
             sort = SortType(rawValue: sortRaw) ?? .userDefined
         }

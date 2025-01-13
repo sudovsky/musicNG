@@ -20,6 +20,13 @@ struct musicNGApp: App {
                     if FilesMetaDB.data.isEmpty {
                         FilesMetaDB.restore()
                     }
+                    
+                    if !Settings.shared.initiated {
+                        Settings.shared.initiated = true
+                        Settings.shared.save()
+                        
+                        Playlists.shared.updateGlobalFiles()
+                    }
                 }
         }
         .onChange(of: scenePhase) { (newScenePhase) in
