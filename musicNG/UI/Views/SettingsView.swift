@@ -30,15 +30,12 @@ struct SettingsView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 44, height: 44)
-                
                 TextField("Логин", text: $login)
                     .textContentType(.username)
                     .font(.system(size: 19))
                     .autocorrectionDisabled()
                     .onChange(of: login) { newValue in
                         Settings.shared.username = newValue
-                        Downloads.shared.client.updateClient()
-                        Settings.shared.save()
                     }
             }
             .padding(.horizontal, 16)
@@ -56,8 +53,6 @@ struct SettingsView: View {
                     .textInputAutocapitalization(.never)
                     .onChange(of: pass) { newValue in
                         Settings.shared.password = newValue
-                        Downloads.shared.client.updateClient()
-                        Settings.shared.save()
                     }
 
             }
@@ -74,9 +69,7 @@ struct SettingsView: View {
                     .font(.system(size: 19))
                     .autocorrectionDisabled()
                     .onChange(of: ip) { newValue in
-                        Settings.shared.address = newValue
-                        Downloads.shared.client.updateClient()
-                        Settings.shared.save()
+                        Settings.shared.address = newValue.replacingOccurrences(of: ",", with: ".")
                     }
             }
             .padding(.horizontal, 16)
@@ -93,13 +86,12 @@ struct SettingsView: View {
                     .autocorrectionDisabled()
                     .onChange(of: shareName) { newValue in
                         Settings.shared.shareName = newValue
-                        Downloads.shared.client.updateClient()
-                        Settings.shared.save()
                     }
             }
             .padding(.horizontal, 16)
             
             Button {
+                Downloads.shared.client.updateClient()
                 Downloads.shared.client.listShare { error, data in
                     if let error = error {
                         errorMessage = error
@@ -108,6 +100,7 @@ struct SettingsView: View {
                         titleMessage = "Отлично!"
                         errorMessage = "Подключение успешно установлено"
                         UIApplication.shared.endEditing()
+                        Settings.shared.save()
                     }
                     showError = true
                 }
@@ -126,12 +119,9 @@ struct SettingsView: View {
             errorMessage = nil
             titleMessage = ""
         }
-        .onDisappear {
-            //TODO: - fix this
-            DispatchQueue.global().async {
-                Downloads.shared.client.updateClient()
-                Settings.shared.save()
-            }
+        .onSubmit {
+            Downloads.shared.client.updateClient()
+            Settings.shared.save()
         }
     }
 }
