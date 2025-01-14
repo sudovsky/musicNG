@@ -14,6 +14,10 @@ struct SettingsView: View {
     @State private var ip: String = Settings.shared.address
     @State private var shareName: String = Settings.shared.shareName
 
+    @State private var showError: Bool = false
+    @State private var errorMessage: String? = nil
+    @State private var titleMessage: String = ""
+
     var body: some View {
         VStack(spacing: 12) {
             Text("Подключение к ПК")
@@ -96,7 +100,18 @@ struct SettingsView: View {
             .padding(.horizontal, 16)
             
             Button {
-                
+                Downloads.shared.client.listShare { error, data in
+                    if let error = error {
+                        errorMessage = error
+                        showError = true
+                    } else {
+                        titleMessage = "Отлично!"
+                        errorMessage = "Подключение успешно установлено"
+                        UIApplication.shared.endEditing()
+                    }
+                    showError = true
+                }
+
             } label: {
                 Text("Проверить подключение")
                     .font(.system(size: 18, weight: .medium))
@@ -107,6 +122,10 @@ struct SettingsView: View {
             Spacer()
         }
         .background(.back)
+        .okMessage(showingAlert: $showError, title: $titleMessage, subtitle: $errorMessage) {
+            errorMessage = nil
+            titleMessage = ""
+        }
         .onDisappear {
             //TODO: - fix this
             DispatchQueue.global().async {
