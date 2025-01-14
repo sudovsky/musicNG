@@ -18,6 +18,9 @@ struct SettingsView: View {
     @State private var errorMessage: String? = nil
     @State private var titleMessage: String = ""
 
+    @State private var showingActionSheet: Bool = false
+    @State private var titles: [String] = []
+
     var body: some View {
         VStack(spacing: 12) {
             Text("Подключение к ПК")
@@ -65,7 +68,6 @@ struct SettingsView: View {
                     .frame(width: 44, height: 44)
                 
                 TextField("IP-адрес", text: $ip)
-                    .textContentType(.username)
                     .font(.system(size: 19))
                     .autocorrectionDisabled()
                     .onChange(of: ip) { newValue in
@@ -74,19 +76,19 @@ struct SettingsView: View {
             }
             .padding(.horizontal, 16)
 
-            HStack(alignment: .center, spacing: 8) {
-                Image(systemName: "folder.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 44, height: 44)
-                
-                TextField("Начальный каталог", text: $shareName)
-                    .textContentType(.username)
+            Button {
+                showShareList()
+            } label: {
+                HStack(alignment: .center, spacing: 8) {
+                    Image(systemName: "folder.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 44, height: 44)
+                    Text(shareName.isEmpty ? "Начальный каталог" : shareName)
                     .font(.system(size: 19))
-                    .autocorrectionDisabled()
-                    .onChange(of: shareName) { newValue in
-                        Settings.shared.shareName = newValue
-                    }
+                    .opacity(shareName.isEmpty ? 0.25 : 1)
+                    Spacer()
+                }
             }
             .padding(.horizontal, 16)
             
@@ -94,6 +96,7 @@ struct SettingsView: View {
                 Downloads.shared.client.updateClient()
                 Downloads.shared.client.listShare { error, data in
                     if let error = error {
+                        titleMessage = "Ошибка подключения"
                         errorMessage = error
                         showError = true
                     } else {
@@ -119,9 +122,42 @@ struct SettingsView: View {
             errorMessage = nil
             titleMessage = ""
         }
+        .confirmationDialog("Выберите общую папку", isPresented: $showingActionSheet, titleVisibility: .visible) {
+            ForEach(titles, id: \.self) { share in
+                Button(share) {
+                    shareName = share
+                    Settings.shared.shareName = share
+                    Downloads.shared.client.updateClient()
+                    Settings.shared.save()
+                }
+            }
+        }
         .onSubmit {
             Downloads.shared.client.updateClient()
             Settings.shared.save()
+        }
+    }
+    
+    func showShareList() {
+        Downloads.shared.client.updateClient()
+        Downloads.shared.client.listShare { error, files in
+            if let error = error {
+                titleMessage = "Ошибка подключения"
+                errorMessage = error
+                showError = true
+                return
+            }
+
+            guard let files = files, files.count > 0 else {
+                titleMessage = "Ошибка"
+                errorMessage = "Подключение установлено, но общие папки не найдены"
+                showError = true
+                return
+            }
+
+            titles = files
+            
+            showingActionSheet.toggle()
         }
     }
 }
