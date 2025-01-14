@@ -11,9 +11,9 @@ import AMSMB2
 class SMBClient {
     /// connect to: `smb://guest@XXX.XXX.XX.XX/share`
     
-    var serverURL = URL(string: "smb://\(Settings.shared.address)")!
-    var credential = URLCredential(user: Settings.shared.username, password: Settings.shared.password, persistence: URLCredential.Persistence.forSession)
-    var share = Settings.shared.shareName
+    var serverURL: URL { URL(string: "smb://\(Settings.shared.address)")! }
+    var credential: URLCredential { URLCredential(user: Settings.shared.username, password: Settings.shared.password, persistence: URLCredential.Persistence.forSession) }
+    var share: String { Settings.shared.shareName }
     
     lazy private var client = SMB2Manager(url: self.serverURL, credential: self.credential)
     

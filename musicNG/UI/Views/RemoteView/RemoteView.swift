@@ -23,6 +23,9 @@ struct RemoteView: View {
     @State var readyToDownload = false
     @State var playlistToSave: Playlist? = nil
     @State private var needClearPlaylistName: Bool = false
+    
+    @State private var showError: Bool = false
+    @State private var errorMessage: String? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -65,25 +68,17 @@ struct RemoteView: View {
                 }
             }
         }
+        .okMessage(showingAlert: $showError, title: .constant("Ошибка подключения"), subtitle: $errorMessage, onOk: {
+            errorMessage = nil
+        })
         .onChange(of: currentPath) { newValue in
-            Downloads.shared.client.listDirectory(path: currentPath) { error, data in
-                files = data?.filter({!$0.isHidden}).sorted(by: {
-                    ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)
-                    
-                }) ?? []
-                filteredFiles = files
+            listDirectory {
                 UIApplication.shared.endEditing()
                 searchStr = ""
             }
         }
         .onAppear {
-            Downloads.shared.client.listDirectory(path: currentPath) { error, data in
-                files = data?.filter({!$0.isHidden}).sorted(by: {
-                    ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)
-                    
-                }) ?? []
-                filteredFiles = files
-            }
+            listDirectory()
         }
         .playListSelection(visible: $playlistSelection) { pl, isNew in
             guard let name = title.isEmpty ? filesToSave.first?.name : title else { return }
@@ -111,6 +106,22 @@ struct RemoteView: View {
             }
             readyToDownload = false
             startDownload()
+        }
+    }
+    
+    func listDirectory(onDone: @escaping () -> Void = {}) {
+        Downloads.shared.client.listDirectory(path: currentPath) { error, data in
+            if let error = error {
+                errorMessage = error
+                showError = true
+            }
+            
+            files = data?.filter({!$0.isHidden}).sorted(by: {
+                ($0.isDirectory ? "0" : "1", $0.name) < ($1.isDirectory ? "0" : "1", $1.name)
+                
+            }) ?? []
+            filteredFiles = files
+            onDone()
         }
     }
     

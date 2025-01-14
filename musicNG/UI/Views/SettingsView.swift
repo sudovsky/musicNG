@@ -33,6 +33,8 @@ struct SettingsView: View {
                     .autocorrectionDisabled()
                     .onChange(of: login) { newValue in
                         Settings.shared.username = newValue
+                        Downloads.shared.client.updateClient()
+                        Settings.shared.save()
                     }
             }
             .padding(.horizontal, 16)
@@ -50,6 +52,8 @@ struct SettingsView: View {
                     .textInputAutocapitalization(.never)
                     .onChange(of: pass) { newValue in
                         Settings.shared.password = newValue
+                        Downloads.shared.client.updateClient()
+                        Settings.shared.save()
                     }
 
             }
@@ -67,6 +71,8 @@ struct SettingsView: View {
                     .autocorrectionDisabled()
                     .onChange(of: ip) { newValue in
                         Settings.shared.address = newValue
+                        Downloads.shared.client.updateClient()
+                        Settings.shared.save()
                     }
             }
             .padding(.horizontal, 16)
@@ -83,6 +89,8 @@ struct SettingsView: View {
                     .autocorrectionDisabled()
                     .onChange(of: shareName) { newValue in
                         Settings.shared.shareName = newValue
+                        Downloads.shared.client.updateClient()
+                        Settings.shared.save()
                     }
             }
             .padding(.horizontal, 16)
@@ -100,7 +108,9 @@ struct SettingsView: View {
         }
         .background(.back)
         .onDisappear {
+            //TODO: - fix this
             DispatchQueue.global().async {
+                Downloads.shared.client.updateClient()
                 Settings.shared.save()
             }
         }

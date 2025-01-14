@@ -27,7 +27,12 @@ struct OKCancelMessage: ViewModifier {
             .alertButtonTint(color: .main)
         )
         
-        func submit() { onOk?() }
+        func submit() {
+            showingAlert = false
+            DispatchQueue.global().async {
+                onOk?()
+            }
+        }
     }
 }
 
