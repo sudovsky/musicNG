@@ -61,7 +61,7 @@ public struct MainView: View, KeyboardReadable {
                 ZStack {
                     
                     PlayListGrid()
-                        .opacity(visiblePlaylist == nil ? 1 : 0)
+                        .opacity(currentFrame == 1 && visiblePlaylist == nil ? 1 : 0)
                         .scaleEffect(visiblePlaylist == nil ? 1 : 0.9)
                 if visiblePlaylist != nil {
                     SongListView(playlist: $visiblePlaylist)
