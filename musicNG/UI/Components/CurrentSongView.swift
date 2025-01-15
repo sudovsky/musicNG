@@ -48,9 +48,7 @@ struct CurrentSongView: View {
             .background {
                 Color.back
             }
-            Color.main
-                .frame(height: 0.5)
-                .opacity(0.1)
+            Divider()
         }
         .blur(radius: blur)
         .transition(.scale(scale: 0.2))

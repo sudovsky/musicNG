@@ -84,8 +84,11 @@ struct MusicControlView: View {
             Spacer()
             
             Text((variables.currentSong?.title ?? variables.currentSong?.name) ?? "")
+                .lineLimit(2)
+                .minimumScaleFactor(0.3)
                 .multilineTextAlignment(.center)
                 .font(mcTrackFont)
+                .frame(maxHeight: 42)
                 .padding(.horizontal, 16)
                 .padding(.top, 24)
             

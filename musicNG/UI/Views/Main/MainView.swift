@@ -42,6 +42,7 @@ public struct MainView: View, KeyboardReadable {
     public var body: some View {
         VStack(spacing: 0) {
             if currentFrame == 0 {
+//                Spacer()
                 prepareData()
             } else if currentFrame > 0 {
                 TitleView(backButtonVisible: $backButtonVisible,

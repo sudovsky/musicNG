@@ -33,6 +33,7 @@ public struct TitleView: View {
                         .titleButtonImage(.leading)
                 }
                 .frame(width: 44, alignment: .center)
+                .transition(.opacity.combined(with: .move(edge: .trailing)))
             }
             
             Text(title)
@@ -67,7 +68,7 @@ public struct TitleView: View {
             }
                 
         }
-        .frame(maxWidth: .infinity, minHeight: 44)
+        .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 44)
 
     }
 }

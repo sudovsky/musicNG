@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SongContext: ViewModifier {
     var file: FileData
-    var updateAction: () -> Void
+    var updateAction: (FileData) -> Void
     var action: (Int, FileData) -> Void = { _,_ in }
     
     func body(content: Content) -> some View {
@@ -20,7 +20,7 @@ struct SongContext: ViewModifier {
                     if file.fileURL().pathExtension.lowercased() == "mp3" {
                         Button {
                             file.updateTags {
-                                updateAction()
+                                updateAction(file)
                             }
                         } label: {
                             Label("Обновить", systemImage: "arrow.triangle.2.circlepath")
@@ -66,7 +66,7 @@ struct SongContext: ViewModifier {
 }
 
 extension View {
-    func songContext(file: FileData, updateAction: @escaping () -> Void, action: @escaping (Int, FileData) -> Void = { _,_ in }) -> some View {
+    func songContext(file: FileData, updateAction: @escaping (FileData) -> Void, action: @escaping (Int, FileData) -> Void = { _,_ in }) -> some View {
         modifier(SongContext(file: file, updateAction: updateAction, action: action))
     }
 }

@@ -53,8 +53,9 @@ struct SongListView: View {
                             MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0), playlistName: playlist.name)
                         } label: {
                             SongTile(image: file.cover?.image() ?? noImage, artistVisible: file.artist != nil, artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
-                                .songContext(file: file) {
+                                .songContext(file: file) { fileToUpdate in
                                     viewUpdater.reloadView()
+                                    fileToUpdate.updatePeaks(slowOnly: true)
                                 } action: { tag, file in
                                     currentTag = tag
                                     currentFile = file
@@ -98,9 +99,9 @@ struct SongListView: View {
             DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
                 fileList = playlist.getDownloads(readMetadata: true)
                 DispatchQueue.main.async {
-                    withAnimation {
+//                    withAnimation {
                         viewUpdater.reloadView()
-                    }
+//                    }
                 }
             }
         }

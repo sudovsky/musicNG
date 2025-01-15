@@ -18,7 +18,8 @@ struct ImageSelectionView: View {
     var onGetImage: ((Data) -> Void)? = nil
 
     var body: some View {
-        Spacer()
+        Color.back
+            .frame(maxWidth: .infinity, maxHeight: 0.5)
         .fileImporter(isPresented: $showingFileSelection, allowedContentTypes: [.image]) { result in
                 switch result {
                 case .success(let file):
