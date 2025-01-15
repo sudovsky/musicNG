@@ -81,8 +81,7 @@ struct SongListView: View {
                 }
                 .padding([.horizontal, .top], 16)
             }
-
-            ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))
+            .imageSelection(importing: $importing, onGetImage: updateImage(imageData:))
 
         }
         .background {

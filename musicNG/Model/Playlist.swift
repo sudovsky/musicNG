@@ -76,7 +76,7 @@ class Playlist: Hashable, Codable, Identifiable {
             listFromDisk.append(url.lastPathComponent)
         }
         
-        return listFromDisk
+        return listFromDisk.sorted(by: { $0 < $1 })
     }
     
     func getDownloads(readMetadata: Bool = false) -> [FileData] {

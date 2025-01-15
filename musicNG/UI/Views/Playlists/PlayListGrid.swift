@@ -75,7 +75,7 @@ struct PlayListGrid: View {
                     .padding(16)
                 }
             }
-            ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))
+            .imageSelection(importing: $importing, onGetImage: updateImage(imageData:))
 
         }
         .tagEditorFrame(for: $currentPL, isVisible: $showingTagEditor)

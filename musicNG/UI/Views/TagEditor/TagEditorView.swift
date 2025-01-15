@@ -41,8 +41,7 @@ struct TagEditorView: View {
                 }
             }
             .padding(.vertical, 16)
-
-            ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))
+            .imageSelection(importing: $importing, onGetImage: updateImage(imageData:))
 
             HStack(spacing: 0) {
                 Spacer()
