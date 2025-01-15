@@ -42,7 +42,6 @@ public struct MainView: View, KeyboardReadable {
     public var body: some View {
         VStack(spacing: 0) {
             if currentFrame == 0 {
-                Spacer()
                 prepareData()
             } else if currentFrame > 0 {
                 TitleView(backButtonVisible: $backButtonVisible,
@@ -111,17 +110,15 @@ public struct MainView: View, KeyboardReadable {
         .onReceive(keyboardPublisher) { newIsKeyboardVisible in
             bottomOpacity = newIsKeyboardVisible ? 0 : 1
         }
+        .onReceive(playlists.$all) { lists in
+            if !lists.isEmpty {
+                currentFrame = 1
+            }
+        }
     }
     
     func prepareData() -> some View {
         Spacer()
-            .onAppear {
-                if !playlists.all.isEmpty { return }
-                
-                playlists.reload { _ in
-                    currentFrame = 1
-                }
-            }
     }
     
     func bottomView() -> some View {

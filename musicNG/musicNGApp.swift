@@ -11,8 +11,6 @@ import SwiftUI
 struct musicNGApp: App {
     @Environment(\.scenePhase) private var scenePhase
     
-    @State var firstRun = true
-    
     var body: some Scene {
         WindowGroup {
             MainView()
@@ -41,13 +39,6 @@ struct musicNGApp: App {
                 try? FileManager.default.removeItem(at: FileManager.temp)
 
                 FileData.getFilesFromShare()
-                
-                if firstRun {
-                    firstRun = false
-                    return
-                }
-                
-                Playlists.shared.reload()
             default: break
             }
         }

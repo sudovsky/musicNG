@@ -44,8 +44,11 @@ extension FileData {
     static func getFilesFromShare() {
         guard let commonurl = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.ru.cloudunion.music")?.appendingPathComponent("Downloads") else { return }
         
-        guard let files = try? FileManager.default.contentsOfDirectory(at: commonurl, includingPropertiesForKeys: nil) else { return }
- 
+        guard let files = try? FileManager.default.contentsOfDirectory(at: commonurl, includingPropertiesForKeys: nil) else {
+            
+            Playlists.shared.reload()
+            return
+        }
         
         var settings = [String:[String]]()
         
