@@ -153,7 +153,7 @@ struct TagEditorView: View {
     }
     
     func editTags(fileData: FileData, artist: String, title: String) {
-        if fileData.fileURL().pathExtension.lowercased() != "mp3" {
+        if !editableStandarts.contains(fileData.fileURL().pathExtension.uppercased()) {
             return
         }
         

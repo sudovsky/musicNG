@@ -17,7 +17,7 @@ struct SongContext: ViewModifier {
             .contextMenu {
                 Section("Перетаскивание элементов доступно только при сортировке \"Пользовательская\"") {
                     
-                    if file.fileURL().pathExtension.lowercased() == "mp3" {
+                    if editableStandarts.contains(file.fileURL().pathExtension.uppercased()) {
                         Button {
                             file.updateTags {
                                 updateAction(file)

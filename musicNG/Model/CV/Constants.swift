@@ -28,4 +28,5 @@ let remoteArtistFont: Font = .custom("Ampero-Regular", size: 18) //.system(size:
 let noImage = Image("NoImage")
     .resizable()
 
-var standarts: [String] { ["MP3", "M4A"] }
+var standarts: [String] { ["MP3", "M4A", "FLAC"] }
+var editableStandarts: [String] { ["MP3", "FLAC"] }
