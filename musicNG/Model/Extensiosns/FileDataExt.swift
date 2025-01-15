@@ -46,7 +46,9 @@ extension FileData {
         
         guard let files = try? FileManager.default.contentsOfDirectory(at: commonurl, includingPropertiesForKeys: nil) else {
             
-            Playlists.shared.reload()
+            Playlists.shared.reload() { _ in
+                PlaylistCoordinator.shared.current = PlaylistCoordinator.shared.current
+            }
             return
         }
         
@@ -126,7 +128,9 @@ extension FileData {
         
         Playlists.shared.save()
         
-        Playlists.shared.reload() { _ in }
+        Playlists.shared.reload() { _ in
+            PlaylistCoordinator.shared.current = PlaylistCoordinator.shared.current
+        }
         
         try? FileManager.default.removeItem(at: commonurl)
     }
