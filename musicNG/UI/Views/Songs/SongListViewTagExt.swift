@@ -39,19 +39,21 @@ extension SongListView {
         switch currentTag {
         case 1:
             fileData.updateTextTags(title: newTitle) { newData in
-                fileData.saveData(data: newData)
+                fileData.saveData(data: newData, async: false)
                 fileData.updateTags() {
                     viewUpdater.reloadView()
                     //plist.current = plist.current
                 }
+                fileData.updatePeaks(slowOnly: true)
             }
         case 2:
             fileData.updateTextTags(artist: newTitle) { newData in
-                fileData.saveData(data: newData)
+                fileData.saveData(data: newData, async: false)
                 fileData.updateTags() {
                     viewUpdater.reloadView()
                     //plist.current = plist.current
                 }
+                fileData.updatePeaks(slowOnly: true)
             }
         default:
             break
@@ -84,7 +86,7 @@ extension SongListView {
         guard let fileData = currentFile else { return }
         
         fileData.updateCover(imageData: imageData) { newData in
-            fileData.saveData(data: newData)
+            fileData.saveData(data: newData, async: false)
             fileData.updateTags()
             fileData.updatePeaks(slowOnly: true)
             
