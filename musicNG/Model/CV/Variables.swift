@@ -107,15 +107,15 @@ class Playlists: ObservableObject {
     }
 }
 
+//Для информации что сейчас играет, определения обложки, пиков и т.д.
 class Variables: ObservableObject {
+    
     @Published var currentSong: FileData?
-
-    var currentPlaylist: Playlist? = nil
-    var songList: [FileData] = []
 
     static var shared = Variables()
     
     private init() {}
+    
 }
 
 class PositionCoordinator: ObservableObject {
@@ -145,7 +145,7 @@ class PlaybackCoordinator: ObservableObject {
 
 class PlaylistCoordinator: ObservableObject {
 
-    @Published var currentPlaylist: Playlist? = nil
+    @Published var current: Playlist? = nil
 
     static var shared = PlaylistCoordinator()
     

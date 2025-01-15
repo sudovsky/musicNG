@@ -39,7 +39,7 @@ struct PlayListGrid: View {
                 LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                     ReorderableForEach($pls, allowReordering: $reorder) { playlist, isDragged in
                         Button {
-                            PlaylistCoordinator.shared.currentPlaylist = playlist
+                            PlaylistCoordinator.shared.current = playlist
                         } label: {
                             PlaylistTile(playlist: playlist, image: playlist.cover?.image() ?? noImage)
                                 .playlistContext(playlist: playlist) {

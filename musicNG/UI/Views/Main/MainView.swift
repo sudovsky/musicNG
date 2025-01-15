@@ -55,7 +55,7 @@ public struct MainView: View, KeyboardReadable {
                 } secondAction: {
                     showAlert.toggle()
                 } backAction: {
-                    playlistCoordinator.currentPlaylist = nil
+                    playlistCoordinator.current = nil
                 }
                 
                 ZStack {
@@ -104,7 +104,7 @@ public struct MainView: View, KeyboardReadable {
             RemoteView()
         }
         .navigationBarHidden(true)
-        .onReceive(playlistCoordinator.$currentPlaylist) { plist in
+        .onReceive(playlistCoordinator.$current) { plist in
             withAnimation {
                 backButtonVisible = (plist?.id != nil) && currentFrame == 1
                 title = plist?.name ?? "Плейлисты"
@@ -135,7 +135,7 @@ public struct MainView: View, KeyboardReadable {
             withAnimation(Animation.easeOut.speed(1.8)) {
                 if currentFrame == 2 {
                     currentFrame = 1
-                    if let pname = playlistCoordinator.currentPlaylist?.name {
+                    if let pname = playlistCoordinator.current?.name {
                         title = pname
                         backButtonVisible = true
                     } else {
@@ -143,8 +143,8 @@ public struct MainView: View, KeyboardReadable {
                         backButtonVisible = false
                     }
                     actionsVisible = true
-                } else if playlistCoordinator.currentPlaylist != nil {
-                    playlistCoordinator.currentPlaylist = nil
+                } else if playlistCoordinator.current != nil {
+                    playlistCoordinator.current = nil
                     title = "Плейлисты"
                 }
                 

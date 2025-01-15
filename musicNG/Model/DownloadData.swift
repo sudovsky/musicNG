@@ -60,7 +60,7 @@ class DownloadData: ObservableObject, Identifiable, Hashable {
                         Playlists.shared.reload()
                         
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            PlaylistCoordinator.shared.currentPlaylist = PlaylistCoordinator.shared.currentPlaylist
+                            PlaylistCoordinator.shared.current = PlaylistCoordinator.shared.current
                         }
                         
                         Downloads.startDownload()

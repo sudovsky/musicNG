@@ -58,7 +58,7 @@ struct MusicControlView: View {
                     .titleButtonImage(.leading)
                     .hidden()
                 
-                Text(Variables.shared.currentPlaylist?.name ?? "")
+                Text(MediaPlayer.shared.currentPlaylistName ?? "")
                     .font(trackFont)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity, alignment: .center)

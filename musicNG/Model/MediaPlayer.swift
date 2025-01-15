@@ -22,7 +22,8 @@ final class MediaPlayer {
     var originalPlaylist: [FileData] = []
     var currentFile: Int = -1
     var currentData: FileData? { currentFile > -1 ? playlist[currentFile] : nil }
-    
+    var currentPlaylistName: String? = nil
+
     var shuffled: MPShuffleType = MPShuffleType(rawValue: Settings.shared.shuffleMode) ?? .off
     var repeated: MPRepeatType = MPRepeatType(rawValue: Settings.shared.repeatMode) ?? .all
     
@@ -100,7 +101,8 @@ final class MediaPlayer {
         play(file: file)
     }
     
-    func initPlayback(playlist: [FileData], index: Int = 0) {
+    func initPlayback(playlist: [FileData], index: Int = 0, playlistName: String? = nil) {
+        currentPlaylistName = playlistName
         originalPlaylist = playlist
         self.playlist = originalPlaylist
         

@@ -75,8 +75,7 @@ extension MainView {
         
         Playlists.shared.save()
         
-        Variables.shared.currentPlaylist = list
-        PlaylistCoordinator.shared.currentPlaylist = list
+        PlaylistCoordinator.shared.current = list
     }
     
 }
