@@ -35,44 +35,46 @@ struct PlayListGrid: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
-                    ReorderableForEach($pls, allowReordering: $reorder) { playlist, isDragged in
-                        Button {
-                            PlaylistCoordinator.shared.current = playlist
-                        } label: {
-                            PlaylistTile(playlist: playlist, image: playlist.cover?.image() ?? noImage)
-                                .playlistContext(playlist: playlist) {
-                                    viewUpdater.reloadView()
-                                } action: { tag, playlist in
-                                    currentTag = tag
-                                    currentPL = playlist
-                                    updateTag()
-                                }
-                        }
-                        .buttonStyle(GrowingButton())
-                        .overlay(isDragged ? Color.back.opacity(0.6) : Color.clear)
-                    }
-                    onDone: {
-                        DispatchQueue.global().async {
-                            var index = 0
-                            pls.forEach { pl in
-                                pl.sortKey = index
-                                index += 1
-                            }
+            NavigationStack {
+                ScrollView {
+                    LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
+                        ReorderableForEach($pls, allowReordering: $reorder) { playlist, isDragged in
                             
-                            DispatchQueue.main.async {
-                                playlists.all = pls
-                                playlists.save()
+                            NavigationLink {
+                                SongListView(playlist: playlist)
+                            } label: {
+                                PlaylistTile(playlist: playlist, image: playlist.cover?.image() ?? noImage)
+                                    .playlistContext(playlist: playlist) {
+                                        viewUpdater.reloadView()
+                                    } action: { tag, playlist in
+                                        currentTag = tag
+                                        currentPL = playlist
+                                        updateTag()
+                                    }
+                                    .overlay(isDragged ? Color.back.opacity(0.6) : Color.clear)
+                            }
+
+                        }
+                        onDone: {
+                            DispatchQueue.global().async {
+                                var index = 0
+                                pls.forEach { pl in
+                                    pl.sortKey = index
+                                    index += 1
+                                }
+                                
+                                DispatchQueue.main.async {
+                                    playlists.all = pls
+                                    playlists.save()
+                                }
                             }
                         }
+                        .id(UUID())
+                        Color(.back)
                     }
-                    .id(UUID())
-                    Color(.back)
+                    .padding(16)
                 }
-                .padding(16)
             }
-            
             ImageSelectionView(importing: $importing, onGetImage: updateImage(imageData:))
 
         }

@@ -42,6 +42,7 @@ extension SongListView {
                 fileData.saveData(data: newData)
                 fileData.updateTags() {
                     viewUpdater.reloadView()
+                    //plist.current = plist.current
                 }
             }
         case 2:
@@ -49,6 +50,7 @@ extension SongListView {
                 fileData.saveData(data: newData)
                 fileData.updateTags() {
                     viewUpdater.reloadView()
+                    //plist.current = plist.current
                 }
             }
         default:
@@ -88,6 +90,7 @@ extension SongListView {
             
             DispatchQueue.main.async {
                 viewUpdater.reloadView()
+                //plist.current = plist.current
             }
             
             DispatchQueue.global().async {
@@ -117,8 +120,9 @@ extension SongListView {
         
         currentFile = nil
         
-        playlist?.updateDownloads()
+        playlist.updateDownloads()
         viewUpdater.reloadView()
+        //plist.current = plist.current
     }
     
 }

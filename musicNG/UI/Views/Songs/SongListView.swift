@@ -14,7 +14,7 @@ struct SongListView: View {
     @ObservedObject var viewUpdater = ViewUpdater()
     @ObservedObject var plist = PlaylistCoordinator.shared
 
-    @Binding var playlist: Playlist?
+    var playlist: Playlist
     @State var fileList: [FileData] = []
     
     @State var showAlert = false
@@ -29,6 +29,8 @@ struct SongListView: View {
     @State var currentFile: FileData? = nil
 
     @State var reorder = true
+
+    @State var canDismiss = false
 
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -48,10 +50,13 @@ struct SongListView: View {
                             
                             PositionCoordinator.shared.position = 0
                             
-                            MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0), playlistName: plist.current?.name)
+                            MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0), playlistName: playlist.name)
                         } label: {
                             SongTile(image: file.cover?.image() ?? noImage, artistVisible: file.artist != nil, artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
-                                .songContext(file: file) { viewUpdater.reloadView() } action: { tag, file in
+                                .songContext(file: file) {
+                                    viewUpdater.reloadView()
+                                    //plist.current = plist.current
+                                } action: { tag, file in
                                     currentTag = tag
                                     currentFile = file
                                     updateTag()
@@ -67,9 +72,9 @@ struct SongListView: View {
                                 index += 1
                             }
                             
-                            guard let name = playlist?.name else { return }
+                            try? fileList.save(FileManager.default.urlForPlaylistSettings(name: playlist.name))
                             
-                            try? fileList.save(FileManager.default.urlForPlaylistSettings(name: name))
+                            MediaPlayer.shared.playlist = fileList
                         }
                     }
                     Color(.back)
@@ -85,12 +90,29 @@ struct SongListView: View {
         }
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
         .onReceive(plist.$current) { list in
-            fileList = playlist?.getDownloads(readMetadata: true) ?? [FileData]()
+            if !canDismiss { return }
+            
+            if list == nil {
+                dismiss()
+            }
+            
+            fileList = playlist.getDownloads(readMetadata: true)
+            viewUpdater.reloadView()
         }
+        .onAppear() {
+            PlaylistCoordinator.shared.current = playlist
+            canDismiss = true
+            fileList = playlist.getDownloads(readMetadata: true)
+        }
+        .onDisappear() {
+            PlaylistCoordinator.shared.current = nil
+            canDismiss = false
+        }
+        .toolbar(.hidden)
     }
     
 }
 
 #Preview {
-    SongListView(playlist: .constant(Playlist()))
+    SongListView(playlist: Playlist())
 }

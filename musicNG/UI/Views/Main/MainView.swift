@@ -17,7 +17,6 @@ public struct MainView: View, KeyboardReadable {
     @State private var showingDetail: Bool = false
     @State private var currentFrame: Int = 0
 
-    @State private var visiblePlaylist: Playlist? = nil
     @State private var backButtonVisible: Bool = false
     @State private var title: String = "Плейлисты"
     @State private var actionsVisible: Bool = true
@@ -61,11 +60,7 @@ public struct MainView: View, KeyboardReadable {
                 ZStack {
                     
                     PlayListGrid()
-                        .opacity(currentFrame == 1 && visiblePlaylist == nil ? 1 : 0)
-                        .scaleEffect(visiblePlaylist == nil ? 1 : 0.9)
-                if visiblePlaylist != nil {
-                    SongListView(playlist: $visiblePlaylist)
-                        .transition(.move(edge: .trailing).combined(with: .opacity))                    }
+                        .opacity(currentFrame == 1 ? 1 : 0)
                     SettingsView()
                         .opacity(currentFrame == 2 ? 1 : 0)
                 }
@@ -108,7 +103,6 @@ public struct MainView: View, KeyboardReadable {
             withAnimation {
                 backButtonVisible = (plist?.id != nil) && currentFrame == 1
                 title = plist?.name ?? "Плейлисты"
-                visiblePlaylist = plist
             }
         }
         .onReceive(playlistSelectionCoordinator.$needShowSelection) { plist in
