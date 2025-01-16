@@ -112,9 +112,8 @@ public struct MainView: View, KeyboardReadable {
             bottomOpacity = newIsKeyboardVisible ? 0 : 1
         }
         .onReceive(playlists.$all) { lists in
-            if !lists.isEmpty {
-                currentFrame = 1
-            }
+            //TODO: - check first run
+            currentFrame = 1
         }
     }
     

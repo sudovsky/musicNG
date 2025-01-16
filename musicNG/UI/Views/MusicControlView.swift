@@ -10,13 +10,14 @@ import SwiftUI
 struct MusicControlView: View {
     
     @Environment(\.dismiss) var dismiss
-    @Environment(\.verticalSizeClass) private var verticalSizeClass: UserInterfaceSizeClass?
 
     @ObservedObject var variables = Variables.shared
     @ObservedObject var pb = PlaybackCoordinator.shared
+    
+    @State var isVertical: Bool? = nil
 
     var body: some View {
-        if verticalSizeClass == .compact {
+        if isVertical == false {
             HStack(spacing: 0) {
                 VinylView()
                     .scaleEffect(0.85)
@@ -33,7 +34,10 @@ struct MusicControlView: View {
                         }
                     })
             )
-            .transition(.opacity.animation(.spring))
+            .orientationChange { size, vertical in
+                isVertical = vertical
+            }
+            .opacity(isVertical == nil ? 0 : 1)
         } else {
             verticalPart()
                 .gesture(
@@ -47,7 +51,18 @@ struct MusicControlView: View {
                             }
                         })
                 )
-                .transition(.opacity.animation(.spring))
+                .orientationChange { size, vertical in
+                    if isVertical != vertical {
+                        if isVertical == nil {
+                            withAnimation {
+                                isVertical = vertical
+                            }
+                        } else {
+                            isVertical = vertical
+                        }
+                    }
+                }
+                .opacity(isVertical == nil ? 0 : 1)
         }
     }
     
@@ -72,11 +87,11 @@ struct MusicControlView: View {
                 }
                 .frame(width: 44, alignment: .center)
             }
-            .padding(.vertical, verticalSizeClass == .compact ? 16 : 0)
+            .padding(.vertical, isVertical == false ? 16 : 0)
             
             Spacer()
             
-            if verticalSizeClass != .compact {
+            if isVertical ?? false {
                 VinylView()
                     .scaleEffect(0.85)
             }
@@ -144,7 +159,7 @@ struct MusicControlView: View {
                 .shadowed()
                 
             }
-            .padding(.bottom, verticalSizeClass == .compact ? 16 : 35)
+            .padding(.bottom, isVertical == false ? 16 : 35)
         }
     }
 }
