@@ -21,7 +21,7 @@ struct TagEditorView: View {
     var body: some View {
         VStack(spacing: 0) {
             TitleView(backButtonVisible: .constant(true),
-                      title: .constant("Редактор mp3"),
+                      title: .constant("Редактор тэгов"),
                       actionsVisible: .constant(true),
                       backButtonImage: Image(systemName: "xmark"),
                       actionImage: Image(systemName: "photo.badge.plus")) {

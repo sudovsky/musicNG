@@ -21,7 +21,7 @@ struct PlaylistContext: ViewModifier {
                     Button {
                         action(0, playlist)
                     } label: {
-                        Label("Редактировать mp3", systemImage: "square.and.pencil")
+                        Label("Редактировать тэги", systemImage: "square.and.pencil")
                     }
                     
                     Button {
