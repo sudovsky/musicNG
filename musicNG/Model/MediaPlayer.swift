@@ -478,14 +478,13 @@ final class MediaPlayer {
     }
     
     //https://github.com/bhavnishkumar/WaveAudioGenerator/blob/master/MusicWaveDemo/WaveGenerator.swift
-    func readBuffer(_ audioUrl: URL, notify: Bool = true, completion: @escaping (Bool, [Float]) -> Void = {_,_ in})  {
+    func readBuffer(_ audioUrl: URL, notify: Bool = true, completion: @escaping ([Float]) -> Void = {_ in})  {
         
         var currentPath = ""
         
         if notify {
             guard let cp = currentData?.path else {
-                completion(true, [])
-                completion(false, [])
+                completion([])
                 return
             }
             
@@ -494,8 +493,7 @@ final class MediaPlayer {
         
         DispatchQueue.global().async {
             guard let file = try? AVAudioFile(forReading: MediaPlayer.nurl ?? audioUrl) else {
-                completion(true, [])
-                completion(false, [])
+                completion([])
                 return
             }
             
@@ -503,8 +501,7 @@ final class MediaPlayer {
             let audioFrameCount = UInt32(file.length)
             guard let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: audioFrameCount)
             else {
-                completion(true, [])
-                completion(false, [])
+                completion([])
                 return
             }
             do {
@@ -515,33 +512,13 @@ final class MediaPlayer {
             
             let floatArray = UnsafeBufferPointer(start: buffer.floatChannelData![0], count: Int(buffer.frameLength))
 
-            var fastResult = [Float]()
             var slowResult = [Float]()
             var peakCount: Int = 0
             DispatchQueue.main.sync {
                 peakCount = PeaksView.peakCount()
             }
 
-            var index = 1
-
-            if floatArray.count == 0 {
-                fastResult = []
-            } else {
-                while index < peakCount {
-                    let value = floatArray[index * peakCount]
-                    fastResult.append(abs(value))
-                    index += 1
-                }
-            }
-            
-            DispatchQueue.main.async {
-                completion(true, fastResult)
-                if notify {
-                    NotificationCenter.default.post(name: NSNotification.Name("peaksDone"), object: nil, userInfo: ["path": currentPath, "peaks": fastResult, "fast": true])
-                }
-            }
-            
-            index = 0
+            var index = 0
 
             if floatArray.count == 0 {
                 slowResult = []
@@ -569,7 +546,7 @@ final class MediaPlayer {
             }
             
             DispatchQueue.main.async {
-                completion(false, slowResult)
+                completion(slowResult)
                 if notify {
                     NotificationCenter.default.post(name: NSNotification.Name("peaksDone"), object: nil, userInfo: ["path": currentPath, "peaks": slowResult, "fast": false])
                 }

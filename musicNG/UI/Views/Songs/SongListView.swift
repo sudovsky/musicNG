@@ -62,7 +62,7 @@ struct SongListView: View {
                             SongTile(image: file.cover?.image() ?? noImage, artistVisible: file.artist != nil, artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
                                 .songContext(file: file) { fileToUpdate in
                                     viewUpdater.reloadView()
-                                    fileToUpdate.updatePeaks(slowOnly: true)
+                                    fileToUpdate.updatePeaks()
                                 } action: { tag, file in
                                     currentTag = tag
                                     currentFile = file

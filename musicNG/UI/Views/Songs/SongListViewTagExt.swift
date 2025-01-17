@@ -44,7 +44,7 @@ extension SongListView {
                     viewUpdater.reloadView()
                     //plist.current = plist.current
                 }
-                fileData.updatePeaks(slowOnly: true)
+                fileData.updatePeaks()
             }
         case 2:
             fileData.updateTextTags(artist: newTitle) { newData in
@@ -53,7 +53,7 @@ extension SongListView {
                     viewUpdater.reloadView()
                     //plist.current = plist.current
                 }
-                fileData.updatePeaks(slowOnly: true)
+                fileData.updatePeaks()
             }
         default:
             break
@@ -88,7 +88,7 @@ extension SongListView {
         fileData.updateCover(imageData: imageData) { newData in
             fileData.saveData(data: newData, async: false)
             fileData.updateTags()
-            fileData.updatePeaks(slowOnly: true)
+            fileData.updatePeaks()
             
             DispatchQueue.main.async {
                 viewUpdater.reloadView()
