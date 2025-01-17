@@ -13,7 +13,8 @@ struct MusicControlView: View {
 
     @ObservedObject var variables = Variables.shared
     @ObservedObject var pb = PlaybackCoordinator.shared
-    
+    @StateObject private var orientationCoordinator = OrientationCoordinator.shared
+
     @State private var isVertical: Bool? = nil
 
     var body: some View {
@@ -23,6 +24,7 @@ struct MusicControlView: View {
                 VinylView()
                     .scaleEffect(0.85)
                 verticalPart()
+                    .frame(maxWidth: orientationCoordinator.size.width / 2)
             }
             .gesture(
                 DragGesture(minimumDistance: 20)
@@ -90,15 +92,17 @@ struct MusicControlView: View {
             }
             .padding(.vertical, isVertical == false ? 16 : 0)
             
-            Spacer()
-            
             if isVertical ?? false {
+                Spacer()
+                
                 VinylView()
                     .scaleEffect(0.85)
+                
+                Spacer()
+            } else {
+                Spacer()
             }
 
-            Spacer()
-            
             Text((variables.currentSong?.title ?? variables.currentSong?.name) ?? "")
                 .lineLimit(2)
                 .minimumScaleFactor(0.3)
@@ -161,6 +165,10 @@ struct MusicControlView: View {
                 
             }
             .padding(.bottom, isVertical == false ? 16 : 35)
+            
+            if isVertical == false {
+                Spacer()
+            }
         }
     }
 }

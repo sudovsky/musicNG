@@ -22,100 +22,101 @@ struct SettingsView: View {
     @State private var titles: [String] = []
 
     var body: some View {
-        VStack(spacing: 12) {
-            Text("Подключение к ПК")
-                .font(.system(size: 21))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding([.horizontal, .top], 16)
-            
-            HStack(alignment: .center, spacing: 8) {
-                Image(systemName: "person.crop.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 44, height: 44)
-                TextField("Логин", text: $login)
-                    .textContentType(.username)
-                    .font(.system(size: 19))
-                    .autocorrectionDisabled()
-                    .onChange(of: login) { newValue in
-                        Settings.shared.username = newValue
-                    }
-            }
-            .padding(.horizontal, 16)
-
-            HStack(alignment: .center, spacing: 8) {
-                Image(systemName: "lock.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 44, height: 44)
+        ScrollView {
+            VStack(spacing: 12) {
+                Text("Подключение к ПК")
+                    .font(.system(size: 21))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding([.horizontal, .top], 16)
                 
-                SecureField("Пароль", text: $pass)
-                    .textContentType(.password)
-                    .font(.system(size: 19))
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-                    .onChange(of: pass) { newValue in
-                        Settings.shared.password = newValue
-                    }
-
-            }
-            .padding(.horizontal, 16)
-
-            HStack(alignment: .center, spacing: 8) {
-                Image(systemName: "wifi.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 44, height: 44)
-                
-                TextField("IP-адрес", text: $ip)
-                    .font(.system(size: 19))
-                    .autocorrectionDisabled()
-                    .onChange(of: ip) { newValue in
-                        Settings.shared.address = newValue.replacingOccurrences(of: ",", with: ".")
-                    }
-            }
-            .padding(.horizontal, 16)
-
-            Button {
-                showShareList()
-            } label: {
                 HStack(alignment: .center, spacing: 8) {
-                    Image(systemName: "folder.circle.fill")
+                    Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 44, height: 44)
-                    Text(shareName.isEmpty ? "Начальный каталог" : shareName)
-                    .font(.system(size: 19))
-                    .opacity(shareName.isEmpty ? 0.25 : 1)
-                    Spacer()
+                    TextField("Логин", text: $login)
+                        .textContentType(.username)
+                        .font(.system(size: 19))
+                        .autocorrectionDisabled()
+                        .onChange(of: login) { newValue in
+                            Settings.shared.username = newValue
+                        }
                 }
-            }
-            .padding(.horizontal, 16)
-            
-            Button {
-                Downloads.shared.client.updateClient()
-                Downloads.shared.client.listShare { error, data in
-                    if let error = error {
-                        titleMessage = "Ошибка подключения"
-                        errorMessage = error
-                        showError = true
-                    } else {
-                        titleMessage = "Отлично!"
-                        errorMessage = "Подключение успешно установлено"
-                        UIApplication.shared.endEditing()
-                        Settings.shared.save()
+                .padding(.horizontal, 16)
+                
+                HStack(alignment: .center, spacing: 8) {
+                    Image(systemName: "lock.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 44, height: 44)
+                    
+                    SecureField("Пароль", text: $pass)
+                        .textContentType(.password)
+                        .font(.system(size: 19))
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .onChange(of: pass) { newValue in
+                            Settings.shared.password = newValue
+                        }
+                    
+                }
+                .padding(.horizontal, 16)
+                
+                HStack(alignment: .center, spacing: 8) {
+                    Image(systemName: "wifi.circle.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 44, height: 44)
+                    
+                    TextField("IP-адрес", text: $ip)
+                        .font(.system(size: 19))
+                        .autocorrectionDisabled()
+                        .onChange(of: ip) { newValue in
+                            Settings.shared.address = newValue.replacingOccurrences(of: ",", with: ".")
+                        }
+                }
+                .padding(.horizontal, 16)
+                
+                Button {
+                    showShareList()
+                } label: {
+                    HStack(alignment: .center, spacing: 8) {
+                        Image(systemName: "folder.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 44, height: 44)
+                        Text(shareName.isEmpty ? "Начальный каталог" : shareName)
+                            .font(.system(size: 19))
+                            .opacity(shareName.isEmpty ? 0.25 : 1)
+                        Spacer()
                     }
-                    showError = true
                 }
-
-            } label: {
-                Text("Проверить подключение")
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(.main)
-                    .padding(.horizontal, 16)
+                .padding(.horizontal, 16)
+                
+                Button {
+                    Downloads.shared.client.updateClient()
+                    Downloads.shared.client.listShare { error, data in
+                        if let error = error {
+                            titleMessage = "Ошибка подключения"
+                            errorMessage = error
+                            showError = true
+                        } else {
+                            titleMessage = "Отлично!"
+                            errorMessage = "Подключение успешно установлено"
+                            UIApplication.shared.endEditing()
+                            Settings.shared.save()
+                        }
+                        showError = true
+                    }
+                    
+                } label: {
+                    Text("Проверить подключение")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(.main)
+                        .padding(.horizontal, 16)
+                }
+                
             }
-
-            Spacer()
         }
         .background(.back)
         .okMessage(showingAlert: $showError, title: $titleMessage, subtitle: $errorMessage) {

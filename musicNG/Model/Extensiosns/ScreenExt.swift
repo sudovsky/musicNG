@@ -36,7 +36,8 @@ extension UIScreen {
         if UIScreen.getSize().width < UIScreen.getSize().height {
             return UIScreen.getSize().width - 64
         } else {
-            return UIScreen.getSize().height - 64
+            return OrientationCoordinator.shared.size.width / 2 - 64
+            //UIScreen.getSize().height - 64
         }
     }
 }
