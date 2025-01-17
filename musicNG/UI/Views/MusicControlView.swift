@@ -14,9 +14,10 @@ struct MusicControlView: View {
     @ObservedObject var variables = Variables.shared
     @ObservedObject var pb = PlaybackCoordinator.shared
     
-    @State var isVertical: Bool? = nil
+    @State private var isVertical: Bool? = nil
 
     var body: some View {
+        //TODO: - divide screen ровно пополам for ipad
         if isVertical == false {
             HStack(spacing: 0) {
                 VinylView()

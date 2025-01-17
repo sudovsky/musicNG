@@ -14,6 +14,10 @@ struct musicNGApp: App {
     var body: some Scene {
         WindowGroup {
             MainView()
+                .orientationChange(onChange: { size, vertical in
+                    OrientationCoordinator.shared.size = size
+                    OrientationCoordinator.shared.vertical = vertical
+                })
                 .onAppear {
                     if FilesMetaDB.data.isEmpty {
                         FilesMetaDB.restore()

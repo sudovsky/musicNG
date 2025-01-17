@@ -131,6 +131,17 @@ class PositionCoordinator: ObservableObject {
     
 }
 
+class OrientationCoordinator: ObservableObject {
+
+    @Published var vertical: Bool = true
+    var size: CGSize = CGSize(width: 0, height: 0)
+
+    static var shared = OrientationCoordinator()
+    
+    private init() {}
+    
+}
+
 class PlaybackCoordinator: ObservableObject {
 
     @Published var isPlaying = false

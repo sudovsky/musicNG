@@ -11,6 +11,7 @@ struct PlayListGrid: View {
 
     @ObservedObject var playlists = Playlists.shared
     @ObservedObject var viewUpdater = ViewUpdater()
+    @StateObject private var orientationCoordinator = OrientationCoordinator.shared
 
     @State var pls: [Playlist] = []
 
@@ -28,7 +29,13 @@ struct PlayListGrid: View {
 
     @State var showingTagEditor: Bool = false
 
-    let columns = [
+    let vcolumns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+
+    let hcolumns = [
+        GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
@@ -37,7 +44,7 @@ struct PlayListGrid: View {
         VStack(spacing: 0) {
             NavigationStack {
                 ScrollView {
-                    LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
+                    LazyVGrid(columns: orientationCoordinator.vertical ? vcolumns : hcolumns, alignment: .center, spacing: 16) {
                         ReorderableForEach($pls, allowReordering: $reorder) { playlist, isDragged in
                             
                             NavigationLink {

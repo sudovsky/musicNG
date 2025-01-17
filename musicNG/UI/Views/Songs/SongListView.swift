@@ -13,6 +13,7 @@ struct SongListView: View {
 
     @ObservedObject var viewUpdater = ViewUpdater()
     @ObservedObject var plist = PlaylistCoordinator.shared
+    @StateObject private var orientationCoordinator = OrientationCoordinator.shared
 
     var playlist: Playlist
     @State var fileList: [FileData] = []
@@ -32,7 +33,13 @@ struct SongListView: View {
 
     @State var canDismiss = false
 
-    let columns = [
+    let vcolumns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+
+    let hcolumns = [
+        GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
@@ -40,7 +47,7 @@ struct SongListView: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
+                LazyVGrid(columns: orientationCoordinator.vertical ? vcolumns : hcolumns, alignment: .center, spacing: 16) {
                     ReorderableForEach($fileList, allowReordering: $reorder) { file, isDragged in
                         Button {
 
