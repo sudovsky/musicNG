@@ -14,7 +14,7 @@ class Settings: Codable {
         case password
         case address
         case shareName
-        case initiated
+        case isAppInitiated
         case repeatMode
         case shuffleMode
         case sort
@@ -27,7 +27,7 @@ class Settings: Codable {
     var address = ""
     var shareName = ""
     
-    var initiated = false
+    var isAppInitiated = false
 
     var repeatMode: Int = 0 {
         didSet {
@@ -63,10 +63,15 @@ class Settings: Codable {
         username = pl?["username"] as? String ?? ""
         password = pl?["password"] as? String ?? ""
         address = pl?["address"] as? String ?? ""
-        initiated = pl?["initiated"] as? Bool ?? false
+        isAppInitiated = pl?["isAppInitiated"] as? Bool ?? false
         if let sortRaw = pl?["sort"] as? Int {
             sort = SortType(rawValue: sortRaw) ?? .userDefined
         }
+    }
+    
+    func initiated() {
+        isAppInitiated = true
+        save()
     }
 }
 

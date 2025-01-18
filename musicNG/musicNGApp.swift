@@ -23,10 +23,7 @@ struct musicNGApp: App {
                         FilesMetaDB.restore()
                     }
                     
-                    if !Settings.shared.initiated {
-                        Settings.shared.initiated = true
-                        Settings.shared.save()
-                        
+                    if !Settings.shared.isAppInitiated {
                         Playlists.shared.updateGlobalFiles()
                     }
                 }

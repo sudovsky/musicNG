@@ -34,6 +34,11 @@ public struct MainView: View, KeyboardReadable {
     @State var alertSubtitle: String = "Введите название"
     @State var alertPlaceholder: String = "Название"
 
+    
+    @State var index: Int = 0
+    @State var items : [(title:String, text:String, image: Image?, buttonTitle: String)] = []
+
+    
     let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
@@ -44,6 +49,9 @@ public struct MainView: View, KeyboardReadable {
             if currentFrame == 0 {
 //                Spacer()
                 prepareData()
+            } else if currentFrame == 3 {
+                onboarding()
+                    .transition(.opacity)
             } else if currentFrame > 0 {
                 TitleView(backButtonVisible: $backButtonVisible,
                           title: $title,
@@ -70,7 +78,7 @@ public struct MainView: View, KeyboardReadable {
                 CurrentSongView()
             }
             
-            if currentFrame != 0 {
+            if currentFrame != 0, currentFrame != 3 {
                 bottomView()
             }
         }
@@ -112,13 +120,67 @@ public struct MainView: View, KeyboardReadable {
             bottomOpacity = newIsKeyboardVisible ? 0 : 1
         }
         .onReceive(playlists.$all) { lists in
-            //TODO: - check first run
-            currentFrame = 1
+            if !Settings.shared.isAppInitiated {
+                withAnimation {
+                    currentFrame = 3
+                }
+                return
+            }
+            
+            //if !lists.isEmpty {
+                currentFrame = 1
+            //}
         }
     }
     
     func prepareData() -> some View {
         Spacer()
+            .onAppear {
+                items = [
+                    ("Привет!",
+                     "Добро пожаловать!\n\nСпасибо, что установили приложение! Надеюсь, оно вам понравится!\n\nСейчас я расскажу как добавить музыку",
+                     Image(.note2),
+                     "Далее"),
+                    ("Вариант 1: через диалог \"Поделиться\"",
+                     "Можно добавить музыку из любого другого приложения, в котором можно вызвать этот диалог\n\nПросто выберите в качестве назначения это приложение",
+                     Image(.share),
+                     "Далее"),
+                    ("Вариант 2: через приложение \"Файлы\"",
+                     "Откройте его, найдите там папку \"Music\" с иконкой этого приложения. Внутри нее вы найдете папку \"Playlists\". Скопируйте в нее папку с музыкой.\n\nКаждая папка с музыкой - отдельный плейлист",
+                     Image(.files),
+                     "Далее"),
+                    ("Вариант 3: напрямую с компьютера",
+                     "Перейдите в настройки и заполните там информацию для доступа к вашему компьютеру (предварительно на нем нужно расшарить папку с музыкой)\n\nПосле этого вернитесь к списку плейлистов и нажмите на иконку справа от заголовка \"Плейлисты\". Она похожа на глобус. Откроется содержимое выбранной расшаренной папки\n\nВы сможете добавить в приложение как отдельный файл, так и содержимое всей папки",
+                     Image(.browse),
+                     "Понятно!")
+                    ]
+            }
+    }
+    
+    func onboarding() -> some View {
+        VStack(spacing: 0) {
+
+            SwiftUIPagerView(index: $index, pages: self.items.identify { $0.title }) { size, item in
+                
+                OnboardingSheetView(title: item.model.title, text: item.model.text, image: item.model.image, buttonTitle: item.model.buttonTitle) {
+                    if index < items.count - 1 {
+                        withAnimation {
+                            index += 1
+                        }
+                    } else {
+                        Settings.shared.initiated()
+                        withAnimation {
+                            currentFrame = 1
+                        }
+                    }
+                }
+                .frame(width: size.width - 32, height: size.height - 32)
+                .padding()
+            }
+            .transition(.scale.combined(with: .opacity))
+
+        }
+    
     }
     
     func bottomView() -> some View {
