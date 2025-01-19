@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>avanti.ttf</string>
-	</array>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
@@ -17,14 +13,18 @@
     SUBQUERY (
         $extensionItem.attachments,
         $attachment,
-        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.audio&quot;
+        ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.audio"
     ).@count == $extensionItem.attachments.@count
 ).@count &gt;= 1</string>
 		</dict>
-		<key>NSExtensionPrincipalClass</key>
-		<string>shareExt.ShareViewController</string>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.share-services</string>
+		<key>NSExtensionPrincipalClass</key>
+		<string>shareExt.ShareViewController</string>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>avanti.ttf</string>
+	</array>
 </dict>
 </plist>
