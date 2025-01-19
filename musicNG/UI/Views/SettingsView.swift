@@ -24,7 +24,7 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 12) {
-                Text("Подключение к ПК")
+                Text("Connecting to PC")
                     .font(.system(size: 21))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.horizontal, .top], 16)
@@ -34,7 +34,7 @@ struct SettingsView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 44, height: 44)
-                    TextField("Логин", text: $login)
+                    TextField("Login", text: $login)
                         .textContentType(.username)
                         .font(.system(size: 19))
                         .autocorrectionDisabled()
@@ -50,7 +50,7 @@ struct SettingsView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 44, height: 44)
                     
-                    SecureField("Пароль", text: $pass)
+                    SecureField("Password", text: $pass)
                         .textContentType(.password)
                         .font(.system(size: 19))
                         .autocorrectionDisabled()
@@ -68,7 +68,7 @@ struct SettingsView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 44, height: 44)
                     
-                    TextField("IP-адрес", text: $ip)
+                    TextField("IP-address", text: $ip)
                         .font(.system(size: 19))
                         .autocorrectionDisabled()
                         .onChange(of: ip) { newValue in
@@ -85,7 +85,7 @@ struct SettingsView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 44, height: 44)
-                        Text(shareName.isEmpty ? "Начальный каталог" : shareName)
+                        Text(shareName.isEmpty ? "Home directory" : shareName)
                             .font(.system(size: 19))
                             .opacity(shareName.isEmpty ? 0.25 : 1)
                         Spacer()
@@ -97,12 +97,12 @@ struct SettingsView: View {
                     Downloads.shared.client.updateClient()
                     Downloads.shared.client.listShare { error, data in
                         if let error = error {
-                            titleMessage = "Ошибка подключения"
+                            titleMessage = "Connection error".localized
                             errorMessage = error
                             showError = true
                         } else {
-                            titleMessage = "Отлично!"
-                            errorMessage = "Подключение успешно установлено"
+                            titleMessage = "Perfect!".localized
+                            errorMessage = "Connection established successfully".localized
                             UIApplication.shared.endEditing()
                             Settings.shared.save()
                         }
@@ -110,7 +110,7 @@ struct SettingsView: View {
                     }
                     
                 } label: {
-                    Text("Проверить подключение")
+                    Text("Check connection")
                         .font(.system(size: 18, weight: .medium))
                         .foregroundStyle(.main)
                         .padding(.horizontal, 16)
@@ -123,7 +123,7 @@ struct SettingsView: View {
             errorMessage = nil
             titleMessage = ""
         }
-        .confirmationDialog("Выберите общую папку", isPresented: $showingActionSheet, titleVisibility: .visible) {
+        .confirmationDialog("Select a shared folder", isPresented: $showingActionSheet, titleVisibility: .visible) {
             ForEach(titles, id: \.self) { share in
                 Button(share) {
                     shareName = share
@@ -143,15 +143,15 @@ struct SettingsView: View {
         Downloads.shared.client.updateClient()
         Downloads.shared.client.listShare { error, files in
             if let error = error {
-                titleMessage = "Ошибка подключения"
+                titleMessage = "Connection error".localized
                 errorMessage = error
                 showError = true
                 return
             }
 
             guard let files = files, files.count > 0 else {
-                titleMessage = "Ошибка"
-                errorMessage = "Подключение установлено, но общие папки не найдены"
+                titleMessage = "Error".localized
+                errorMessage = "Connection established, but no shared folders found".localized
                 showError = true
                 return
             }

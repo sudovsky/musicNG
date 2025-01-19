@@ -18,7 +18,7 @@ public struct MainView: View, KeyboardReadable {
     @State private var currentFrame: Int = 0
 
     @State private var backButtonVisible: Bool = false
-    @State private var title: String = "Плейлисты"
+    @State private var title: String = "Playlists".localized
     @State private var actionsVisible: Bool = true
 
     @State private var bottomOpacity: CGFloat = 1
@@ -30,9 +30,9 @@ public struct MainView: View, KeyboardReadable {
     @State var showAlert = false
     @State var alertText: String = ""
 
-    @State var alertTitle: String = "Новый плейлист"
-    @State var alertSubtitle: String = "Введите название"
-    @State var alertPlaceholder: String = "Название"
+    @State var alertTitle: String = "New playlist".localized
+    @State var alertSubtitle: String = "Enter name".localized
+    @State var alertPlaceholder: String = "Name".localized
 
     
     @State var index: Int = 0
@@ -85,10 +85,10 @@ public struct MainView: View, KeyboardReadable {
         .background {
             Color.back
         }
-        .okCancelMessage(showingAlert: $showSettingsAlert, title: .constant("Не заполнены настройки подключения"), subtitle: .constant("Перейти на страницу настроек?"), onOk: {
+        .okCancelMessage(showingAlert: $showSettingsAlert, title: .constant("Connection settings are not filled in"), subtitle: .constant("Go to the settings page?"), onOk: {
             withAnimation(Animation.easeOut.speed(2.5)) {
                 currentFrame = 2
-                title = "Настройки"
+                title = "Settings".localized
                 backButtonVisible = false
                 actionsVisible = false
             }
@@ -110,7 +110,7 @@ public struct MainView: View, KeyboardReadable {
         .onReceive(playlistCoordinator.$current) { plist in
             withAnimation {
                 backButtonVisible = (plist?.id != nil) && currentFrame == 1
-                title = plist?.name ?? "Плейлисты"
+                title = plist?.name ?? "Playlists".localized
             }
         }
         .onReceive(playlistSelectionCoordinator.$needShowSelection) { plist in
@@ -132,27 +132,31 @@ public struct MainView: View, KeyboardReadable {
             //}
         }
     }
-    
+//    //Welcome!
+//    
+//    Thank you for installing the app! I hope you enjoy it!
+//        
+//        Now I'll tell you how to add music
     func prepareData() -> some View {
         Spacer()
             .onAppear {
                 items = [
-                    ("Привет!",
-                     "Добро пожаловать!\n\nСпасибо, что установили приложение! Надеюсь, оно вам понравится!\n\nСейчас я расскажу как добавить музыку",
+                    ("Hi!".localized,
+                     "onboarding_text_1".localized,
                      Image(.note2),
-                     "Далее"),
-                    ("Вариант 1: через диалог \"Поделиться\"",
-                     "Можно добавить музыку из любого другого приложения, в котором можно вызвать этот диалог\n\nПросто выберите в качестве назначения это приложение",
+                     "Next".localized),
+                    ("onboarding_title_1".localized,
+                     "onboarding_text_2".localized,
                      Image(.share),
-                     "Далее"),
-                    ("Вариант 2: через приложение \"Файлы\"",
-                     "Откройте его, найдите там папку \"Music\" с иконкой этого приложения. Внутри нее вы найдете папку \"Playlists\". Скопируйте в нее папку с музыкой.\n\nКаждая папка с музыкой - отдельный плейлист",
+                     "Next".localized),
+                    ("onboarding_title_2".localized,
+                     "onboarding_text_3".localized,
                      Image(.files),
-                     "Далее"),
-                    ("Вариант 3: напрямую с компьютера",
-                     "Перейдите в настройки и заполните там информацию для доступа к вашему компьютеру (предварительно на нем нужно расшарить папку с музыкой)\n\nПосле этого вернитесь к списку плейлистов и нажмите на иконку справа от заголовка \"Плейлисты\". Она похожа на глобус. Откроется содержимое выбранной расшаренной папки\n\nВы сможете добавить в приложение как отдельный файл, так и содержимое всей папки",
+                     "Next".localized),
+                    ("onboarding_title_3".localized,
+                     "onboarding_text_4".localized,
                      Image(.browse),
-                     "Понятно!")
+                     "Got it!".localized)
                     ]
             }
     }
@@ -192,13 +196,13 @@ public struct MainView: View, KeyboardReadable {
                         title = pname
                         backButtonVisible = true
                     } else {
-                        title = "Плейлисты"
+                        title = "Playlists".localized
                         backButtonVisible = false
                     }
                     actionsVisible = true
                 } else if playlistCoordinator.current != nil {
                     playlistCoordinator.current = nil
-                    title = "Плейлисты"
+                    title = "Playlists".localized
                 }
                 
                 DispatchQueue.global().async {
@@ -210,7 +214,7 @@ public struct MainView: View, KeyboardReadable {
             
             withAnimation(Animation.easeOut.speed(2.5)) {
                 currentFrame = 2
-                title = "Настройки"
+                title = "Settings".localized
                 backButtonVisible = false
                 actionsVisible = false
             }

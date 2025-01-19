@@ -11,7 +11,7 @@ struct RemoteView: View {
 
     @Environment(\.dismiss) var dismiss
     
-    @State var title: String = "Обзор"
+    @State var title: String = "Browse".localized
     @State var searchStr: String = ""
     @State var currentPath = ""
 
@@ -41,7 +41,7 @@ struct RemoteView: View {
                 }
             }
             
-            TextField("Поиск", text: $searchStr)
+            TextField("Search", text: $searchStr)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
                 .onChange(of: searchStr) { text in
@@ -68,7 +68,7 @@ struct RemoteView: View {
                 }
             }
         }
-        .okMessage(showingAlert: $showError, title: .constant("Ошибка подключения"), subtitle: $errorMessage, onOk: {
+        .okMessage(showingAlert: $showError, title: .constant("Connection error".localized), subtitle: $errorMessage, onOk: {
             errorMessage = nil
         })
         .onChange(of: currentPath) { newValue in
@@ -153,7 +153,7 @@ struct RemoteView: View {
         if let index = currentPath.lastIndex(of: "/") {
             title = String(currentPath[index...].dropFirst())
         } else {
-            title = "Обзор"
+            title = "Browse".localized
         }
     }
 }

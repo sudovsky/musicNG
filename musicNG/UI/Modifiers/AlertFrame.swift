@@ -22,8 +22,8 @@ struct AlertFrame: ViewModifier {
             .alert(title, isPresented: $showingAlert) {
                 TextField(placeholder, text: $text)
                 Button("OK", action: submit)
-                Button("Отмена", role: .cancel) { }
-            } message: { if !subtitle.isEmpty { Text("Введите название песни") } }
+                Button("Cancel", role: .cancel) { }
+            } message: { if !subtitle.isEmpty { Text(subtitle) } }
             .alertButtonTint(color: .main)
         )
         

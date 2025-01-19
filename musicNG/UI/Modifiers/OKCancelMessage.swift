@@ -21,7 +21,7 @@ struct OKCancelMessage: ViewModifier {
             .alert(title, isPresented: $showingAlert) {
                 Button("OK", action: submit)
                 if showCancel {
-                    Button("Отмена", role: .cancel) { }
+                    Button("Cancel", role: .cancel) { }
                 }
             } message: { if subtitle == nil { EmptyView() } else { Text(subtitle ?? "") } }
             .alertButtonTint(color: .main)

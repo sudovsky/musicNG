@@ -66,9 +66,9 @@ extension PlayListGrid {
     func updateTitle() {
         guard let playlist = currentPL else { return }
         
-        title = "Изменение названия"
-        subtitle = "Введите название плейлиста"
-        placeholder = "Название"
+        title = "Title change".localized
+        subtitle = "Enter the playlist title".localized
+        placeholder = "Title".localized
         alertText = playlist.name
         
         showAlert.toggle()

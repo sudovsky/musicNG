@@ -14,18 +14,18 @@ enum SortType: Int, Codable {
     case date = 3
     case dateReverse = 4
     
-    func caption() -> String {
+    func caption() -> LocalizedStringResource {
         switch self {
         case .userDefined:
-            "Пользовательская"
+            "Custom"
         case .name:
-            "От А до Я"
+            "A -> Z"
         case .nameReverse:
-            "От Я до А"
+            "Z -> A"
         case .date:
-            "Сначала старые"
+            "Old -> New"
         case .dateReverse:
-            "Сначала новые"
+            "New -> Old"
         @unknown default:
             ""
         }

@@ -76,6 +76,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Resources/Localizable.xcstrings,
 			);
 			target = 0612F0372CD127B100816A76 /* musicNG */;
 		};
@@ -94,6 +95,7 @@
 				Model/Extensiosns/JSONExt.swift,
 				"Resources/Fonts/avanti bold.ttf",
 				Resources/Fonts/avanti.ttf,
+				Resources/Localizable.xcstrings,
 			);
 			target = 06FFA91E2D3128B600079B74 /* shareExt */;
 		};
@@ -319,6 +321,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 0612F02F2CD127B100816A76;
 			minimizedProjectReferenceProxies = 1;

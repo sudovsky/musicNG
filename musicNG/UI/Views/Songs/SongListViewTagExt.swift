@@ -63,9 +63,9 @@ extension SongListView {
     func updateTitle() {
         guard let fileData = currentFile, let ttl = fileData.getCurrentTag(.title) else { return }
         
-        title = "Изменение названия"
-        subtitle = "Введите название аудиозаписи"
-        placeholder = "Название"
+        title = "Title change".localized
+        subtitle = "Enter the song title".localized
+        placeholder = "Title".localized
         alertText = ttl
         
         showAlert.toggle()
@@ -74,9 +74,9 @@ extension SongListView {
     func updateArtist() {
         guard let fileData = currentFile, let ttl = fileData.getCurrentTag(.artist) else { return }
         
-        title = "Изменение исполнителя"
-        subtitle = "Введите название исполнителя"
-        placeholder = "Исполнитель"
+        title = "Artist change".localized
+        subtitle = "Enter the artist name".localized
+        placeholder = "Artist".localized
         alertText = ttl
         
         showAlert.toggle()

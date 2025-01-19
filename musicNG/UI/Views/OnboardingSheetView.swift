@@ -12,7 +12,7 @@ struct OnboardingSheetView: View {
     var title: String
     var text: String
     var image: Image? = nil
-    var buttonTitle: String = "Далее"
+    var buttonTitle: String = "Next"
     
     var action: () -> Void = { }
 

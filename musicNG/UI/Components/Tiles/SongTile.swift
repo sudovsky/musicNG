@@ -19,8 +19,8 @@ struct SongTile: View {
     var image: Image
     var artistVisible = true
     
-    var artist: String = "Unknown"
-    var track: String = "Unknown"
+    var artist: String = "Unknown Artist".localized
+    var track: String = "Unknown Title".localized
     var shadow: Bool = true
     var gradient: Bool = true
     var destination: SongTileDestination = .song

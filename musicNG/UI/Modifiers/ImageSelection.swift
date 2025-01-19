@@ -29,10 +29,10 @@ struct ImageSelection: ViewModifier {
                     case .failure(let error): print(error.localizedDescription)
                     }
                 }
-                .confirmationDialog("Выбор изображения",
+                .confirmationDialog("Select image",
                                     isPresented: $importing) {
-                    Button("Из галереи") { isImagePickerViewPresented = true }
-                    Button("Из файлов") { showingFileSelection = true }
+                    Button("From the gallery") { isImagePickerViewPresented = true }
+                    Button("From Files") { showingFileSelection = true }
                     
                     Button("Cancel", role: .cancel) { }
                 }

@@ -15,7 +15,7 @@ extension MainView {
         if destination == nil {
             let list = Playlist()
             let title = file.title ?? file.name
-            let artist = file.artist ?? "Unknown"
+            let artist = file.artist ?? "Unknown Artist"
             list.name = "\(artist) - \(title)"
             list.sortKey = playlists.all.count
             playlists.all.append(list)

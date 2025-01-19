@@ -37,7 +37,7 @@ struct PlaylistSelectionView: View {
             VStack(spacing: 0) {
                 Spacer()
                 VStack(spacing: 0) {
-                    Text("Выберите плейлист")
+                    Text("Select a playlist")
                         .font(.system(size: 21, weight: .light))
                         .padding()
                     
@@ -71,7 +71,7 @@ struct PlaylistSelectionView: View {
                                 RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
                                     .frame(maxHeight: 52)
                                     .foregroundStyle(Color.main)
-                                Text("Создать новый")
+                                Text("Create new")
                                     .font(.system(size: 18, weight: .medium))
                                     .foregroundStyle(.back)
                             }
@@ -86,7 +86,7 @@ struct PlaylistSelectionView: View {
                             use = false
                         }
                     } label: {
-                        Text("Отмена")
+                        Text("Cancel")
                             .font(.system(size: 18, weight: .medium))
                             .foregroundStyle(.main)
                             .frame(height: 52)

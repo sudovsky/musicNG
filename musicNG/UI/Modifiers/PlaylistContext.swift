@@ -16,37 +16,37 @@ struct PlaylistContext: ViewModifier {
     func body(content: Content) -> some View {
         return AnyView(content
             .contextMenu {
-                Section("Перетаскивание элементов доступно только при сортировке \"Пользовательская\"") {
+                Section("Drag and drop of elements is only available when sorting by \"Custom\"") {
                     
                     Button {
                         action(0, playlist)
                     } label: {
-                        Label("Редактировать тэги", systemImage: "square.and.pencil")
+                        Label("Edit tags", systemImage: "square.and.pencil")
                     }
                     
                     Button {
                         action(1, playlist)
                     } label: {
-                        Label("Переименовать плейлист", systemImage: "pencil")
+                        Label("Rename playlist", systemImage: "pencil")
                     }
                     
                     Button {
                         action(2, playlist)
                     } label: {
-                        Label("Изменить обложку", systemImage: "photo")
+                        Label("Change cover", systemImage: "photo")
                     }
                 
                     Button {
                         action(3, playlist)
                     } label: {
-                        Label("Поделиться", systemImage: "square.and.arrow.up")
+                        Label("Share", systemImage: "square.and.arrow.up")
                     }
                 }
                 
                 Button(role: .destructive) {
                     action(4, playlist)
                 } label: {
-                    Label("Удалить", systemImage: "trash")
+                    Label("Delete", systemImage: "trash")
                 }
             }
         )

@@ -15,7 +15,7 @@ struct SongContext: ViewModifier {
     func body(content: Content) -> some View {
         return AnyView(content
             .contextMenu {
-                Section("Перетаскивание элементов доступно только при сортировке \"Пользовательская\"") {
+                Section("Drag and drop of elements is only available when sorting by \"Custom\"") {
                     
                     if editableStandarts.contains(file.fileURL().pathExtension.uppercased()) {
                         Button {
@@ -23,41 +23,41 @@ struct SongContext: ViewModifier {
                                 updateAction(file)
                             }
                         } label: {
-                            Label("Обновить", systemImage: "arrow.triangle.2.circlepath")
+                            Label("Refresh", systemImage: "arrow.triangle.2.circlepath")
                         }
                         Button {
                             action(1, file)
                         } label: {
-                            Label("Изменить название", systemImage: "pencil")
+                            Label("Change title", systemImage: "pencil")
                         }
                         Button {
                             action(2, file)
                         } label: {
-                            Label("Изменить исполнителя", systemImage: "pencil")
+                            Label("Change artist", systemImage: "pencil")
                         }
                         Button {
                             action(3, file)
                         } label: {
-                            Label("Изменить обложку", systemImage: "photo")
+                            Label("Change cover", systemImage: "photo")
                         }
                     }
                     
                     Button {
                         action(4, file)
                     } label: {
-                        Label("Поделиться", systemImage: "square.and.arrow.up")
+                        Label("Share", systemImage: "square.and.arrow.up")
                     }
                     Button {
                         action(5, file)
                     } label: {
-                        Label("Переместить", systemImage: "play.square.stack.fill")
+                        Label("Move", systemImage: "play.square.stack.fill")
                     }
                 }
 
                 Button(role: .destructive) {
                     action(6, file)
                 } label: {
-                    Label("Удалить", systemImage: "trash")
+                    Label("Delete", systemImage: "trash")
                 }
             }
         )

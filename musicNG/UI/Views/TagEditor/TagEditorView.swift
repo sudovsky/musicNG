@@ -21,7 +21,7 @@ struct TagEditorView: View {
     var body: some View {
         VStack(spacing: 0) {
             TitleView(backButtonVisible: .constant(true),
-                      title: .constant("Редактор тэгов"),
+                      title: .constant("Tag editor"),
                       actionsVisible: .constant(true),
                       backButtonImage: Image(systemName: "xmark"),
                       actionImage: Image(systemName: "photo.badge.plus")) {
@@ -31,7 +31,7 @@ struct TagEditorView: View {
             }
             .padding(.trailing, 8)
             
-            TextField("Маска", text: $mask)
+            TextField("Mask", text: $mask)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
             
@@ -87,7 +87,7 @@ struct TagEditorView: View {
                     RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
                         .frame(maxHeight: 52)
                         .foregroundStyle(Color.main)
-                    Text("Сохранить")
+                    Text("Apply")
                         .font(.system(size: 18, weight: .medium))
                         .foregroundStyle(.back)
                 }
