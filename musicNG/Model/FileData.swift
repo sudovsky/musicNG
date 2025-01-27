@@ -7,6 +7,7 @@
 
 import Foundation
 import AMSMB2
+import UIKit
 
 class FileData: Hashable, Codable, Identifiable {
     
@@ -97,18 +98,23 @@ class FileData: Hashable, Codable, Identifiable {
             }
             return
         }
-
+        
+        let task = UIApplication.shared.beginBackgroundTask {}
         Downloads.shared.client.getFileData(path: path) { error, data in
             if let error = error {
                 completion(nil, error)
+                UIApplication.shared.endBackgroundTask(task)
+                return
             }
             
             guard let data = data else {
                 completion(nil, "Unknown error")
+                UIApplication.shared.endBackgroundTask(task)
                 return
             }
             
             completion(data, nil)
+            UIApplication.shared.endBackgroundTask(task)
         }
     }
 

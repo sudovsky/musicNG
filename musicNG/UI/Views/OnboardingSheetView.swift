@@ -32,7 +32,8 @@ struct OnboardingSheetView: View {
                             .resizable()
                             .cornerRadius(15)
                             .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: UIScreen.getSize().width - 164, maxHeight: UIScreen.getSize().width - 164)
+                            .frame(maxWidth: (OrientationCoordinator.shared.vertical ? UIScreen.getSize().width : UIScreen.getSize().height / 1.5) - 164,
+                                   maxHeight: (OrientationCoordinator.shared.vertical ? UIScreen.getSize().width : UIScreen.getSize().height / 1.5) - 164)
                             .cornerRadius(15)
                             .padding(.vertical, 24)
                             .shadowed()

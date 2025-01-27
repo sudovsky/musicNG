@@ -447,13 +447,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Open it, find the folder \"Music\" with the icon of this application. Inside it you will find the folder \"Playlists\". Copy the folder with music into it.\n\nEach folder with music is a separate playlist"
+            "value" : "Open it, find the folder \"Music NG\" with the icon of this application. Inside it you will find the folder \"Playlists\". Copy the folder with music into it.\n\nEach folder with music is a separate playlist"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Откройте его, найдите там папку \"Music\" с иконкой этого приложения. Внутри нее вы найдете папку \"Playlists\". Скопируйте в нее папку с музыкой.\n\nКаждая папка с музыкой - отдельный плейлист"
+            "value" : "Откройте его, найдите там папку \"Music NG\" с иконкой этого приложения. Внутри нее вы найдете папку \"Playlists\". Скопируйте в нее папку с музыкой.\n\nКаждая папка с музыкой - отдельный плейлист"
           }
         }
       }
