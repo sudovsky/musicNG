@@ -16,13 +16,19 @@ struct MusicControlView: View {
     @StateObject private var orientationCoordinator = OrientationCoordinator.shared
 
     @State private var isVertical: Bool? = nil
+    @State private var imageOffset: CGSize = CGSize.zero
+    @State private var imageScale: CGFloat = 0.85
+    @State private var imageOpacity: CGFloat = 1
 
     var body: some View {
         //TODO: - divide screen ровно пополам for ipad
         if isVertical == false {
             HStack(spacing: 0) {
                 VinylView()
-                    .scaleEffect(0.85)
+//                    .animation(.easeInOut(duration: 0.2), value: imageOffset)
+                    .scaleEffect(imageScale)
+                    .offset(imageOffset)
+                    .opacity(imageOpacity)
                 verticalPart()
                     .frame(maxWidth: orientationCoordinator.size.width / 2)
             }
@@ -45,12 +51,39 @@ struct MusicControlView: View {
             verticalPart()
                 .gesture(
                     DragGesture(minimumDistance: 20)
+                        .onChanged({ val in
+                            let distX = val.location.x - val.startLocation.x
+                            let disty = val.location.y - val.startLocation.y
+                            
+                            if abs(distX) > abs(disty) {
+                                print(distX)
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    imageOffset = .init(width: distX, height: 0)
+                                    imageScale = getScale(x: distX)
+                                    imageOpacity = getOpacity(x: distX)
+                                }
+                            }
+                        })
                         .onEnded({ val in
                             let distX = val.location.x - val.startLocation.x
                             let disty = val.location.y - val.startLocation.y
                             
                             if abs(distX) < abs(disty), disty > 0 {
                                 dismiss()
+                            } else if abs(distX) > abs(disty) {
+                                if abs(distX) < 100 {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        imageOffset = .zero
+                                        imageScale = 0.85
+                                        imageOpacity = 1
+                                    }
+                                } else {
+                                    if distX > 0 {
+                                        prev()
+                                    } else {
+                                        next()
+                                    }
+                                }
                             }
                         })
                 )
@@ -96,7 +129,9 @@ struct MusicControlView: View {
                 Spacer()
                 
                 VinylView()
-                    .scaleEffect(0.85)
+                    .scaleEffect(imageScale)
+                    .offset(imageOffset)
+                    .opacity(imageOpacity)
                 
                 Spacer()
             } else {
@@ -136,7 +171,7 @@ struct MusicControlView: View {
                 .shadowed()
                 
                 PlayControlButton(imageName: "backward.end.fill") {
-                    MediaPlayer.shared.prevFile()
+                    prev()
                 }
                 .frame(width: 44, height: 44)
                 PlayControlButton(isBig: true) {
@@ -148,7 +183,7 @@ struct MusicControlView: View {
                 }
                 .frame(width: 74, height: 74)
                 PlayControlButton(imageName: "forward.end.fill") {
-                    MediaPlayer.shared.nextFile()
+                    next()
                 }
                 .frame(width: 44, height: 44)
                 
@@ -171,6 +206,65 @@ struct MusicControlView: View {
             }
         }
     }
+    
+    func getScale(x: CGFloat) -> CGFloat {
+        
+        let percent = (abs(x) / (UIScreen.getSize().width)) * 100
+        let result =  0.85 - (0.85 * percent / 100)
+        
+        return result > 0.75 ? result : 0.75
+    }
+
+    func getOpacity(x: CGFloat) -> CGFloat {
+        
+        let percent = (abs(x) / (UIScreen.getSize().width)) * 100
+        let result =  1 - (percent / 100)
+        
+        return result > 0.35 ? result : 0.35
+    }
+    
+    func prev() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            imageScale = 0.75
+            imageOpacity = 0.35
+            imageOffset = CGSize(width: UIScreen.getSize().width, height: 0)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            MediaPlayer.shared.prevFile()
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            imageOffset = CGSize(width: -UIScreen.getSize().width, height: 0)
+            withAnimation(.easeInOut(duration: 0.2)) {
+                imageScale = 0.85
+                imageOpacity = 1
+                imageOffset = CGSize(width: 0, height: 0)
+            }
+        }
+    }
+    
+    func next() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            imageScale = 0.75
+            imageOpacity = 0.35
+            imageOffset = CGSize(width: -UIScreen.getSize().width, height: 0)
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            MediaPlayer.shared.nextFile()
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            imageOffset = CGSize(width: UIScreen.getSize().width, height: 0)
+            withAnimation(.easeInOut(duration: 0.2)) {
+                imageScale = 0.85
+                imageOpacity = 1
+                imageOffset = CGSize(width: 0, height: 0)
+            }
+        }
+    }
+
 }
 
 #Preview {
