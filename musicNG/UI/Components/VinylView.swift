@@ -29,8 +29,18 @@ struct VinylView: View {
             Image(.vinyl)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .blendMode(.screen)
             
+            Circle()
+                .foregroundStyle(.clear)
+                .background(content: {
+                    cover
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .blendMode(.screen)
+                })
+                .aspectRatio(contentMode: .fit)
+                .rotationEffect(.degrees(rotate ? 360 : 0))
+
             Circle()
                 .stroke(.main.opacity(0.6), lineWidth: 4)
                 .foregroundStyle(Color.clear)
