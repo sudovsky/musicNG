@@ -49,44 +49,6 @@ struct MusicControlView: View {
             .opacity(isVertical == nil ? 0 : 1)
         } else {
             verticalPart()
-                .gesture(
-                    DragGesture(minimumDistance: 20)
-                        .onChanged({ val in
-                            let distX = val.location.x - val.startLocation.x
-                            let disty = val.location.y - val.startLocation.y
-                            
-                            if abs(distX) > abs(disty) {
-                                print(distX)
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    imageOffset = .init(width: distX, height: 0)
-                                    imageScale = getScale(x: distX)
-                                    imageOpacity = getOpacity(x: distX)
-                                }
-                            }
-                        })
-                        .onEnded({ val in
-                            let distX = val.location.x - val.startLocation.x
-                            let disty = val.location.y - val.startLocation.y
-                            
-                            if abs(distX) < abs(disty), disty > 0 {
-                                dismiss()
-                            } else if abs(distX) > abs(disty) {
-                                if abs(distX) < 100 {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        imageOffset = .zero
-                                        imageScale = 0.85
-                                        imageOpacity = 1
-                                    }
-                                } else {
-                                    if distX > 0 {
-                                        prev()
-                                    } else {
-                                        next()
-                                    }
-                                }
-                            }
-                        })
-                )
                 .orientationChange { size, vertical in
                     if isVertical != vertical {
                         if isVertical == nil {
@@ -132,7 +94,45 @@ struct MusicControlView: View {
                     .scaleEffect(imageScale)
                     .offset(imageOffset)
                     .opacity(imageOpacity)
-                
+                    .gesture(
+                        DragGesture(minimumDistance: 20)
+                            .onChanged({ val in
+                                let distX = val.location.x - val.startLocation.x
+                                let disty = val.location.y - val.startLocation.y
+                                
+                                if abs(distX) > abs(disty) {
+                                    print(distX)
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        imageOffset = .init(width: distX, height: 0)
+                                        imageScale = getScale(x: distX)
+                                        imageOpacity = getOpacity(x: distX)
+                                    }
+                                }
+                            })
+                            .onEnded({ val in
+                                let distX = val.location.x - val.startLocation.x
+                                let disty = val.location.y - val.startLocation.y
+                                
+                                if abs(distX) < abs(disty), disty > 0 {
+                                    dismiss()
+                                } else if abs(distX) > abs(disty) {
+                                    if abs(distX) < 100 {
+                                        withAnimation(.easeInOut(duration: 0.2)) {
+                                            imageOffset = .zero
+                                            imageScale = 0.85
+                                            imageOpacity = 1
+                                        }
+                                    } else {
+                                        if distX > 0 {
+                                            prev()
+                                        } else {
+                                            next()
+                                        }
+                                    }
+                                }
+                            })
+                    )
+
                 Spacer()
             } else {
                 Spacer()
