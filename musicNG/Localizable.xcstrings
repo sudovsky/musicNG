@@ -475,6 +475,23 @@
         }
       }
     },
+    "onboarding_text_5" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long press on a playlist or song to open a pop-up menu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Долгое нажатие на плейлист или песню открывает всплывающее меню"
+          }
+        }
+      }
+    },
     "onboarding_title_1" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -522,6 +539,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Вариант 3: напрямую с компьютера"
+          }
+        }
+      }
+    },
+    "onboarding_title_4" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menu"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Меню"
           }
         }
       }

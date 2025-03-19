@@ -155,7 +155,11 @@ public struct MainView: View, KeyboardReadable {
                      "Next".localized),
                     ("onboarding_title_3".localized,
                      "onboarding_text_4".localized,
-                     Image(.browse),
+                     Image(.files),
+                     "Next".localized),
+                    ("onboarding_title_4".localized,
+                     "onboarding_text_5".localized,
+                     Image(.menuEn),
                      "Got it!".localized)
                     ]
             }
