@@ -18,4 +18,7 @@ extension String {
         return fileName.replacingOccurrences(of: ".", with: "") + "." + (components.last ?? "")
     }
 
+    func error(code: Int = 1) -> NSError {
+        NSError(domain: NSOSStatusErrorDomain, code: code, userInfo: [NSLocalizedDescriptionKey: self])
+    }
 }

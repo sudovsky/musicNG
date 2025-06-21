@@ -40,7 +40,7 @@ extension FileData {
         
         var settings = [String:[String]]()
         
-        if let sett = readJson(file: FileManager.globalDownloadsSettingsFile, as: [String:[String]].self) {
+        if let sett = try? readJson(file: FileManager.globalDownloadsSettingsFile, as: [String:[String]].self) {
             settings = sett
         }
 

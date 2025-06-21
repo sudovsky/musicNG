@@ -56,17 +56,22 @@ class Settings: Codable {
 
     func load() {
         
-        let pl = readJson(file: FileManager.appSettings, as: [String:Any].self)
-        repeatMode = pl?["repeatMode"] as? Int ?? 2
-        shuffleMode = pl?["shuffleMode"] as? Int ?? 0
-        shareName = pl?["shareName"] as? String ?? ""
-        username = pl?["username"] as? String ?? ""
-        password = pl?["password"] as? String ?? ""
-        address = pl?["address"] as? String ?? ""
-        isAppInitiated = pl?["isAppInitiated"] as? Bool ?? false
-        if let sortRaw = pl?["sort"] as? Int {
-            sort = SortType(rawValue: sortRaw) ?? .userDefined
+        do {
+            let pl = try readJson(file: FileManager.appSettings, as: [String:Any].self)
+            repeatMode = pl["repeatMode"] as? Int ?? 2
+            shuffleMode = pl["shuffleMode"] as? Int ?? 0
+            shareName = pl["shareName"] as? String ?? ""
+            username = pl["username"] as? String ?? ""
+            password = pl["password"] as? String ?? ""
+            address = pl["address"] as? String ?? ""
+            isAppInitiated = pl["isAppInitiated"] as? Bool ?? false
+            if let sortRaw = pl["sort"] as? Int {
+                sort = SortType(rawValue: sortRaw) ?? .userDefined
+            }
+        } catch {
+            return
         }
+        
     }
     
     func initiated() {
@@ -75,21 +80,14 @@ class Settings: Codable {
     }
 }
 
-func readJson<T>(file resource: URL, as asType: T.Type, fail: @escaping (String) -> Void = { _ in }) -> T? {
+func readJson<T>(file resource: URL, as asType: T.Type) throws -> T {
     
-    do {
-        let data = try Data(contentsOf: resource)
+    let data = try Data(contentsOf: resource)
         
-        if let json = try JSONSerialization.jsonObject(with: data, options: [.allowFragments, .fragmentsAllowed]) as? T {
-            return json
-        } else {
-            fail("Couldn't recognize JSON")
-            return nil
-        }
-    } catch {
-        print(error.localizedDescription)
-        fail(error.localizedDescription)
-        return nil
+    if let json = try JSONSerialization.jsonObject(with: data, options: [.allowFragments, .fragmentsAllowed]) as? T {
+        return json
+    } else {
+        throw "Couldn't recognize JSON".error()
     }
     
 }
