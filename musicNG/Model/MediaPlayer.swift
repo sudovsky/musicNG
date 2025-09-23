@@ -49,6 +49,10 @@ final class MediaPlayer {
         NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+    }
+    
     func setupTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true, block: { [weak self] tmr in
             guard let self = self else {
@@ -101,14 +105,14 @@ final class MediaPlayer {
         play(file: file)
     }
     
-    func initPlayback(playlist: [FileData], index: Int = 0, playlistName: String? = nil, autostart: Bool = true) {
+    func initPlayback(playlist: [FileData], index: Int = 0, playlistName: String? = nil, autostart: Bool = true, completion: @escaping () -> Void = {}) {
         currentPlaylistName = playlistName
         originalPlaylist = playlist
         self.playlist = originalPlaylist
         
         currentFile = index
         if currentFile < playlist.count {
-            play(file: playlist[currentFile], autostart: autostart)
+            play(file: playlist[currentFile], autostart: autostart, completion: completion)
         }
         
         if shuffled == .items {
@@ -133,7 +137,7 @@ final class MediaPlayer {
 
     //https://stackoverflow.com/questions/52451454/ios-12-lock-screen-controls-for-music-app
     
-    func play(file: FileData, autostart: Bool = true) {
+    func play(file: FileData, autostart: Bool = true, completion: @escaping () -> Void = {}) {
         MediaPlayer.nurl = nil
         paused = false
         player?.pause()
@@ -170,6 +174,7 @@ final class MediaPlayer {
                 
                 if autostart {
                     self.player?.play()
+                    Settings.shared.lastSongPosition = self.playerItem?.currentTime().seconds
                 } else {
                     self.paused = true
                 }
@@ -187,6 +192,8 @@ final class MediaPlayer {
                 Settings.shared.lastPlaylistName = MediaPlayer.shared.currentPlaylistName
                 Settings.shared.lastSongName = file.name
                 Settings.shared.save()
+                
+                completion()
             }
         }
     }
@@ -565,7 +572,7 @@ final class MediaPlayer {
     }
     
     func updateCurrentPos() {
-        guard let allSeconds = MediaPlayer.shared.playerItem?.duration.seconds,
+        guard let allSeconds = MediaPlayer.shared.playerItem?.asset.duration.seconds,
               !allSeconds.isNaN,
               let curPos = MediaPlayer.shared.playerItem?.currentTime().seconds,
               !curPos.isNaN else {

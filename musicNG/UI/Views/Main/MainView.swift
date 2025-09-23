@@ -153,8 +153,14 @@ public struct MainView: View, KeyboardReadable {
             
             PositionCoordinator.shared.position = 0
             
-            MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0), playlistName: foundPL.name, autostart: false)
-
+            MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0), playlistName: foundPL.name, autostart: false) {
+                
+                if let pTime = Settings.shared.lastSongPosition {
+                    MediaPlayer.shared.seek(positionTime: pTime)
+                    MediaPlayer.shared.updateCurrentPos()
+                }
+            }
+            
             DispatchQueue.main.async {
                 variables.currentSong = foundSong
             }

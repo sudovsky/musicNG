@@ -31,9 +31,15 @@ struct musicNGApp: App {
         .onChange(of: scenePhase) { (newScenePhase) in
             switch newScenePhase {
             case .inactive:
+                if let curPos = MediaPlayer.shared.playerItem?.currentTime().seconds, !curPos.isNaN {
+                    Settings.shared.lastSongPosition = curPos
+                }
                 Settings.shared.save()
                 FilesMetaDB.save()
             case .background:
+                if let curPos = MediaPlayer.shared.playerItem?.currentTime().seconds, !curPos.isNaN {
+                    Settings.shared.lastSongPosition = curPos
+                }
                 Settings.shared.save()
                 FilesMetaDB.save()
             case .active:

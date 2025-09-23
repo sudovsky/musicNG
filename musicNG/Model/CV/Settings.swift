@@ -20,6 +20,7 @@ class Settings: Codable {
         case sort
         case lastPlaylistName
         case lastSongName
+        case lastSongPosition
     }
     
     static let shared = Settings()
@@ -30,7 +31,8 @@ class Settings: Codable {
     var shareName = ""
     var lastPlaylistName: String?
     var lastSongName: String?
-    
+    var lastSongPosition: Double?
+
     var isAppInitiated = false
 
     var repeatMode: Int = 0 {
@@ -70,6 +72,7 @@ class Settings: Codable {
             address = pl["address"] as? String ?? ""
             lastPlaylistName = pl["lastPlaylistName"] as? String
             lastSongName = pl["lastSongName"] as? String
+            lastSongPosition = pl["lastSongPosition"] as? Double
             isAppInitiated = pl["isAppInitiated"] as? Bool ?? false
             if let sortRaw = pl["sort"] as? Int {
                 sort = SortType(rawValue: sortRaw) ?? .userDefined
