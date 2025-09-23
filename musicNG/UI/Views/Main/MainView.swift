@@ -30,6 +30,8 @@ public struct MainView: View, KeyboardReadable {
     @State var showAlert = false
     @State var alertText: String = ""
 
+    @State var songRestored = false
+
     @State var alertTitle: String = "New playlist".localized
     @State var alertSubtitle: String = "Enter name".localized
     @State var alertPlaceholder: String = "Name".localized
@@ -127,16 +129,39 @@ public struct MainView: View, KeyboardReadable {
                 return
             }
             
-            //if !lists.isEmpty {
-                currentFrame = 1
-            //}
+            currentFrame = 1
+            getLastSong(lists: lists)
         }
     }
-//    //Welcome!
-//    
-//    Thank you for installing the app! I hope you enjoy it!
-//        
-//        Now I'll tell you how to add music
+    
+    func getLastSong(lists: [Playlist]) {
+        
+        guard !songRestored, lists.count > 0, let lastPLName = Settings.shared.lastPlaylistName, let lastSongName = Settings.shared.lastSongName else {
+            return
+        }
+        
+        songRestored = true
+        
+        DispatchQueue.global(qos: .userInteractive).async {
+            guard let foundPL = lists.first(where: { $0.name == lastPLName }) else { return }
+            
+            let fileList = foundPL.getDownloads(readMetadata: true)
+            
+            guard let foundSong = fileList.first(where: { $0.name == lastSongName }) else { return }
+            
+            let findx = fileList.firstIndex(where: { $0.id == foundSong.id })
+            
+            PositionCoordinator.shared.position = 0
+            
+            MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0), playlistName: foundPL.name, autostart: false)
+
+            DispatchQueue.main.async {
+                variables.currentSong = foundSong
+            }
+        }
+        
+    }
+    
     func prepareData() -> some View {
         Spacer()
             .onAppear {

@@ -101,14 +101,14 @@ final class MediaPlayer {
         play(file: file)
     }
     
-    func initPlayback(playlist: [FileData], index: Int = 0, playlistName: String? = nil) {
+    func initPlayback(playlist: [FileData], index: Int = 0, playlistName: String? = nil, autostart: Bool = true) {
         currentPlaylistName = playlistName
         originalPlaylist = playlist
         self.playlist = originalPlaylist
         
         currentFile = index
         if currentFile < playlist.count {
-            play(file: playlist[currentFile])
+            play(file: playlist[currentFile], autostart: autostart)
         }
         
         if shuffled == .items {
@@ -133,7 +133,7 @@ final class MediaPlayer {
 
     //https://stackoverflow.com/questions/52451454/ios-12-lock-screen-controls-for-music-app
     
-    func play(file: FileData) {
+    func play(file: FileData, autostart: Bool = true) {
         MediaPlayer.nurl = nil
         paused = false
         player?.pause()
@@ -167,7 +167,13 @@ final class MediaPlayer {
                 self.player = AVPlayer(playerItem: MediaPlayer.shared.playerItem)
                 
                 self.setupAudioSession()
-                self.player?.play()
+                
+                if autostart {
+                    self.player?.play()
+                } else {
+                    self.paused = true
+                }
+                
                 self.setupNowPlaying(playerItem: self.playerItem!, file: file)
                 self.setupRemoteCommandCenter()
                 MPNowPlayingInfoCenter.default().playbackState = .playing
@@ -177,6 +183,10 @@ final class MediaPlayer {
                 //csView.isHidden = false
                 //csView.show(file: file, coloredShadow: false)
 
+                //need save current playlist and song
+                Settings.shared.lastPlaylistName = MediaPlayer.shared.currentPlaylistName
+                Settings.shared.lastSongName = file.name
+                Settings.shared.save()
             }
         }
     }
