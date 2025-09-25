@@ -20,8 +20,13 @@ extension FileManager {
 
     private func getUrlForMetaDB() -> URL {
         let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!
-        let currentPath = documentsUrl.appendingPathComponent("localDB").appendingPathExtension("json")
 
+        //TODO: - remove in future versions
+        hideFile(rootUrl: documentsUrl, filename: "localDB")
+        //
+
+        let currentPath = documentsUrl.appendingPathComponent(".localDB").appendingPathExtension("json")
+        
         return currentPath
     }
 
@@ -38,8 +43,8 @@ extension FileManager {
     
     private func getUrlForCovers() -> URL {
         let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!
-        let currentDirPath = documentsUrl.appendingPathComponent("Covers")
-
+        let currentDirPath = documentsUrl.appendingPathComponent(".Covers")
+        
         if !fileExists(atPath: currentDirPath.path) {
             try? createDirectory(at: currentDirPath, withIntermediateDirectories: true)
         }
@@ -49,7 +54,7 @@ extension FileManager {
     
     private func getUrlForTemp() -> URL {
         let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!
-        let currentDirPath = documentsUrl.appendingPathComponent("Temp")
+        let currentDirPath = documentsUrl.appendingPathComponent(".Temp")
 
         if !fileExists(atPath: currentDirPath.path) {
             try? createDirectory(at: currentDirPath, withIntermediateDirectories: true)
@@ -61,13 +66,10 @@ extension FileManager {
     func createTempFile(data: Data, ext: String) -> URL {
         let tempPath = getUrlForTemp().appendingPathComponent(UUID().uuidString).appendingPathExtension(ext)
         
-//        createFile(atPath: tempPath.absoluteString, contents: data)
         do {
             try data.write(to: tempPath, options: .atomic)
         } catch {
-    //        DispatchQueue.main.async {
-                print(error.localizedDescription, "Can'not save local db")
-    //        }
+            print(error.localizedDescription, "Can'not save local db")
         }
 
         return tempPath
@@ -82,7 +84,12 @@ extension FileManager {
     }
     
     private func getUrlForPlaylistsSettings() -> URL {
-        return getUrlForPLRoot().appendingPathComponent("Settings").appendingPathExtension("json")
+        
+        //TODO: - remove in future versions
+        hideFile(rootUrl: getUrlForPLRoot())
+        //
+        
+        return getUrlForPLRoot().appendingPathComponent(".Settings").appendingPathExtension("json")
     }
     
     func urlForPlaylist(name: String) -> URL {
@@ -101,13 +108,39 @@ extension FileManager {
         if !fileExists(atPath: pp.path) {
             try? createDirectory(at: pp, withIntermediateDirectories: true)
         }
-
-        return pp.appendingPathComponent("Settings").appendingPathExtension("json")
+        
+        //TODO: - remove in future versions
+        hideFile(rootUrl: pp)
+        //
+        
+        return pp.appendingPathComponent(".Settings").appendingPathExtension("json")
     }
     
     private func urlForAppSettings() -> URL {
         let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!
-        return documentsUrl.appendingPathComponent("Settings").appendingPathExtension("json")
+        return documentsUrl.appendingPathComponent(".Settings").appendingPathExtension("json")
+    }
+    
+    //TODO: - remove in future versions
+    func hideFile(rootUrl pp: URL, filename: String = "Settings") {
+        if fileExists(atPath: pp.appendingPathComponent(filename).appendingPathExtension("json").path) {
+            
+            if fileExists(atPath: pp.appendingPathComponent(".\(filename)").appendingPathExtension("json").path) {
+                do {
+                    try FileManager.default.removeItem(at: pp.appendingPathComponent(".\(filename)").appendingPathExtension("json"))
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+            
+            do {
+                try FileManager.default.copyItem(at: pp.appendingPathComponent(filename).appendingPathExtension("json"), to: pp.appendingPathComponent(".\(filename)").appendingPathExtension("json"))
+                
+                try FileManager.default.removeItem(at: pp.appendingPathComponent(filename).appendingPathExtension("json"))
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
     
 }
@@ -123,7 +156,7 @@ extension FileManager {
     static var globalDownloadsSettingsFile: URL { FileManager.default.globalURLForDownloadsSettingsFile() }
 
     private func globalURLForCovers() -> URL {
-        let currentDirPath = containerURL(forSecurityApplicationGroupIdentifier: "group.ru.cloudunion.music")!.appendingPathComponent("Covers")
+        let currentDirPath = containerURL(forSecurityApplicationGroupIdentifier: "group.ru.cloudunion.music")!.appendingPathComponent(".Covers")
 
         if !fileExists(atPath: currentDirPath.path) {
             try? createDirectory(at: currentDirPath, withIntermediateDirectories: true)
@@ -143,7 +176,11 @@ extension FileManager {
     }
 
     private func globalURLForPlaylistsSettingsFile() -> URL {
-        globalURLForPlaylists().appendingPathComponent("Settings").appendingPathExtension("json")
+        //TODO: - remove in future versions
+        hideFile(rootUrl: globalURLForPlaylists())
+        //
+
+        return globalURLForPlaylists().appendingPathComponent(".Settings").appendingPathExtension("json")
     }
 
     private func globalURLForDownloads() -> URL {
@@ -157,7 +194,10 @@ extension FileManager {
     }
 
     private func globalURLForDownloadsSettingsFile() -> URL {
-        globalURLForDownloads().appendingPathComponent("Settings").appendingPathExtension("json")
+        //TODO: - remove in future versions
+        hideFile(rootUrl: globalURLForDownloads())
+        //
+        return globalURLForDownloads().appendingPathComponent(".Settings").appendingPathExtension("json")
     }
 
 }

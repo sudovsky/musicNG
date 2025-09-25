@@ -86,7 +86,7 @@ class ShareViewController: UIViewController {
             return []
         }
         
-        let url = commonurl.appendingPathComponent("Settings").appendingPathExtension("json")
+        let url = commonurl.appendingPathComponent(".Settings").appendingPathExtension("json")
         
         let pList = readJsn(file: url, as: [[String:Any]].self) ?? []
         //let pList = pl?["sort"] as? [[String:Any]] ?? []
