@@ -9,6 +9,9 @@ import SwiftUI
 
 struct MusicControlView: View {
     
+    @Binding var currentFrame: Int
+    var lastCurrentFrame: Int = 1
+    
     @Environment(\.dismiss) var dismiss
 
     @ObservedObject var variables = Variables.shared
@@ -19,6 +22,7 @@ struct MusicControlView: View {
     @State private var imageOffset: CGSize = CGSize.zero
     @State private var imageScale: CGFloat = 0.85
     @State private var imageOpacity: CGFloat = 1
+    @State private var commonOpacity: CGFloat = 0
 
     var body: some View {
         //TODO: - divide screen ровно пополам for ipad
@@ -27,9 +31,9 @@ struct MusicControlView: View {
                 VinylView()
                     .scaleEffect(imageScale)
                     .offset(imageOffset)
-                    .opacity(imageOpacity)
+                    .opacity(commonOpacity)
                     .vinilGesture(canSwitchSong: false) {
-                        dismiss()
+                        close()
                     }
 
                 Spacer()
@@ -43,8 +47,15 @@ struct MusicControlView: View {
                         .frame(maxWidth: orientationCoordinator.size.width / 2)
                 }
             }
+            .opacity(commonOpacity)
+            .backgroundStyle(.back)
             .orientationChange { size, vertical in
                 isVertical = vertical
+            }
+            .onAppear {
+                withAnimation {
+                    commonOpacity = 1
+                }
             }
         } else {
             VStack(spacing: 0) {
@@ -55,9 +66,9 @@ struct MusicControlView: View {
                 VinylView()
                     .scaleEffect(imageScale)
                     .offset(imageOffset)
-                    .opacity(imageOpacity)
+                    .opacity(commonOpacity)
                     .vinilGesture(imageOffset: $imageOffset, imageScale: $imageScale, imageOpacity: $imageOpacity, next: next, prev: prev) {
-                        dismiss()
+                        close()
                     }
 
                 Spacer()
@@ -74,9 +85,21 @@ struct MusicControlView: View {
                             }
                         }
                     }
-                    .opacity(isVertical == nil ? 0 : 1)
+            }
+            .opacity(commonOpacity)
+            .backgroundStyle(.back)
+            .onAppear {
+                withAnimation {
+                    commonOpacity = 1
+                }
             }
         }
+    }
+    
+    func close() {
+        //withAnimation {
+            currentFrame = lastCurrentFrame
+        //}
     }
     
     func topPart() -> some View {
@@ -92,7 +115,7 @@ struct MusicControlView: View {
                 .padding(.vertical, 8)
             
             Button {
-                dismiss()
+                close()
             } label: {
                 Image(systemName: "xmark")
                     .titleButtonImage(.trailing)
@@ -295,5 +318,5 @@ extension View {
 }
 
 #Preview {
-    MusicControlView()
+    MusicControlView(currentFrame: .constant(4))
 }

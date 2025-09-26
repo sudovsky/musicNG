@@ -16,6 +16,7 @@ public struct MainView: View, KeyboardReadable {
 
     @State private var showingDetail: Bool = false
     @State private var currentFrame: Int = 0
+    @State private var lastCurrentFrame: Int = 0
 
     @State private var backButtonVisible: Bool = false
     @State private var title: String = "Playlists".localized
@@ -55,41 +56,54 @@ public struct MainView: View, KeyboardReadable {
                 onboarding()
                     .transition(.opacity)
             } else if currentFrame > 0 {
-                TitleView(backButtonVisible: $backButtonVisible,
-                          title: $title,
-                          actionsVisible: $actionsVisible,
-                          actionImage: Image(systemName: "network"),
-                          secondActionImage: Image(systemName: "plus")) {
-                    settingsOK() ? showRemote.toggle() : showSettingsAlert.toggle()
-                } secondAction: {
-                    showAlert.toggle()
-                } backAction: {
-                    playlistCoordinator.current = nil
+                if currentFrame == 1 || currentFrame == 2 {
+                    TitleView(backButtonVisible: $backButtonVisible,
+                              title: $title,
+                              actionsVisible: $actionsVisible,
+                              actionImage: Image(systemName: "network"),
+                              secondActionImage: Image(systemName: "plus")) {
+                        settingsOK() ? showRemote.toggle() : showSettingsAlert.toggle()
+                    } secondAction: {
+                        showAlert.toggle()
+                    } backAction: {
+                        playlistCoordinator.current = nil
+                    }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
                 
                 ZStack {
                     
                     PlayListGrid()
                         .opacity(currentFrame == 1 ? 1 : 0)
+                        .transition(.opacity)
                     SettingsView()
                         .opacity(currentFrame == 2 ? 1 : 0)
+                        .transition(.opacity)
+
+                    if currentFrame == 4 {
+                        MusicControlView(currentFrame: $currentFrame, lastCurrentFrame: lastCurrentFrame)
+                            .transition(.opacity)
+                    }
                 }
 
             }
-            if variables.currentSong != nil {
-                CurrentSongView()
+            if variables.currentSong != nil, currentFrame == 1 || currentFrame == 2 {
+                CurrentSongView(currentFrame: $currentFrame, lastCurrentFrame: $lastCurrentFrame)
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
             
-            if currentFrame != 0, currentFrame != 3 {
+            if currentFrame != 0, currentFrame != 3, currentFrame != 4 {
                 bottomView()
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
         }
+        .animation(.default, value: currentFrame)
         .background {
             Color.back
         }
         .okCancelMessage(showingAlert: $showSettingsAlert, title: .constant("Connection settings are not filled in"), subtitle: .constant("Go to the settings page?"), onOk: {
+            currentFrame = 2
             withAnimation(Animation.easeOut.speed(2.5)) {
-                currentFrame = 2
                 title = "Settings".localized
                 backButtonVisible = false
                 actionsVisible = false
@@ -123,13 +137,15 @@ public struct MainView: View, KeyboardReadable {
         }
         .onReceive(playlists.$all) { lists in
             if !Settings.shared.isAppInitiated {
-                withAnimation {
+//                withAnimation {
                     currentFrame = 3
-                }
+//                }
                 return
             }
             
-            currentFrame = 1
+            if currentFrame == 0 {
+                currentFrame = 1
+            }
             getLastSong(lists: lists)
         }
     }
@@ -151,7 +167,9 @@ public struct MainView: View, KeyboardReadable {
             
             let findx = fileList.firstIndex(where: { $0.id == foundSong.id })
             
-            PositionCoordinator.shared.position = 0
+            DispatchQueue.main.async {
+                PositionCoordinator.shared.position = 0
+            }
             
             MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0), playlistName: foundPL.name, autostart: false) {
                 
@@ -208,9 +226,9 @@ public struct MainView: View, KeyboardReadable {
                         }
                     } else {
                         Settings.shared.initiated()
-                        withAnimation {
+                        //withAnimation {
                             currentFrame = 1
-                        }
+                        //}
                     }
                 }
                 .frame(width: size.width - 32, height: size.height - 32)
@@ -247,8 +265,8 @@ public struct MainView: View, KeyboardReadable {
         } saction: {
             if currentFrame == 2 { return }
             
+            currentFrame = 2
             withAnimation(Animation.easeOut.speed(2.5)) {
-                currentFrame = 2
                 title = "Settings".localized
                 backButtonVisible = false
                 actionsVisible = false

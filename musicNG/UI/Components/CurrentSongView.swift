@@ -9,11 +9,12 @@ import SwiftUI
 
 struct CurrentSongView: View {
     
+    @Binding var currentFrame: Int
+    @Binding var lastCurrentFrame: Int
+
     @ObservedObject var variables = Variables.shared
 
     @State private var blur: CGFloat = 16
-
-    @State private var showMusicControl: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -51,35 +52,18 @@ struct CurrentSongView: View {
             Divider()
         }
         .blur(radius: blur)
-        .transition(.scale(scale: 0.2))
         .onAppear() {
             withAnimation(.easeOut.speed(1.8)) {
                 blur = 0
             }
         }
         .onTapGesture {
-            showMusicControl = true
+            lastCurrentFrame = currentFrame
+            currentFrame = 4
         }
-        //showing MusicControlView
-        .fullScreenCover(isPresented: $showMusicControl) {
-            MusicControlView()
-        }
-        .transaction({ transaction in
-          // disable the default FullScreenCover animation
-          transaction.disablesAnimations = true
-
-          // add custom animation for presenting and dismissing the FullScreenCover
-            //transaction.animation = .linear(duration: 0.2)
-        })
-//        .onReceive(variables.$currentSong) { newTitle in
-//            // 4
-//            withAnimation {
-//                blur = 0
-//            }
-//        }
     }
 }
 
 #Preview {
-    CurrentSongView()
+    CurrentSongView(currentFrame: .constant(1), lastCurrentFrame: .constant(1))
 }
