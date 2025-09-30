@@ -37,7 +37,8 @@ public struct MainView: View, KeyboardReadable {
     @State var alertSubtitle: String = "Enter name".localized
     @State var alertPlaceholder: String = "Name".localized
 
-    
+    @Namespace private var animation
+
     @State var index: Int = 0
     @State var items : [(title:String, text:String, image: Image?, buttonTitle: String)] = []
 
@@ -48,60 +49,67 @@ public struct MainView: View, KeyboardReadable {
     ]
 
     public var body: some View {
-        VStack(spacing: 0) {
-            if currentFrame == 0 {
-//                Spacer()
-                prepareData()
-            } else if currentFrame == 3 {
-                onboarding()
-                    .transition(.opacity)
-            } else if currentFrame > 0 {
-                if currentFrame == 1 || currentFrame == 2 {
-                    TitleView(backButtonVisible: $backButtonVisible,
-                              title: $title,
-                              actionsVisible: $actionsVisible,
-                              actionImage: Image(systemName: "network"),
-                              secondActionImage: Image(systemName: "plus")) {
-                        settingsOK() ? showRemote.toggle() : showSettingsAlert.toggle()
-                    } secondAction: {
-                        showAlert.toggle()
-                    } backAction: {
-                        playlistCoordinator.current = nil
+        ZStack {
+            VStack(spacing: 0) {
+                if currentFrame == 0 {
+                    //                Spacer()
+                    prepareData()
+                } else if currentFrame == 3 {
+                    onboarding()
+                        .transition(.opacity)
+                } else if currentFrame > 0 {
+                    if currentFrame == 1 || currentFrame == 2 || currentFrame == 4 {
+                        TitleView(backButtonVisible: $backButtonVisible,
+                                  title: $title,
+                                  actionsVisible: $actionsVisible,
+                                  actionImage: Image(systemName: "network"),
+                                  secondActionImage: Image(systemName: "plus")) {
+                            settingsOK() ? showRemote.toggle() : showSettingsAlert.toggle()
+                        } secondAction: {
+                            showAlert.toggle()
+                        } backAction: {
+                            playlistCoordinator.current = nil
+                        }
+                        .opacity(currentFrame == 4 ? 0 : 1)
+                        .transition(.opacity)
                     }
-                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    
+                    ZStack {
+                        
+                        PlayListGrid()
+                            .opacity(currentFrame == 1 ? 1 : 0)
+                            .transition(.opacity)
+                        SettingsView()
+                            .opacity(currentFrame == 2 ? 1 : 0)
+                            .transition(.opacity)
+                        
+                    }
+                    
+                }
+                if variables.currentSong != nil, currentFrame == 1 || currentFrame == 2 || currentFrame == 4 {
+                    CurrentSongView(currentFrame: $currentFrame, lastCurrentFrame: $lastCurrentFrame, animation: animation)
+                        .opacity(currentFrame == 4 ? 0 : 1)
+                        .transition(.opacity)
                 }
                 
-                ZStack {
-                    
-                    PlayListGrid()
-                        .opacity(currentFrame == 1 ? 1 : 0)
+                if currentFrame != 0, currentFrame != 3 {
+                    bottomView()
+                        .opacity(currentFrame == 4 ? 0 : 1)
                         .transition(.opacity)
-                    SettingsView()
-                        .opacity(currentFrame == 2 ? 1 : 0)
-                        .transition(.opacity)
-
-                    if currentFrame == 4 {
-                        MusicControlView(currentFrame: $currentFrame, lastCurrentFrame: lastCurrentFrame)
-                            .transition(.opacity)
-                    }
                 }
 
             }
-            if variables.currentSong != nil, currentFrame == 1 || currentFrame == 2 {
-                CurrentSongView(currentFrame: $currentFrame, lastCurrentFrame: $lastCurrentFrame)
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
-            }
-            
-            if currentFrame != 0, currentFrame != 3, currentFrame != 4 {
-                bottomView()
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+
+            if currentFrame == 4 {
+                MusicControlView(currentFrame: $currentFrame, lastCurrentFrame: lastCurrentFrame, animation: animation)
+                    .transition(.opacity)
             }
         }
-        .animation(.default, value: currentFrame)
+        .animation(.spring(response: 0.5, dampingFraction: 0.82), value: currentFrame)
         .background {
             Color.back
         }
-        .okCancelMessage(showingAlert: $showSettingsAlert, title: .constant("Connection settings are not filled in"), subtitle: .constant("Go to the settings page?"), onOk: {
+        .okCancelMessage(showingAlert: $showSettingsAlert, title: .constant("Connection settings are not filled in".localized), subtitle: .constant("Go to the settings page?".localized), onOk: {
             currentFrame = 2
             withAnimation(Animation.easeOut.speed(2.5)) {
                 title = "Settings".localized

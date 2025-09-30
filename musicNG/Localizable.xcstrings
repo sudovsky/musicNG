@@ -157,6 +157,17 @@
         }
       }
     },
+    "Connection settings are not filled in" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не заполнены настройки подключения"
+          }
+        }
+      }
+    },
     "Create new" : {
       "localizations" : {
         "ru" : {
@@ -278,6 +289,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Из галереи"
+          }
+        }
+      }
+    },
+    "Go to the settings page?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перейти на экран настроек?"
           }
         }
       }

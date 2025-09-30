@@ -12,6 +12,8 @@ struct CurrentSongView: View {
     @Binding var currentFrame: Int
     @Binding var lastCurrentFrame: Int
 
+    var animation: Namespace.ID
+
     @ObservedObject var variables = Variables.shared
 
     @State private var blur: CGFloat = 16
@@ -19,14 +21,24 @@ struct CurrentSongView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                (variables.currentSong?.cover?.image() ?? Image(.no))
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 58, height: 58)
-                    .cornerRadius(10)
-                    .shadow(radius: 3)
-                    .padding(.leading, 16)
-                    .padding(.trailing, 12)
+                if currentFrame != 4 {
+                    (variables.currentSong?.cover?.image() ?? Image(.no))
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .cornerRadius(10)
+                        .shadow(radius: 3)
+                        .matchedGeometryEffect(id: "cover", in: animation)
+                        .frame(width: 58, height: 58)
+                        .padding(.leading, 16)
+                        .padding(.trailing, 12)
+                } else {
+                    Color.back
+                        .frame(width: 58, height: 58)
+                        .cornerRadius(10)
+                        .shadow(radius: 3)
+                        .padding(.leading, 16)
+                        .padding(.trailing, 12)
+                }
                 
                 VStack(spacing: 0) {
                     Text(variables.currentSong?.title ?? (variables.currentSong?.name ?? "Unknown Title"))
@@ -64,6 +76,6 @@ struct CurrentSongView: View {
     }
 }
 
-#Preview {
-    CurrentSongView(currentFrame: .constant(1), lastCurrentFrame: .constant(1))
-}
+//#Preview {
+//    CurrentSongView(currentFrame: .constant(1), lastCurrentFrame: .constant(1))
+//}

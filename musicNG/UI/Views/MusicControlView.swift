@@ -11,7 +11,9 @@ struct MusicControlView: View {
     
     @Binding var currentFrame: Int
     var lastCurrentFrame: Int = 1
-    
+
+    var animation: Namespace.ID
+
     @Environment(\.dismiss) var dismiss
 
     @ObservedObject var variables = Variables.shared
@@ -31,7 +33,6 @@ struct MusicControlView: View {
                 VinylView()
                     .scaleEffect(imageScale)
                     .offset(imageOffset)
-                    .opacity(commonOpacity)
                     .vinilGesture(canSwitchSong: false) {
                         close()
                     }
@@ -40,14 +41,15 @@ struct MusicControlView: View {
                 
                 VStack(spacing: 0) {
                     topPart()
-                    
+                        .opacity(commonOpacity)
+
                     Spacer()
                     
                     verticalPart()
+                        .opacity(commonOpacity)
                         .frame(maxWidth: orientationCoordinator.size.width / 2)
                 }
             }
-            .opacity(commonOpacity)
             .backgroundStyle(.back)
             .orientationChange { size, vertical in
                 isVertical = vertical
@@ -60,13 +62,14 @@ struct MusicControlView: View {
         } else {
             VStack(spacing: 0) {
                 topPart()
-                
+                    .opacity(commonOpacity)
+
                 Spacer()
 
                 VinylView()
+                    .matchedGeometryEffect(id: "cover", in: animation)
                     .scaleEffect(imageScale)
                     .offset(imageOffset)
-                    .opacity(commonOpacity)
                     .vinilGesture(imageOffset: $imageOffset, imageScale: $imageScale, imageOpacity: $imageOpacity, next: next, prev: prev) {
                         close()
                     }
@@ -74,6 +77,7 @@ struct MusicControlView: View {
                 Spacer()
 
                 verticalPart()
+                    .opacity(commonOpacity)
                     .orientationChange { size, vertical in
                         if isVertical != vertical {
                             if isVertical == nil {
@@ -86,11 +90,12 @@ struct MusicControlView: View {
                         }
                     }
             }
-            .opacity(commonOpacity)
             .backgroundStyle(.back)
             .onAppear {
-                withAnimation {
-                    commonOpacity = 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation {
+                        commonOpacity = 1
+                    }
                 }
             }
         }
@@ -317,6 +322,6 @@ extension View {
     }
 }
 
-#Preview {
-    MusicControlView(currentFrame: .constant(4))
-}
+//#Preview {
+//    MusicControlView(currentFrame: .constant(4))
+//}
