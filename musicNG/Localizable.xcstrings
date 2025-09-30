@@ -200,10 +200,16 @@
     },
     "Drag and drop of elements is only available when sorting by \"Custom\"" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can reorder elements by dragging them"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Перетаскивание элементов доступно только при сортировке \"Пользовательская\""
+            "value" : "Можно менять порядок элементов перетаскиванием"
           }
         }
       }
