@@ -118,6 +118,7 @@ struct SettingsView: View {
                 
             }
         }
+        .contentMargin26(edges: .top, 66)
         .background(.back)
         .okMessage(showingAlert: $showError, title: $titleMessage, subtitle: $errorMessage) {
             errorMessage = nil

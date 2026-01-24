@@ -8,38 +8,40 @@
 import SwiftUI
 
 struct PlayListGrid: View {
-
+    
     @ObservedObject var playlists = Playlists.shared
     @ObservedObject var viewUpdater = ViewUpdater()
     @StateObject private var orientationCoordinator = OrientationCoordinator.shared
-
+    
     @State var pls: [Playlist] = []
-
+    
     @State var currentTag = 0
     @State var currentPL: Playlist? = nil
-
+    
     @State var showAlert = false
     @State var importing = false
     @State var alertText: String = ""
-
+    
     @State var title: String = ""
     @State var subtitle: String = ""
     @State var placeholder: String = ""
     @State var reorder = true
-
+    
     @State var showingTagEditor: Bool = false
+    
+    @State var bottomMargin: CGFloat = 96
 
     let vcolumns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
-
+    
     let hcolumns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
-
+    
     var body: some View {
         VStack(spacing: 0) {
             NavigationStack {
@@ -60,7 +62,7 @@ struct PlayListGrid: View {
                                     }
                                     .overlay(isDragged ? Color.back.opacity(0.6) : Color.clear)
                             }
-
+                            
                         }
                         onDone: {
                             DispatchQueue.global().async {
@@ -80,21 +82,38 @@ struct PlayListGrid: View {
                         Color(.back)
                     }
                     .padding([.top, .horizontal], 16)
-                    .padding([.bottom], -14)
+                    //                  Если четное количество плиток, отступ нужен, иначе нет
+                    //                  тоже самое у песен, только наоборот минус меняем на плюс
+                    //                    .padding([.bottom], -14)
                 }
+                .contentMargin26(bottomMargin - 32)
+                .contentMargin26(edges: .top, 66)
             }
             .imageSelection(importing: $importing, onGetImage: updateImage(imageData:))
-
+            
         }
-        .tagEditorFrame(for: $currentPL, isVisible: $showingTagEditor)
+        .onChange(of: orientationCoordinator.vertical) { coord in
+            if !ios26 { return }
+            
+            setBottomMargin(vertical: coord, plCount: pls.count)
+        }
+       .tagEditorFrame(for: $currentPL, isVisible: $showingTagEditor)
         .onReceive(playlists.$all, perform: { value in
             pls = value
+            setBottomMargin(vertical: orientationCoordinator.vertical, plCount: value.count)
         })
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
         .onAppear {
-            
+            setBottomMargin(vertical: orientationCoordinator.vertical, plCount: pls.count)
         }
     }
+    
+    //vgrid or scroll view bug fix
+    func setBottomMargin(vertical: Bool, plCount: Int) {
+        let count = vertical ? vcolumns.count : hcolumns.count
+        bottomMargin = plCount % count == 0 ? 96 : 96 + 32
+    }
+    
 }
 
 #Preview {

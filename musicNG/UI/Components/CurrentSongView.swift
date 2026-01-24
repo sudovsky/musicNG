@@ -59,16 +59,14 @@ struct CurrentSongView: View {
             .frame(maxWidth: .infinity, maxHeight: 80)
             .clipped()
             .background {
-                Color.back
+                ios26 ? nil : Color.back
             }
-            Divider()
-        }
-        .blur(radius: blur)
-        .onAppear() {
-            withAnimation(.easeOut.speed(1.8)) {
-                blur = 0
+            
+            if !ios26 {
+                Divider()
             }
         }
+        .glassed(cornerRadius: 20)
         .onTapGesture {
             lastCurrentFrame = currentFrame
             currentFrame = 4

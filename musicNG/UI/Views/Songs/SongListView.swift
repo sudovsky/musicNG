@@ -8,49 +8,51 @@
 import SwiftUI
 
 struct SongListView: View {
-
+    
     @Environment(\.dismiss) var dismiss
-
+    
     @ObservedObject var viewUpdater = ViewUpdater()
     @ObservedObject var plist = PlaylistCoordinator.shared
     @StateObject private var orientationCoordinator = OrientationCoordinator.shared
-
+    
     var playlist: Playlist
     @State var fileList: [FileData] = []
     
     @State var showAlert = false
     @State var importing = false
     @State var alertText: String = ""
-
+    
     @State var title: String = ""
     @State var subtitle: String = ""
     @State var placeholder: String = ""
     
     @State var currentTag = 0
     @State var currentFile: FileData? = nil
-
+    
     @State var reorder = true
-
+    
     @State var canDismiss = false
-
+    
+    @State var bottomMargin: CGFloat = 96
+    
     let vcolumns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
-
+    
     let hcolumns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
-
+    
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
                 LazyVGrid(columns: orientationCoordinator.vertical ? vcolumns : hcolumns, alignment: .center, spacing: 16) {
                     ReorderableForEach($fileList, allowReordering: $reorder) { file, isDragged in
                         Button {
-
+                            
                             Variables.shared.currentSong = file
                             
                             let findx = fileList.firstIndex(where: { $0.id == file.id })
@@ -89,8 +91,10 @@ struct SongListView: View {
                 .padding([.horizontal, .top], 16)
                 .padding([.bottom], 14)
             }
+            .contentMargin26(bottomMargin - 32)
+            .contentMargin26(edges: .top, 66)
             .imageSelection(importing: $importing, onGetImage: updateImage(imageData:))
-
+            
         }
         .background {
             Color.back
@@ -106,9 +110,9 @@ struct SongListView: View {
             DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
                 fileList = playlist.getDownloads(readMetadata: true)
                 DispatchQueue.main.async {
-//                    withAnimation {
-                        viewUpdater.reloadView()
-//                    }
+                    //                    withAnimation {
+                    viewUpdater.reloadView()
+                    //                    }
                 }
             }
         }
@@ -116,12 +120,24 @@ struct SongListView: View {
             PlaylistCoordinator.shared.current = playlist
             canDismiss = true
             fileList = playlist.getDownloads(readMetadata: true)
+            setBottomMargin(vertical: orientationCoordinator.vertical)
         }
         .onDisappear() {
             PlaylistCoordinator.shared.current = nil
             canDismiss = false
         }
+        .onChange(of: orientationCoordinator.vertical) { coord in
+            if !ios26 { return }
+            
+            setBottomMargin(vertical: coord)
+        }
         .toolbar(.hidden)
+    }
+    
+    //vgrid or scroll view bug fix
+    func setBottomMargin(vertical: Bool) {
+        let count = vertical ? vcolumns.count : hcolumns.count
+        bottomMargin = fileList.count % count == 0 ? 96 : 96 + 24
     }
     
 }

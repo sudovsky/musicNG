@@ -13,6 +13,7 @@ public struct MainView: View, KeyboardReadable {
     @ObservedObject var playlistCoordinator = PlaylistCoordinator.shared
     @ObservedObject var playlistSelectionCoordinator = PlaylistSelectionCoordinator.shared
     @ObservedObject var playlists = Playlists.shared
+    @StateObject private var orientationCoordinator = OrientationCoordinator.shared
 
     @State private var showingDetail: Bool = false
     @State private var currentFrame: Int = 0
@@ -58,7 +59,7 @@ public struct MainView: View, KeyboardReadable {
                     onboarding()
                         .transition(.opacity)
                 } else if currentFrame > 0 {
-                    if currentFrame == 1 || currentFrame == 2 || currentFrame == 4 {
+                    if currentFrame == 1 || currentFrame == 2 || currentFrame == 4, !ios26 {
                         TitleView(backButtonVisible: $backButtonVisible,
                                   title: $title,
                                   actionsVisible: $actionsVisible,
@@ -86,13 +87,14 @@ public struct MainView: View, KeyboardReadable {
                     }
                     
                 }
-                if variables.currentSong != nil, currentFrame == 1 || currentFrame == 2 || currentFrame == 4 {
+                
+                if !ios26, variables.currentSong != nil, currentFrame == 1 || currentFrame == 2 || currentFrame == 4 {
                     CurrentSongView(currentFrame: $currentFrame, lastCurrentFrame: $lastCurrentFrame, animation: animation)
                         .opacity(currentFrame == 4 ? 0 : 1)
                         .transition(.opacity)
                 }
                 
-                if currentFrame != 0, currentFrame != 3 {
+                if !ios26, currentFrame != 0, currentFrame != 3 {
                     bottomView()
                         .opacity(currentFrame == 4 ? 0 : 1)
                         .transition(.opacity)
@@ -100,6 +102,43 @@ public struct MainView: View, KeyboardReadable {
 
             }
 
+            if currentFrame == 1 || currentFrame == 2, ios26 {
+                if #available(iOS 26.0, *) {
+                    VStack(spacing: 0) {
+                        TitleView26(backButtonVisible: $backButtonVisible,
+                                    title: $title, currentFrame: $currentFrame) {
+                            showAlert.toggle()
+                        } networkAction: {
+                            settingsOK() ? showRemote.toggle() : showSettingsAlert.toggle()
+                        }
+                        Spacer()
+                    }
+                }
+            }
+            
+            if ios26 {
+                VStack {
+                    LinearGradient(colors: [.back, .back, .clear], startPoint: .top, endPoint: .bottom)
+                        .frame(height: orientationCoordinator.vertical ? 80 : 40)
+                        .edgesIgnoringSafeArea([.top, .leading, .trailing])
+                    Spacer()
+                }
+            }
+            
+            if ios26 {
+                VStack {
+                    Spacer()
+                    
+                    if variables.currentSong != nil, currentFrame == 1 || currentFrame == 2 || currentFrame == 4 {
+                        CurrentSongView(currentFrame: $currentFrame, lastCurrentFrame: $lastCurrentFrame, animation: animation)
+                            .opacity(currentFrame == 4 || showAlert ? 0 : 1)
+                            .transition(.opacity)
+                            .padding(.horizontal, 8)
+                            //.padding(.bottom, 56)
+                    }
+                }
+            }
+            
             if currentFrame == 4 {
                 MusicControlView(currentFrame: $currentFrame, lastCurrentFrame: lastCurrentFrame, animation: animation)
                     .transition(.opacity)

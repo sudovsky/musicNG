@@ -100,3 +100,13 @@ func readJson<T>(file resource: URL, as asType: T.Type) throws -> T {
     }
     
 }
+
+var ios26: Bool {
+    get {
+        if #available(iOS 26.0, *) {
+            return true
+        } else {
+            return false
+        }
+    }
+}
