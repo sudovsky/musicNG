@@ -12,7 +12,7 @@ struct TitleView26: View {
 
     @Binding var backButtonVisible: Bool
     @Binding var title: String
-    @Binding var currentFrame: Int
+    @Binding var currentFrame: CurrentFrameID
 
     @State var backButtonImage: Image? = nil
 
@@ -54,7 +54,7 @@ struct TitleView26: View {
                         }
                 }
 
-                Text(currentFrame == 2 ? "Settings".localized: title)
+                Text(currentFrame == .settings ? "Settings".localized : currentFrame == .search ? "Search".localized : title)
                     .font(titleFont)
                     .frame(maxWidth: .infinity, minHeight: 32, alignment: .leading)
                     .padding(.top, 12)
@@ -63,26 +63,27 @@ struct TitleView26: View {
                     .padding(.trailing, 16)
                     .lineLimit(1)
                     .minimumScaleFactor(0.3)
-                    .onTapGesture {
-                        if backButtonVisible {
-                            PlaylistCoordinator.shared.current = nil
-                        }
-                    }
-
             }
             .glassEffect(.regular)
+            .clipShape(.capsule)
+            .contentShape(.capsule)
+            .onTapGesture {
+                if backButtonVisible {
+                    PlaylistCoordinator.shared.current = nil
+                }
+            }
             Spacer()
             
             GlassEffectContainer(spacing: 20) {
                 VStack(spacing: 0) {
                     Button {
-                        if currentFrame != 2 {
+                        if currentFrame != .settings, currentFrame != .search {
                             toggleExpand()
                         } else {
-                            currentFrame = 1
+                            currentFrame = .playlist
                         }
                     } label: {
-                        Image(systemName: (currentFrame == 2 ?  "xmark" : "line.3.horizontal.circle"))
+                        Image(systemName: (currentFrame == .settings || currentFrame == .search ?  "xmark" : "line.3.horizontal.circle"))
                             .menuButton()
                     }
                     .buttonStyle(.plain)
@@ -115,7 +116,7 @@ struct TitleView26: View {
                     
                     if expanded[2] {
                         Button {
-                            currentFrame = 2
+                            currentFrame = .settings
                             toggleExpand()
                         } label: {
                             Image(systemName: "gearshape")
@@ -128,6 +129,7 @@ struct TitleView26: View {
                     
                     if expanded[3] {
                         Button {
+                            currentFrame = .search
                             toggleExpand()
                         } label: {
                             Image(systemName: "magnifyingglass")
@@ -144,10 +146,10 @@ struct TitleView26: View {
         }
         .padding(.horizontal, 8)
         .padding(.top, 8)
-        .animation(.spring(response: 0.4, dampingFraction: 0.62), value: expanded[0])
-        .animation(.spring(response: 0.4, dampingFraction: 0.62), value: expanded[1])
-        .animation(.spring(response: 0.4, dampingFraction: 0.62), value: expanded[2])
-        .animation(.spring(response: 0.4, dampingFraction: 0.62), value: expanded[3])
+        .animation(.spring(response: 0.3, dampingFraction: 0.62), value: expanded[0])
+        .animation(.spring(response: 0.3, dampingFraction: 0.62), value: expanded[1])
+        .animation(.spring(response: 0.3, dampingFraction: 0.62), value: expanded[2])
+        .animation(.spring(response: 0.3, dampingFraction: 0.62), value: expanded[3])
     }
     
     func toggleExpand() {
@@ -179,7 +181,7 @@ struct TitleView26: View {
 
 #Preview {
     if #available(iOS 26.0, *) {
-        TitleView26(backButtonVisible: .constant(true), title: .constant("Title"), currentFrame: .constant(1))
+        TitleView26(backButtonVisible: .constant(true), title: .constant("Title"), currentFrame: .constant(.playlist))
     } else {
         EmptyView()
     }
@@ -194,6 +196,8 @@ struct MenuButton: ViewModifier {
                 .font(.system(size: 25))
                 .padding(8)
                 .glassEffect(.regular.interactive())
+                .clipShape(.circle)
+                .contentShape(.circle)
         } else {
             return content
                 .frame(width: 36, height: 36)

@@ -9,8 +9,8 @@ import SwiftUI
 
 struct MusicControlView: View {
     
-    @Binding var currentFrame: Int
-    var lastCurrentFrame: Int = 1
+    @Binding var currentFrame: CurrentFrameID
+    var lastCurrentFrame: CurrentFrameID = .playlist
 
     var animation: Namespace.ID
 

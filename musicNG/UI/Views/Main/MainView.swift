@@ -16,8 +16,8 @@ public struct MainView: View, KeyboardReadable {
     @StateObject private var orientationCoordinator = OrientationCoordinator.shared
 
     @State private var showingDetail: Bool = false
-    @State private var currentFrame: Int = 0
-    @State private var lastCurrentFrame: Int = 0
+    @State private var currentFrame: CurrentFrameID = .empty
+    @State private var lastCurrentFrame: CurrentFrameID = .empty
 
     @State private var backButtonVisible: Bool = false
     @State private var title: String = "Playlists".localized
@@ -27,6 +27,7 @@ public struct MainView: View, KeyboardReadable {
 
     @State private var showListSelection: Bool = false
     @State private var showRemote: Bool = false
+    @State private var showSearch: Bool = false
 
     @State var showSettingsAlert = false
     @State var showAlert = false
@@ -52,14 +53,14 @@ public struct MainView: View, KeyboardReadable {
     public var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                if currentFrame == 0 {
+                if currentFrame == .empty {
                     //                Spacer()
                     prepareData()
-                } else if currentFrame == 3 {
+                } else if currentFrame == .onboarding {
                     onboarding()
                         .transition(.opacity)
-                } else if currentFrame > 0 {
-                    if currentFrame == 1 || currentFrame == 2 || currentFrame == 4, !ios26 {
+                } else if currentFrame.rawValue > 0 {
+                    if currentFrame == .playlist || currentFrame == .settings || currentFrame == .musicControl, !ios26 {
                         TitleView(backButtonVisible: $backButtonVisible,
                                   title: $title,
                                   actionsVisible: $actionsVisible,
@@ -71,38 +72,47 @@ public struct MainView: View, KeyboardReadable {
                         } backAction: {
                             playlistCoordinator.current = nil
                         }
-                        .opacity(currentFrame == 4 ? 0 : 1)
+                        .opacity(currentFrame == .musicControl ? 0 : 1)
                         .transition(.opacity)
                     }
                     
                     ZStack {
                         
                         PlayListGrid()
-                            .opacity(currentFrame == 1 ? 1 : 0)
+                            .opacity(currentFrame == .playlist ? 1 : 0)
                             .transition(.opacity)
                         SettingsView()
-                            .opacity(currentFrame == 2 ? 1 : 0)
+                            .opacity(currentFrame == .settings ? 1 : 0)
                             .transition(.opacity)
                         
                     }
                     
                 }
                 
-                if !ios26, variables.currentSong != nil, currentFrame == 1 || currentFrame == 2 || currentFrame == 4 {
+                if !ios26, variables.currentSong != nil, currentFrame == .playlist || currentFrame == .settings || currentFrame == .musicControl {
                     CurrentSongView(currentFrame: $currentFrame, lastCurrentFrame: $lastCurrentFrame, animation: animation)
-                        .opacity(currentFrame == 4 ? 0 : 1)
+                        .opacity(currentFrame == .musicControl ? 0 : 1)
                         .transition(.opacity)
                 }
                 
-                if !ios26, currentFrame != 0, currentFrame != 3 {
+                if !ios26, currentFrame != .empty, currentFrame != .onboarding {
                     bottomView()
-                        .opacity(currentFrame == 4 ? 0 : 1)
+                        .opacity(currentFrame == .musicControl ? 0 : 1)
                         .transition(.opacity)
                 }
 
             }
 
-            if currentFrame == 1 || currentFrame == 2, ios26 {
+            if ios26 {
+                VStack {
+                    LinearGradient(colors: [.back, .back, .clear], startPoint: .top, endPoint: .bottom)
+                        .frame(height: orientationCoordinator.vertical ? 80 : 40)
+                        .edgesIgnoringSafeArea([.top, .leading, .trailing])
+                    Spacer()
+                }
+            }
+            
+            if ios26, currentFrame == .playlist || currentFrame == .settings || currentFrame == .search {
                 if #available(iOS 26.0, *) {
                     VStack(spacing: 0) {
                         TitleView26(backButtonVisible: $backButtonVisible,
@@ -118,20 +128,11 @@ public struct MainView: View, KeyboardReadable {
             
             if ios26 {
                 VStack {
-                    LinearGradient(colors: [.back, .back, .clear], startPoint: .top, endPoint: .bottom)
-                        .frame(height: orientationCoordinator.vertical ? 80 : 40)
-                        .edgesIgnoringSafeArea([.top, .leading, .trailing])
-                    Spacer()
-                }
-            }
-            
-            if ios26 {
-                VStack {
                     Spacer()
                     
-                    if variables.currentSong != nil, currentFrame == 1 || currentFrame == 2 || currentFrame == 4 {
+                    if variables.currentSong != nil, currentFrame == .playlist || currentFrame == .settings || currentFrame == .musicControl {
                         CurrentSongView(currentFrame: $currentFrame, lastCurrentFrame: $lastCurrentFrame, animation: animation)
-                            .opacity(currentFrame == 4 || showAlert ? 0 : 1)
+                            .opacity(currentFrame == .musicControl || showAlert ? 0 : 1)
                             .transition(.opacity)
                             .padding(.horizontal, 8)
                             //.padding(.bottom, 56)
@@ -139,17 +140,23 @@ public struct MainView: View, KeyboardReadable {
                 }
             }
             
-            if currentFrame == 4 {
+            if currentFrame == .musicControl {
                 MusicControlView(currentFrame: $currentFrame, lastCurrentFrame: lastCurrentFrame, animation: animation)
                     .transition(.opacity)
             }
+            
+            if currentFrame == .search {
+                SearchView()
+                    .transition(.opacity)
+            }
+
         }
         .animation(.spring(response: 0.5, dampingFraction: 0.82), value: currentFrame)
         .background {
             Color.back
         }
         .okCancelMessage(showingAlert: $showSettingsAlert, title: .constant("Connection settings are not filled in".localized), subtitle: .constant("Go to the settings page?".localized), onOk: {
-            currentFrame = 2
+            currentFrame = .settings
             withAnimation(Animation.easeOut.speed(2.5)) {
                 title = "Settings".localized
                 backButtonVisible = false
@@ -169,10 +176,13 @@ public struct MainView: View, KeyboardReadable {
         .fullScreenCover(isPresented: $showRemote) {
             RemoteView()
         }
+        .fullScreenCover(isPresented: $showSearch) {
+            SearchView()
+        }
         .navigationBarHidden(true)
         .onReceive(playlistCoordinator.$current) { plist in
             withAnimation {
-                backButtonVisible = (plist?.id != nil) && currentFrame == 1
+                backButtonVisible = (plist?.id != nil) && currentFrame == .playlist
                 title = plist?.name ?? "Playlists".localized
             }
         }
@@ -185,13 +195,13 @@ public struct MainView: View, KeyboardReadable {
         .onReceive(playlists.$all) { lists in
             if !Settings.shared.isAppInitiated {
 //                withAnimation {
-                    currentFrame = 3
+                currentFrame = .onboarding
 //                }
                 return
             }
             
-            if currentFrame == 0 {
-                currentFrame = 1
+            if currentFrame == .empty {
+                currentFrame = .playlist
             }
             getLastSong(lists: lists)
         }
@@ -274,7 +284,7 @@ public struct MainView: View, KeyboardReadable {
                     } else {
                         Settings.shared.initiated()
                         //withAnimation {
-                            currentFrame = 1
+                        currentFrame = .playlist
                         //}
                     }
                 }
@@ -290,8 +300,8 @@ public struct MainView: View, KeyboardReadable {
     func bottomView() -> some View {
         BottomView(page: $currentFrame) {
             withAnimation(Animation.easeOut.speed(1.8)) {
-                if currentFrame == 2 {
-                    currentFrame = 1
+                if currentFrame == .settings {
+                    currentFrame = .playlist
                     if let pname = playlistCoordinator.current?.name {
                         title = pname
                         backButtonVisible = true
@@ -310,9 +320,9 @@ public struct MainView: View, KeyboardReadable {
                 }
             }
         } saction: {
-            if currentFrame == 2 { return }
+            if currentFrame == .settings { return }
             
-            currentFrame = 2
+            currentFrame = .settings
             withAnimation(Animation.easeOut.speed(2.5)) {
                 title = "Settings".localized
                 backButtonVisible = false

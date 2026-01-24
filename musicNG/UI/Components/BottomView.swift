@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BottomView: View {
     
-    @Binding var page: Int
+    @Binding var page: CurrentFrameID
     
     var paction: () -> Void = { }
     var saction: () -> Void = { }
@@ -19,7 +19,7 @@ struct BottomView: View {
             Button {
                 paction()
             } label: {
-                Image(systemName: page == 1 ? "play.square.stack.fill" : "play.square.stack")
+                Image(systemName: page == .playlist ? "play.square.stack.fill" : "play.square.stack")
                     .imageScale(.large)
                     .foregroundColor(.main)
             }
@@ -28,7 +28,7 @@ struct BottomView: View {
             Button {
                 saction()
             } label: {
-                Image(systemName: page == 1 ? "gearshape" : "gearshape.fill")
+                Image(systemName: page == .playlist ? "gearshape" : "gearshape.fill")
                     .imageScale(.large)
                     .foregroundColor(.main)
             }
@@ -38,5 +38,5 @@ struct BottomView: View {
 }
 
 #Preview {
-    BottomView(page: .constant(1))
+    BottomView(page: .constant(.playlist))
 }

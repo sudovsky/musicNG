@@ -9,8 +9,8 @@ import SwiftUI
 
 struct CurrentSongView: View {
     
-    @Binding var currentFrame: Int
-    @Binding var lastCurrentFrame: Int
+    @Binding var currentFrame: CurrentFrameID
+    @Binding var lastCurrentFrame: CurrentFrameID
 
     var animation: Namespace.ID
 
@@ -21,7 +21,7 @@ struct CurrentSongView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                if currentFrame != 4 {
+                if currentFrame != .musicControl {
                     (variables.currentSong?.cover?.image() ?? Image(.no))
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -67,9 +67,10 @@ struct CurrentSongView: View {
             }
         }
         .glassed(cornerRadius: 20)
+        .contentShape(Rectangle())
         .onTapGesture {
             lastCurrentFrame = currentFrame
-            currentFrame = 4
+            currentFrame = .musicControl
         }
     }
 }
