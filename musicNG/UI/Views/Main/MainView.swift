@@ -27,7 +27,6 @@ public struct MainView: View, KeyboardReadable {
 
     @State private var showListSelection: Bool = false
     @State private var showRemote: Bool = false
-    @State private var showSearch: Bool = false
 
     @State var showSettingsAlert = false
     @State var showAlert = false
@@ -84,7 +83,10 @@ public struct MainView: View, KeyboardReadable {
                         SettingsView()
                             .opacity(currentFrame == .settings ? 1 : 0)
                             .transition(.opacity)
-                        
+                        SearchView()
+                            .opacity(currentFrame == .search ? 1 : 0)
+                            .transition(.opacity)
+
                     }
                     
                 }
@@ -130,7 +132,7 @@ public struct MainView: View, KeyboardReadable {
                 VStack {
                     Spacer()
                     
-                    if variables.currentSong != nil, currentFrame == .playlist || currentFrame == .settings || currentFrame == .musicControl {
+                    if variables.currentSong != nil, currentFrame == .playlist || currentFrame == .settings || currentFrame == .search || currentFrame == .musicControl {
                         CurrentSongView(currentFrame: $currentFrame, lastCurrentFrame: $lastCurrentFrame, animation: animation)
                             .opacity(currentFrame == .musicControl || showAlert ? 0 : 1)
                             .transition(.opacity)
@@ -145,11 +147,6 @@ public struct MainView: View, KeyboardReadable {
                     .transition(.opacity)
             }
             
-            if currentFrame == .search {
-                SearchView()
-                    .transition(.opacity)
-            }
-
         }
         .animation(.spring(response: 0.5, dampingFraction: 0.82), value: currentFrame)
         .background {
@@ -175,9 +172,6 @@ public struct MainView: View, KeyboardReadable {
         }
         .fullScreenCover(isPresented: $showRemote) {
             RemoteView()
-        }
-        .fullScreenCover(isPresented: $showSearch) {
-            SearchView()
         }
         .navigationBarHidden(true)
         .onReceive(playlistCoordinator.$current) { plist in

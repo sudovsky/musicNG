@@ -81,6 +81,7 @@ struct TitleView26: View {
                             toggleExpand()
                         } else {
                             currentFrame = .playlist
+                            UIApplication.shared.endEditing()
                         }
                     } label: {
                         Image(systemName: (currentFrame == .settings || currentFrame == .search ?  "xmark" : "line.3.horizontal.circle"))
