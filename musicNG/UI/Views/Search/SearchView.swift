@@ -34,7 +34,7 @@ struct SearchView: View {
                         Spacer()
                     }
                 }
-                .contentMargin26(edges: .top, 66 + 54 + 8)
+                .contentMargin26(edges: .top, 66 + 54)
                 .background(.back)
                 
                 VStack {
@@ -50,7 +50,7 @@ struct SearchView: View {
 
                     Spacer()
                 }
-                .padding(.top, 78)
+                .padding(.top, 70)
                 .padding(.horizontal, 8)
 
             } else {
