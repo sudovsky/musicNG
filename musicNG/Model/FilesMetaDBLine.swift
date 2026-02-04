@@ -15,6 +15,8 @@ class FilesMetaDBLine: Codable {
     var artist = ""
     var cover: Data? { loadCover() }
     var peaks: [Float]? = nil
+    var peaksWidth: CGFloat? = nil
+    var peaksHeight: CGFloat? = nil
 
     init() {}
     

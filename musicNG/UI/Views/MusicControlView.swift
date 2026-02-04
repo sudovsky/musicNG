@@ -25,9 +25,33 @@ struct MusicControlView: View {
     @State private var imageScale: CGFloat = 0.85
     @State private var imageOpacity: CGFloat = 1
     @State private var commonOpacity: CGFloat = 0
+    
+    @State private var needUpdatePeaks = false
+    
+    @State var finalFrame: CGSize = CGSize.zero {
+        didSet {
+            if finalFrame.width == changedFrame.width, finalFrame != CGSize.zero {
+                finalFrame = CGSize.zero
+                changedFrame = CGSize.zero
+
+                if let currentSong = variables.currentSong {
+                    updatePeaksFrame(currentSong: currentSong)
+                    currentSong.updatePeaks()
+                }
+                print("UPDATE PEAKS")
+            }
+        }
+    }
+    @State var changedFrame: CGSize = CGSize.zero {
+        didSet {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [changedFrame] in
+                self.finalFrame = changedFrame
+            }
+        }
+    }
+
 
     var body: some View {
-        //TODO: - divide screen ровно пополам for ipad
         if isVertical == false {
             HStack(spacing: 0) {
                 VinylView()
@@ -48,10 +72,15 @@ struct MusicControlView: View {
                     verticalPart()
                         .opacity(commonOpacity)
                         .frame(maxWidth: orientationCoordinator.size.width / 2)
+                    
+                    Spacer()
                 }
             }
             .backgroundStyle(.back)
             .orientationChange { size, vertical in
+                if needUpdatePeaks {
+                    changedFrame = size
+                }
                 isVertical = vertical
             }
             .onAppear {
@@ -79,6 +108,9 @@ struct MusicControlView: View {
                 verticalPart()
                     .opacity(commonOpacity)
                     .orientationChange { size, vertical in
+                        if needUpdatePeaks {
+                            changedFrame = size
+                        }
                         if isVertical != vertical {
                             if isVertical == nil {
                                 withAnimation {
@@ -96,8 +128,35 @@ struct MusicControlView: View {
                     withAnimation {
                         commonOpacity = 1
                     }
+                    
+                    initalPeaksUpdation()
+                    
+                    needUpdatePeaks = true
                 }
             }
+        }
+    }
+    
+    func initalPeaksUpdation(ignoreRestriction: Bool = false) {
+        if needUpdatePeaks, !ignoreRestriction {
+            return
+        }
+        
+        guard let currentSong = variables.currentSong else { return }
+        
+        if currentSong.peaksWidth != orientationCoordinator.size.width || currentSong.peaksHeight != orientationCoordinator.size.height {
+            updatePeaksFrame(currentSong: currentSong)
+            currentSong.updatePeaks()
+            print("INITAL UPDATE PEAKS \(currentSong.title ?? "")")
+        }
+    }
+    
+    func updatePeaksFrame(currentSong: FileData) {
+        currentSong.peaksWidth = orientationCoordinator.size.width
+        currentSong.peaksHeight = orientationCoordinator.size.height
+        if let dataLine = FilesMetaDB.data.first(where: {$0.path == currentSong.path}) {
+            dataLine.peaksWidth = currentSong.peaksWidth
+            dataLine.peaksHeight = currentSong.peaksHeight
         }
     }
     
@@ -194,10 +253,6 @@ struct MusicControlView: View {
                 
             }
             .padding(.bottom, isVertical == false ? 16 : 35)
-            
-            if isVertical == false {
-                Spacer()
-            }
         }
     }
     
@@ -210,6 +265,9 @@ struct MusicControlView: View {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             MediaPlayer.shared.prevFile()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                initalPeaksUpdation(ignoreRestriction: true)
+            }
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -231,6 +289,9 @@ struct MusicControlView: View {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             MediaPlayer.shared.nextFile()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                initalPeaksUpdation(ignoreRestriction: true)
+            }
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {

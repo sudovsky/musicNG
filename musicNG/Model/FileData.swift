@@ -34,6 +34,12 @@ class FileData: Hashable, Codable, Identifiable {
     var peaks: [Float] { slowPeaks ?? fastPeaks }
     var fastPeaks = [Float]()
     var slowPeaks: [Float]? = nil
+    var peaksFrame: CGSize? {
+        guard let peaksWidth, let peaksHeight else { return nil }
+        return CGSize(width: peaksWidth, height: peaksHeight)
+    }
+    var peaksWidth: CGFloat? = nil
+    var peaksHeight: CGFloat? = nil
 
     var fileDownloaded: Bool { FileManager.default.fileExists(atPath: fileURL().path) }
 
@@ -68,6 +74,14 @@ class FileData: Hashable, Codable, Identifiable {
                 // TODO: - make batch updation on launch
                 //updatePeaks(slowOnly: true)
             }
+            
+            if let w = fdbl.peaksWidth {
+                peaksWidth = w
+            }
+            if let h = fdbl.peaksHeight {
+                peaksHeight = h
+            }
+            
             return
         }
 

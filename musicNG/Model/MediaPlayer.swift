@@ -145,7 +145,7 @@ final class MediaPlayer {
             file.getData { data, error in
                 if file.fileDownloaded {
                     self.playerItem = AVPlayerItem(url: file.fileURL())
-                    if file.slowPeaks == nil {
+                    if file.slowPeaks == nil || file.peaksFrame == nil {
                         file.updatePeaks()
                     }
                 } else {
@@ -163,7 +163,7 @@ final class MediaPlayer {
                         file.artist = rdata.1
                         file.cover = rdata.2
                         
-                        if file.slowPeaks == nil {
+                        if file.slowPeaks == nil || file.peaksFrame == nil {
                             file.updatePeaks()
                         }
                     }
