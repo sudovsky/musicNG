@@ -191,7 +191,6 @@ final class MediaPlayer {
                 //need save current playlist and song
                 Settings.shared.lastPlaylistName = MediaPlayer.shared.currentPlaylistName
                 Settings.shared.lastSongName = file.name
-                Settings.shared.save()
                 
                 completion()
             }

@@ -276,7 +276,6 @@ public struct MainView: View, KeyboardReadable {
                             index += 1
                         }
                     } else {
-                        Settings.shared.initiated()
                         //withAnimation {
                         currentFrame = .playlist
                         //}
@@ -307,10 +306,6 @@ public struct MainView: View, KeyboardReadable {
                 } else if playlistCoordinator.current != nil {
                     playlistCoordinator.current = nil
                     title = "Playlists".localized
-                }
-                
-                DispatchQueue.global().async {
-                    Settings.shared.save()
                 }
             }
         } saction: {

@@ -104,7 +104,6 @@ struct SettingsView: View {
                             titleMessage = "Perfect!".localized
                             errorMessage = "Connection established successfully".localized
                             UIApplication.shared.endEditing()
-                            Settings.shared.save()
                         }
                         showError = true
                     }
@@ -130,13 +129,11 @@ struct SettingsView: View {
                     shareName = share
                     Settings.shared.shareName = share
                     Downloads.shared.client.updateClient()
-                    Settings.shared.save()
                 }
             }
         }
         .onSubmit {
             Downloads.shared.client.updateClient()
-            Settings.shared.save()
         }
     }
     

@@ -26,6 +26,9 @@ struct musicNGApp: App {
                     if !Settings.shared.isAppInitiated {
                         Playlists.shared.updateGlobalFiles()
                     }
+                    
+                    PlaybackCoordinator.shared.repeatMode = Settings.shared.repeatMode
+                    PlaybackCoordinator.shared.shuffleMode = Settings.shared.shuffleMode
                 }
         }
         .onChange(of: scenePhase) { (newScenePhase) in
@@ -34,13 +37,11 @@ struct musicNGApp: App {
                 if let curPos = MediaPlayer.shared.playerItem?.currentTime().seconds, !curPos.isNaN {
                     Settings.shared.lastSongPosition = curPos
                 }
-                Settings.shared.save()
                 FilesMetaDB.save()
             case .background:
                 if let curPos = MediaPlayer.shared.playerItem?.currentTime().seconds, !curPos.isNaN {
                     Settings.shared.lastSongPosition = curPos
                 }
-                Settings.shared.save()
                 FilesMetaDB.save()
             case .active:
                 try? FileManager.default.removeItem(at: FileManager.temp)
