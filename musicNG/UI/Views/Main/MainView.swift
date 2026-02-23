@@ -40,10 +40,6 @@ public struct MainView: View, KeyboardReadable {
 
     @Namespace private var animation
 
-    @State var index: Int = 0
-    @State var items : [(title:String, text:String, image: Image?, buttonTitle: String)] = []
-
-    
     let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
@@ -54,10 +50,11 @@ public struct MainView: View, KeyboardReadable {
             VStack(spacing: 0) {
                 if currentFrame == .empty {
                     //                Spacer()
-                    prepareData()
                 } else if currentFrame == .onboarding {
-                    onboarding()
-                        .transition(.opacity)
+                    OnboardingView {
+                        Settings.shared.isAppInitiated = true
+                        currentFrame = .playlist
+                    }
                 } else if currentFrame.rawValue > 0 {
                     if currentFrame == .playlist || currentFrame == .settings || currentFrame == .musicControl, !ios26 {
                         TitleView(backButtonVisible: $backButtonVisible,
@@ -235,59 +232,6 @@ public struct MainView: View, KeyboardReadable {
             }
         }
         
-    }
-    
-    func prepareData() -> some View {
-        Spacer()
-            .onAppear {
-                items = [
-                    ("Hi!".localized,
-                     "onboarding_text_1".localized,
-                     Image(.note2),
-                     "Next".localized),
-                    ("onboarding_title_1".localized,
-                     "onboarding_text_2".localized,
-                     Image(.share),
-                     "Next".localized),
-                    ("onboarding_title_2".localized,
-                     "onboarding_text_3".localized,
-                     Image(.files),
-                     "Next".localized),
-                    ("onboarding_title_3".localized,
-                     "onboarding_text_4".localized,
-                     Image(.files),
-                     "Next".localized),
-                    ("onboarding_title_4".localized,
-                     "onboarding_text_5".localized,
-                     Image(.menuEn),
-                     "Got it!".localized)
-                    ]
-            }
-    }
-    
-    func onboarding() -> some View {
-        VStack(spacing: 0) {
-
-            SwiftUIPagerView(index: $index, pages: self.items.identify { $0.title }) { size, item in
-                
-                OnboardingSheetView(title: item.model.title, text: item.model.text, image: item.model.image, buttonTitle: item.model.buttonTitle) {
-                    if index < items.count - 1 {
-                        withAnimation {
-                            index += 1
-                        }
-                    } else {
-                        //withAnimation {
-                        currentFrame = .playlist
-                        //}
-                    }
-                }
-                .frame(width: size.width - 32, height: size.height - 32)
-                .padding()
-            }
-            .transition(.scale.combined(with: .opacity))
-
-        }
-    
     }
     
     func bottomView() -> some View {
