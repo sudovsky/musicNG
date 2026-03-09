@@ -68,7 +68,7 @@ struct SearchView: View {
         }
         .onAppear {
             DispatchQueue.global().async {
-                allFiles = getAllFiles()
+                allFiles = Playlist.getAllFiles()
                 
                 DispatchQueue.main.async {
                     withAnimation {
@@ -77,21 +77,6 @@ struct SearchView: View {
                 }
             }
         }
-    }
-    
-    func getAllFiles() -> [FileData] {
-
-        let pl = Playlist.getAll(withCovers: false)
-        var files = [FileData]()
-        
-        for plist in pl {
-            files += plist.getDownloads(readMetadata: false)
-            for file in files {
-                file.readMetadata()
-            }
-        }
-        
-        return files
     }
     
     func filterFiles() -> [FileData] {

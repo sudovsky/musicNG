@@ -412,13 +412,18 @@ final class MediaPlayer {
         return repeated
     }
     
-    func switchShuffle() -> MPShuffleType {
-        switch shuffled {
-        case .collections: shuffled = .items
-        case .items: shuffled = .off
-        case .off: shuffled = .items
-        @unknown default:
-            break
+    func switchShuffle(shuffleMode: MPShuffleType? = nil) -> MPShuffleType {
+        
+        if shuffleMode == nil {
+            switch shuffled {
+            case .collections: shuffled = .items
+            case .items: shuffled = .off
+            case .off: shuffled = .items
+            @unknown default:
+                break
+            }
+        } else {
+            shuffled = shuffleMode!
         }
         
         if shuffled == .items {

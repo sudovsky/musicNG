@@ -110,7 +110,13 @@ class Playlists: ObservableObject {
 //Для информации что сейчас играет, определения обложки, пиков и т.д.
 class Variables: ObservableObject {
     
-    @Published var currentSong: FileData?
+    @Published var currentSong: FileData? {
+        didSet {
+            if currentSong?.artist == nil {
+                currentSong?.readMetadata()
+            }
+        }
+    }
 
     static var shared = Variables()
     

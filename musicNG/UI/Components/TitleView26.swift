@@ -19,7 +19,7 @@ struct TitleView26: View {
     var addAction = {}
     var networkAction = {}
 
-    @State var expanded: [Bool] = [false, false, false, false]
+    @State var expanded: [Bool] = [false, false, false, false, false]
 
     var body: some View {
         
@@ -141,6 +141,19 @@ struct TitleView26: View {
                         .transition(.move(edge: .top))
                     }
                     
+                    if expanded[4] {
+                        Button {
+                            shuffleAll()
+                            toggleExpand()
+                        } label: {
+                            Image(systemName: "shuffle")
+                                .menuButton()
+                        }
+                        .buttonStyle(.plain)
+                        .offset(y: expanded[0] ? 100 : 0)
+                        .transition(.move(edge: .top))
+                    }
+                    
                     Spacer()
                 }
             }
@@ -151,18 +164,48 @@ struct TitleView26: View {
         .animation(.spring(response: 0.3, dampingFraction: 0.62), value: expanded[1])
         .animation(.spring(response: 0.3, dampingFraction: 0.62), value: expanded[2])
         .animation(.spring(response: 0.3, dampingFraction: 0.62), value: expanded[3])
+        .animation(.spring(response: 0.3, dampingFraction: 0.62), value: expanded[4])
+    }
+    
+    func allTracks() -> [FileData] {
+        var allSongs = [FileData]()
+        
+        allSongs = Playlist.getAllFiles(readMetadata: false)
+        
+        return allSongs
+    }
+    
+    func shuffleAll() {
+        let songs = allTracks()
+        
+        if songs.count == 0 { return }
+        
+        let file = songs.randomElement()!
+        
+        Variables.shared.currentSong = file
+        
+        let findx = songs.firstIndex(where: { $0.id == file.id })
+        
+        PositionCoordinator.shared.position = 0
+        
+        MediaPlayer.shared.initPlayback(playlist: songs, index: Int(findx ?? 0), playlistName: "Megamix")
+
+        _ = MediaPlayer.shared.switchShuffle(shuffleMode: .items)
     }
     
     func toggleExpand() {
         if expanded[0] {
-            expanded[3].toggle()
+            expanded[4].toggle()
             DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
-                self.expanded[2].toggle()
+                self.expanded[3].toggle()
             }
             DispatchQueue.main.asyncAfter(deadline: .now()+0.2) {
-                self.expanded[1].toggle()
+                self.expanded[2].toggle()
             }
             DispatchQueue.main.asyncAfter(deadline: .now()+0.3) {
+                self.expanded[1].toggle()
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.4) {
                 self.expanded[0].toggle()
             }
         } else {
@@ -175,6 +218,9 @@ struct TitleView26: View {
             }
             DispatchQueue.main.asyncAfter(deadline: .now()+0.3) {
                 self.expanded[3].toggle()
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.4) {
+                self.expanded[4].toggle()
             }
         }
     }

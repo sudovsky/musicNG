@@ -165,6 +165,25 @@ class Playlist: Hashable, Codable, Identifiable {
 
         return plsts
     }
+    
+    static func getAllFiles(readMetadata: Bool = true) -> [FileData] {
+
+        let pl = Playlist.getAll(withCovers: false)
+        var files = [FileData]()
+        
+        for plist in pl {
+            files += plist.getDownloads(readMetadata: false)
+            
+            if readMetadata {
+                for file in files {
+                    file.readMetadata()
+                }
+            }
+        }
+        
+        return files
+    }
+
 }
 
 extension Array where Element: Playlist {
