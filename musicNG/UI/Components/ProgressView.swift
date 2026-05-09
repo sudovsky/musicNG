@@ -20,7 +20,7 @@ struct ProgressView: View {
                 PeaksView(peaks: peaks, maxPeak: maxPeak)
                     .opacity(0.3)
                 PeaksView(peaks: peaks, maxPeak: maxPeak) { point in
-                    withAnimation {
+                    withAnimation(.linear) {
                         if point.x >= CGFloat(peaks.count * 6 - 3) {
                             pos.position = CGFloat(peaks.count * 6 - 3)
                         } else {

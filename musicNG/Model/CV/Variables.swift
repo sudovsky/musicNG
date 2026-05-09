@@ -182,6 +182,27 @@ class PlaylistSelectionCoordinator: ObservableObject {
     
 }
 
+class SearchCoordinator: ObservableObject {
+
+    var allFiles = [FileData]()
+    @Published var loaded: Bool = false
+
+    static var shared = SearchCoordinator()
+    
+    private init() {
+        DispatchQueue.global().async {
+            self.allFiles = Playlist.getAllFiles()
+            
+            DispatchQueue.main.async {
+                withAnimation {
+                    self.loaded = true
+                }
+            }
+        }
+    }
+    
+}
+
 class ViewUpdater: ObservableObject {
     func reloadView() {
         objectWillChange.send()

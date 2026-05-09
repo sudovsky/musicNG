@@ -10,19 +10,18 @@ import SwiftUI
 struct SearchView: View {
 
     @ObservedObject var variables = Variables.shared
+    @ObservedObject var searchCoordinator = SearchCoordinator.shared
 
     @FocusState private var focusedField: Bool
 
-    @State var loaded: Bool = false
     @State var text: String = ""
     @State var strings: [String] = []
     
-    @State var allFiles = [FileData]()
     @State var found = [FileData]()
     
     var body: some View {
         ZStack {
-            if loaded {
+            if searchCoordinator.loaded {
                 ScrollView {
                     if found.count > 0 {
                         SearchResultsView(songs: $found)
@@ -66,17 +65,6 @@ struct SearchView: View {
         .onChange(of: text) { newValue in
             found = filterFiles()
         }
-        .onAppear {
-            DispatchQueue.global().async {
-                allFiles = Playlist.getAllFiles()
-                
-                DispatchQueue.main.async {
-                    withAnimation {
-                        loaded = true
-                    }
-                }
-            }
-        }
     }
     
     func filterFiles() -> [FileData] {
@@ -87,20 +75,20 @@ struct SearchView: View {
         
         var allFound = [FileData]()
         
-        allFound += allFiles.filter { file in
+        allFound += searchCoordinator.allFiles.filter { file in
             guard let title = file.title else { return false }
             
             return title.contains(text)
         }
         
-        appendIfNeeded(source: &allFound, new: allFiles.filter { file in
+        appendIfNeeded(source: &allFound, new: searchCoordinator.allFiles.filter { file in
             guard let artist = file.artist else { return false }
             
             return artist.contains(text)
         })
         
         appendIfNeeded(source: &allFound, new:
-                        allFiles.filter { file in
+                        searchCoordinator.allFiles.filter { file in
             return file.name.contains(text)
         })
         
