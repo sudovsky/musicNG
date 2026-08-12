@@ -19,6 +19,7 @@ struct PlayListGrid: View {
     @State var currentPL: Playlist? = nil
     
     @State var showAlert = false
+    @State var showConfirmation = false
     @State var importing = false
     @State var alertText: String = ""
     
@@ -56,9 +57,15 @@ struct PlayListGrid: View {
                                     .playlistContext(playlist: playlist) {
                                         viewUpdater.reloadView()
                                     } action: { tag, playlist in
-                                        currentTag = tag
-                                        currentPL = playlist
-                                        updateTag()
+                                        if tag == 4 {
+                                            currentTag = tag
+                                            currentPL = playlist
+                                            showConfirmation = true
+                                        } else {
+                                            currentTag = tag
+                                            currentPL = playlist
+                                            updateTag()
+                                        }
                                     }
                                     .overlay(isDragged ? Color.back.opacity(0.6) : Color.clear)
                             }
@@ -105,6 +112,12 @@ struct PlayListGrid: View {
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
         .onAppear {
             setBottomMargin(vertical: orientationCoordinator.vertical, plCount: pls.count)
+        }
+        .okCancelMessage(showingAlert: $showConfirmation, title: .constant("\("Delete playlist".localized) \(currentPL?.name ?? "")?")) {
+            updateTag()
+        } onCancel: {
+            currentTag = 0
+            currentPL = nil
         }
     }
     

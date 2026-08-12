@@ -210,6 +210,17 @@
         }
       }
     },
+    "Delete playlist" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить плейлист"
+          }
+        }
+      }
+    },
     "Drag and drop of elements is only available when sorting by \"Custom\"" : {
       "localizations" : {
         "en" : {
@@ -392,17 +403,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Переместить"
-          }
-        }
-      }
-    },
-    "Name" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Название"
           }
         }
       }
