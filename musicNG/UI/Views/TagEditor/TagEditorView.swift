@@ -17,6 +17,8 @@ struct TagEditorView: View {
     @State var mask = "%artist% - %title%.mp3"
 
     @State var importing = false
+    
+    @State var imageData: Data? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -41,7 +43,9 @@ struct TagEditorView: View {
                 }
             }
             .padding(.vertical, 16)
-            .imageSelection(importing: $importing, onGetImage: updateImage(imageData:))
+            .imageSelection(importing: $importing) { data in
+                imageData = data
+            }
 
             HStack(spacing: 0) {
                 Spacer()
@@ -79,9 +83,28 @@ struct TagEditorView: View {
             .frame(maxHeight: 28)
             .padding(.bottom, 16)
             
-            Button {
-                saveChanges()
-                dismiss()
+            Menu {
+                Button("Apply all") {
+                    saveChanges()
+                    dismiss()
+                }
+
+                Divider()
+
+                Button("Apply cover") {
+                    updateImage()
+                    dismiss()
+                }
+                
+                Button("Apply artist") {
+                    saveChanges(title: false, cover: false)
+                    dismiss()
+                }
+                
+                Button("Apply title") {
+                    saveChanges(artist: false, cover: false)
+                    dismiss()
+                }
             } label: {
                 ZStack {
                     RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
@@ -91,9 +114,8 @@ struct TagEditorView: View {
                         .font(.system(size: 18, weight: .medium))
                         .foregroundStyle(.back)
                 }
-                .padding(.horizontal, 16)
             }
-            .buttonStyle(GrowingButton())
+            .padding(.horizontal, 16)
 
         }
         .onAppear() {
@@ -140,18 +162,35 @@ struct TagEditorView: View {
         }
     }
     
-    func saveChanges() {
+    func saveChanges(artist: Bool = true, title: Bool = true, cover: Bool = true) {
         for file in files {
             if !file.isChecked { continue }
-            editTags(fileData: file.fileData, artist: file.fileData.artist ?? "Unknown", title: file.fileData.title ?? file.fileData.name)
+            
+            let artistText = file.fileData.artist ?? "Unknown"
+            let titleText = file.fileData.title ?? file.fileData.name
+            
+            editTags(fileData: file.fileData, artist: artist ? artistText : nil, title: title ? titleText : nil)
+            
+            guard let imageData = imageData, cover else {
+                file.fileData.updateTags()
+                continue
+            }
+            
+            file.fileData.updateCover(imageData: imageData) { newData in
+                file.fileData.saveData(data: newData) { _ in
+                    file.fileData.updateTags()
+                }
+            }
         }
         
+        Playlists.shared.reload()
+
         DispatchQueue.global().async {
             FilesMetaDB.save()
         }
     }
     
-    func editTags(fileData: FileData, artist: String, title: String) {
+    func editTags(fileData: FileData, artist: String?, title: String?) {
         if !editableStandarts.contains(fileData.fileURL().pathExtension.uppercased()) {
             return
         }
@@ -162,13 +201,16 @@ struct TagEditorView: View {
         }
     }
 
-    func updateImage(imageData: Data) {
+    func updateImage() {
+        guard let imageData = imageData else { return }
+        
         for file in files {
             if !file.isChecked { continue }
             
             file.fileData.updateCover(imageData: imageData) { newData in
-                file.fileData.saveData(data: newData)
-                file.fileData.updateTags()
+                file.fileData.saveData(data: newData) { _ in
+                    file.fileData.updateTags()
+                }
             }
         }
         
