@@ -54,6 +54,7 @@ final class MediaPlayer {
     }
     
     func setupTimer() {
+        timer.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true, block: { [weak self] tmr in
             guard let self = self else {
                 tmr.invalidate()

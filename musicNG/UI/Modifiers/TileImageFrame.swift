@@ -14,21 +14,22 @@ struct TileImageFrame: ViewModifier {
     var destination: SongTile.SongTileDestination = .song
     
     func body(content: Content) -> some View {
+        let size = getSize()
         content
-            .frame(width: getSize().width,
-                   height: getSize().height)
+            .frame(width: size.width, height: size.height)
     }
     
     func getSize() -> CGSize {
+        let screenWidth = UIScreen.getSize().width
         switch destination {
         case .playlist:
-            let sz = orientation.vertical ? UIScreen.getSize().width / 2 - 30 : UIScreen.getSize().width / 3 - 22 - 16 - 16
+            let sz = orientation.vertical ? screenWidth / 2 - 30 : screenWidth / 3 - 22 - 16 - 16
             return CGSize(width: sz, height: sz)
         case .plSelection:
-            let sz = orientation.vertical ? (UIScreen.getSize().width - 32) / 3 - 24 : (UIScreen.getSize().width - 32) / 3 - 24 - 24
+            let sz = orientation.vertical ? (screenWidth - 32) / 3 - 24 : (screenWidth - 32) / 3 - 24 - 24
             return CGSize(width: sz, height: sz)
         default:
-            let sz = orientation.vertical ? UIScreen.getSize().width / 2 - 24 : UIScreen.getSize().width / 3 - 22 - 16 - 16
+            let sz = orientation.vertical ? screenWidth / 2 - 24 : screenWidth / 3 - 22 - 16 - 16
             return CGSize(width: sz, height: sz)
         }
     }

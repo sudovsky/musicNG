@@ -12,10 +12,10 @@ struct Shadowed: ViewModifier {
     
     func body(content: Content) -> some View {
         if use {
-            return AnyView(content
-                .shadow(color: commonShadowColor, radius: 5.4, x: 2.7, y: 5.5))
+            content
+                .shadow(color: commonShadowColor, radius: 5.4, x: 2.7, y: 5.5)
         } else {
-            return AnyView(content)
+            content
         }
     }
 }

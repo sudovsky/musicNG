@@ -13,7 +13,7 @@ struct SongContext: ViewModifier {
     var action: (Int, FileData) -> Void = { _,_ in }
     
     func body(content: Content) -> some View {
-        return AnyView(content
+        content
             .contextMenu {
                 Section("Drag and drop of elements is only available when sorting by \"Custom\"") {
                     
@@ -60,7 +60,6 @@ struct SongContext: ViewModifier {
                     Label("Delete", systemImage: "trash")
                 }
             }
-        )
 
     }
 }

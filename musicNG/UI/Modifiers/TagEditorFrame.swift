@@ -13,13 +13,12 @@ struct TagEditorFrame: ViewModifier {
     
     func body(content: Content) -> some View {
         if playlist != nil {
-            return AnyView(content
+            content
                 .fullScreenCover(isPresented: $isVisible.animation()) {
                     TagEditorView(playlist: $playlist)
                 }
-            )
         } else {
-            return AnyView(content)
+            content
         }
     }
 }

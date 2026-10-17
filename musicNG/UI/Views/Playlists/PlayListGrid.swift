@@ -10,7 +10,8 @@ import SwiftUI
 struct PlayListGrid: View {
     
     @ObservedObject var playlists = Playlists.shared
-    @ObservedObject var viewUpdater = ViewUpdater()
+    //@ObservedObject var viewUpdater = ViewUpdater()
+    @StateObject var viewUpdater = ViewUpdater()
     @StateObject private var orientationCoordinator = OrientationCoordinator.shared
     
     @State var pls: [Playlist] = []
@@ -31,6 +32,8 @@ struct PlayListGrid: View {
     @State var showingTagEditor: Bool = false
     
     @State var bottomMargin: CGFloat = 96
+
+    @State private var gridID = UUID()
 
     let vcolumns = [
         GridItem(.flexible(), spacing: 16),
@@ -85,7 +88,7 @@ struct PlayListGrid: View {
                                 }
                             }
                         }
-                        .id(UUID())
+                        .id(gridID)
                         Color(.back)
                     }
                     .padding([.top, .horizontal], 16)
@@ -109,6 +112,12 @@ struct PlayListGrid: View {
             pls = value
             setBottomMargin(vertical: orientationCoordinator.vertical, plCount: value.count)
         })
+        .onReceive(playlists.objectWillChange) { _ in
+            gridID = UUID()
+        }
+        .onReceive(viewUpdater.objectWillChange) { _ in
+            gridID = UUID()
+        }
         .alertFrame(showingAlert: $showAlert, text: $alertText, title: $title, subtitle: $subtitle, placeholder: $placeholder, onDone: tagCompletion)
         .onAppear {
             setBottomMargin(vertical: orientationCoordinator.vertical, plCount: pls.count)

@@ -13,15 +13,13 @@ struct PlayListSelection: ViewModifier {
     
     func body(content: Content) -> some View {
         if use {
-            return AnyView(
-                ZStack {
+            ZStack {
                     content
                         .blur(radius: 10)
                     PlaylistSelectionView(use: $use, onSelect: onSelect)
                 }
-            )
         } else {
-            return AnyView(content)
+            content
         }
     }
 }

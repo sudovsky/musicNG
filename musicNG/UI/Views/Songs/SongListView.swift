@@ -11,7 +11,8 @@ struct SongListView: View {
     
     @Environment(\.dismiss) var dismiss
     
-    @ObservedObject var viewUpdater = ViewUpdater()
+    //@ObservedObject var viewUpdater = ViewUpdater()
+    @StateObject var viewUpdater = ViewUpdater()
     @ObservedObject var plist = PlaylistCoordinator.shared
     @StateObject private var orientationCoordinator = OrientationCoordinator.shared
     

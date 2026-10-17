@@ -11,11 +11,11 @@ struct TitleButtonImage: ViewModifier {
     var padding: Edge.Set? = nil
     
     func body(content: Content) -> some View {
-        return AnyView(content
+        content
             .font(.system(size: 25))
             .foregroundColor(.main)
             .padding(.bottom, 4)
-            .padding(padding ?? .leading, padding == nil ? 0 : 8))
+            .padding(padding ?? .leading, padding == nil ? 0 : 8)
     }
 }
 

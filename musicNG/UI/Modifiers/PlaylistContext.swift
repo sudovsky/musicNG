@@ -14,7 +14,7 @@ struct PlaylistContext: ViewModifier {
     var action: (Int, Playlist) -> Void = { _,_ in }
     
     func body(content: Content) -> some View {
-        return AnyView(content
+        content
             .contextMenu {
                 Section("Drag and drop of elements is only available when sorting by \"Custom\"") {
                     
@@ -49,7 +49,6 @@ struct PlaylistContext: ViewModifier {
                     Label("Delete", systemImage: "trash")
                 }
             }
-        )
         
     }
 }
