@@ -177,6 +177,12 @@ public struct MainView: View, KeyboardReadable {
                 title = plist?.name ?? "Playlists".localized
             }
         }
+        .onChange(of: currentFrame) { newFrame in
+            guard newFrame == .playlist else { return }
+            let plist = playlistCoordinator.current
+            backButtonVisible = plist?.id != nil
+            title = plist?.name ?? "Playlists".localized
+        }
         .onReceive(playlistSelectionCoordinator.$needShowSelection) { plist in
             showListSelection = plist
         }
