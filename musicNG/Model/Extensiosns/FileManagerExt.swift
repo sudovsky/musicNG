@@ -17,6 +17,7 @@ extension FileManager {
     static var playlistsSettings: URL { FileManager.default.getUrlForPlaylistsSettings() }
     static var metaDB: URL { FileManager.default.getUrlForMetaDB() }
     static var appSettings: URL { FileManager.default.urlForAppSettings() }
+    static var htags: URL { FileManager.default.getUrlForHTags() }
 
     private func getUrlForMetaDB() -> URL {
         let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -121,6 +122,14 @@ extension FileManager {
         return documentsUrl.appendingPathComponent(".Settings").appendingPathExtension("json")
     }
     
+    private func getUrlForHTags() -> URL {
+        let documentsUrl = urls(for: .documentDirectory, in: .userDomainMask).first!
+
+        let currentPath = documentsUrl.appendingPathComponent(".HTags").appendingPathExtension("json")
+        
+        return currentPath
+    }
+
     //TODO: - remove in future versions
     func hideFile(rootUrl pp: URL, filename: String = "Settings") {
         if fileExists(atPath: pp.appendingPathComponent(filename).appendingPathExtension("json").path) {

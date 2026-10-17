@@ -27,6 +27,10 @@ struct musicNGApp: App {
                         FilesMetaDB.restore()
                     }
                     
+                    if HTags.list.isEmpty {
+                        HTags.restore()
+                    }
+                    
                     if !Settings.shared.isAppInitiated {
                         Playlists.shared.updateGlobalFiles()
                     }

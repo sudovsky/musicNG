@@ -62,6 +62,8 @@ class FileData: Hashable, Codable, Identifiable {
         self.customSortKey = customSortKey
     }
     
+    //добвить к песням тэги чтобы делать автамические плейлисты - типа грустные, веселые, драйвовые и тд
+    
     func readMetadata() {
         
         if let fdbl = FilesMetaDB.getDataForPath(path) {
