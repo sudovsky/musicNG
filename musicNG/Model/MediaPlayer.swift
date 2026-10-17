@@ -227,15 +227,24 @@ final class MediaPlayer {
                     
                     MediaPlayer.nurl = nurl
                     
-                    if let pi = self.playerItem {
-                        let rdata = MediaPlayer.dataFromPlayerItem(item: pi)
-                        file.title = rdata.0
-                        file.artist = rdata.1
-                        file.cover = rdata.2
-                        
-                        if file.slowPeaks == nil || file.peaksFrame == nil {
-                            file.updatePeaks()
+                    if let asset = self.playerItem?.asset {
+                        Task {
+                            let rdata = await MediaPlayer.loadMetadata(asset: asset)
+                            await MainActor.run {
+                                file.title = rdata.0
+                                file.artist = rdata.1
+                                file.cover = rdata.2
+                                
+                                // обновляем UI, если это всё ещё текущая песня
+                                if Variables.shared.currentSong?.path == file.path {
+                                    Variables.shared.currentSong = file
+                                }
+                            }
                         }
+                    }
+                    
+                    if file.slowPeaks == nil || file.peaksFrame == nil {
+                        file.updatePeaks()
                     }
                 }
                 self.player = AVPlayer(playerItem: MediaPlayer.shared.playerItem)
@@ -395,14 +404,34 @@ final class MediaPlayer {
     }
     
     static func dataFromPlayerItem(item: AVPlayerItem) -> (String?, String?, Data?) {
+        let asset = item.asset
+        let box = MetadataBox()
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        let priority = Task.currentPriority
+        
+        Task.detached(priority: priority) {
+            box.value = await MediaPlayer.loadMetadata(asset: asset)
+            semaphore.signal()
+        }
+        
+        semaphore.wait()
+        return box.value
+    }
+    
+    private final class MetadataBox: @unchecked Sendable {
+        var value: (String?, String?, Data?) = (nil, nil, nil)
+    }
+    
+    static func loadMetadata(asset: AVAsset) async -> (String?, String?, Data?) {
         var title: String? = nil
         var artist: String? = nil
         var cover: Data? = nil
         
-        if let metadataList = item.asset.metadata as? [AVMetadataItem] {
+        if let metadataList = try? await asset.load(.metadata) {
             for item in metadataList {
                 
-                guard let key = item.commonKey?.rawValue, let value = item.value else{
+                guard let key = item.commonKey?.rawValue, let value = try? await item.load(.value) else {
                     continue
                 }
                 
@@ -431,37 +460,35 @@ final class MediaPlayer {
     }
     
     func setupNowPlaying(playerItem: AVPlayerItem, file: FileData? = nil) {
-        var title = file?.name ?? "Unknown track"
-        var artist = "Unknown artist"
-        var cover: UIImage? = nil
+        let asset = playerItem.asset
+        let fileName = file?.name
         
-        if let item = self.playerItem {
-            let metadata = MediaPlayer.dataFromPlayerItem(item: item)
-            title = metadata.0 ?? (file?.name ?? "Unknown track")
-            artist = metadata.1 ?? "Unknown artist"
-            if let metaCover = metadata.2 {
-                cover = UIImage(data: metaCover) ?? UIImage(resource: .no)
-            } else {
-                cover = UIImage(resource: .no)
+        Task {
+            let metadata = await MediaPlayer.loadMetadata(asset: asset)
+            let duration = (try? await asset.load(.duration))?.seconds ?? 0
+            
+            await MainActor.run {
+                // пока грузились метаданные, могли переключить трек
+                guard self.playerItem === playerItem else { return }
+                
+                let title = metadata.0 ?? (fileName ?? "Unknown track")
+                let artist = metadata.1 ?? "Unknown artist"
+                let cover: UIImage = metadata.2.flatMap { UIImage(data: $0) } ?? UIImage(resource: .no)
+                
+                var nowPlayingInfo = [String : Any]()
+                nowPlayingInfo[MPMediaItemPropertyTitle] = title
+                nowPlayingInfo[MPMediaItemPropertyArtist] = artist
+                nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: cover.size, requestHandler: { _ in
+                    return cover
+                })
+                
+                nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
+                nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration.isNaN ? 0 : duration
+                nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = self.player?.rate ?? 0
+                
+                MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
             }
         }
-        
-        var nowPlayingInfo = [String : Any]()
-        nowPlayingInfo[MPMediaItemPropertyTitle] = title
-        nowPlayingInfo[MPMediaItemPropertyArtist] = artist
-        if let cover = cover {
-            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: cover.size, requestHandler: { size in
-                return cover
-            })
-        }
-        
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = playerItem.currentTime().seconds
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = playerItem.asset.duration.seconds
-        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = player!.rate
-        
-        // Set the metadata
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-        //MPNowPlayingInfoCenter.default().playbackState = .playing
     }
     
     func switchRepeat() -> MPRepeatType {
@@ -646,7 +673,7 @@ final class MediaPlayer {
     }
     
     func updateCurrentPos() {
-        guard let allSeconds = MediaPlayer.shared.playerItem?.asset.duration.seconds,
+        guard let allSeconds = MediaPlayer.shared.playerItem?.duration.seconds,
               !allSeconds.isNaN,
               let curPos = MediaPlayer.shared.playerItem?.currentTime().seconds,
               !curPos.isNaN else {
