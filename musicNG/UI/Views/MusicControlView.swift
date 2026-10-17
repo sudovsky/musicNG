@@ -28,28 +28,7 @@ struct MusicControlView: View {
     
     @State private var needUpdatePeaks = false
     
-    @State var finalFrame: CGSize = CGSize.zero {
-        didSet {
-            if finalFrame.width == changedFrame.width, finalFrame != CGSize.zero {
-                finalFrame = CGSize.zero
-                changedFrame = CGSize.zero
-
-                if let currentSong = variables.currentSong {
-                    updatePeaksFrame(currentSong: currentSong)
-                    currentSong.updatePeaks()
-                }
-                print("UPDATE PEAKS")
-            }
-        }
-    }
-    @State var changedFrame: CGSize = CGSize.zero {
-        didSet {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [changedFrame] in
-                self.finalFrame = changedFrame
-            }
-        }
-    }
-
+    @State private var peaksUpdateTask: Task<Void, Never>? = nil
 
     var body: some View {
         if isVertical == false {
@@ -79,7 +58,7 @@ struct MusicControlView: View {
             .backgroundStyle(.back)
             .orientationChange { size, vertical in
                 if needUpdatePeaks {
-                    changedFrame = size
+                    schedulePeaksUpdate()
                 }
                 isVertical = vertical
             }
@@ -109,7 +88,7 @@ struct MusicControlView: View {
                     .opacity(commonOpacity)
                     .orientationChange { size, vertical in
                         if needUpdatePeaks {
-                            changedFrame = size
+                            schedulePeaksUpdate()
                         }
                         if isVertical != vertical {
                             if isVertical == nil {
@@ -134,6 +113,20 @@ struct MusicControlView: View {
                     needUpdatePeaks = true
                 }
             }
+        }
+    }
+    
+    func schedulePeaksUpdate() {
+        peaksUpdateTask?.cancel()
+        peaksUpdateTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            guard !Task.isCancelled else { return }
+            
+            if let currentSong = variables.currentSong {
+                updatePeaksFrame(currentSong: currentSong)
+                currentSong.updatePeaks()
+            }
+            print("UPDATE PEAKS")
         }
     }
     
