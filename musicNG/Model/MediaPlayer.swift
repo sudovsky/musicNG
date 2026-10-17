@@ -45,12 +45,81 @@ final class MediaPlayer {
     
     var timer = Timer()
     
+    /// Играла ли музыка в момент начала прерывания (звонок, будильник, Siri и т.п.)
+    private var wasPlayingBeforeInterruption = false
+    
     private init() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying), name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleInterruption), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleRouteChange), name: AVAudioSession.routeChangeNotification, object: AVAudioSession.sharedInstance())
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: - Прерывания аудиосессии
+    
+    /// Звонок, будильник и т.п.: система сама останавливает звук, а мы синхронизируем
+    /// своё состояние (кнопку play/pause, таймер позиции и Now Playing на экране блокировки).
+    @objc func handleInterruption(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: typeValue) else { return }
+        
+        let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
+        
+        DispatchQueue.main.async {
+            switch type {
+            case .began:
+                self.wasPlayingBeforeInterruption = !self.paused
+                if !self.paused {
+                    self.handleExternalPause()
+                }
+            case .ended:
+                let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+                if self.wasPlayingBeforeInterruption, options.contains(.shouldResume) {
+                    self.unpause()
+                }
+                self.wasPlayingBeforeInterruption = false
+            @unknown default:
+                break
+            }
+        }
+    }
+    
+    /// Отключили наушники/Bluetooth: AVPlayer сам ставится на паузу, синхронизируем состояние.
+    @objc func handleRouteChange(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
+              let reason = AVAudioSession.RouteChangeReason(rawValue: reasonValue),
+              reason == .oldDeviceUnavailable else { return }
+        
+        DispatchQueue.main.async {
+            if !self.paused {
+                self.handleExternalPause()
+            }
+        }
+    }
+    
+    /// Пауза, инициированная системой, а не пользователем. Аудиосессию не деактивируем —
+    /// это уже сделала система.
+    private func handleExternalPause() {
+        paused = true
+        player?.pause()
+        
+        let elapsed = playerItem?.currentTime().seconds ?? 0
+        if !elapsed.isNaN {
+            Settings.shared.lastSongPosition = elapsed
+        }
+        
+        var info = MPNowPlayingInfoCenter.default().nowPlayingInfo
+        info?[MPNowPlayingInfoPropertyPlaybackRate] = 0.0
+        info?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsed.isNaN ? 0 : elapsed
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = info
+        MPNowPlayingInfoCenter.default().playbackState = .paused
+        
+        updateCurrentPos()
     }
     
     func setupTimer() {
