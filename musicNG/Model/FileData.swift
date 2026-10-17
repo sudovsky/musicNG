@@ -200,10 +200,12 @@ class FileData: Hashable, Codable, Identifiable {
     }
     
     func getTagFromName(sourceTemplate: String, tagName: String) -> String? {
-        var result = name.lowercased()
+//        var result = name.lowercased()
+        var result = name
 
-        var maskParts = getArrayOfTags(from: sourceTemplate.lowercased())
-        
+//        var maskParts = getArrayOfTags(from: sourceTemplate.lowercased())
+        var maskParts = getArrayOfTags(from: sourceTemplate)
+
         if let firstPart = maskParts.first, !firstPart.hasPrefix("%") {
             if result.hasPrefix(firstPart) {
                 result = result.stringByReplacingFirstOccurrenceOfString(target: firstPart, withString: "")
@@ -225,7 +227,9 @@ class FileData: Hashable, Codable, Identifiable {
             maskParts.removeFirst()
 
             if maskParts.isEmpty {
-                if !result.isEmpty {
+                if let preValue = getPreValue(from: firstPart) {
+                    preRes[preValue.key] = preValue.value
+                } else if !result.isEmpty {
                     preRes[firstPart] = result
                 }
                 break
@@ -242,12 +246,26 @@ class FileData: Hashable, Codable, Identifiable {
                 result.removeFirst(secondPart.count)
             }
             
+            if let preValue = getPreValue(from: firstPart) {
+                preRes[preValue.key] = preValue.value
+                continue
+            }
+            
             if !tempStr.isEmpty {
                 preRes[firstPart] = tempStr
             }
         }
 
         return preRes[tagName]
+    }
+    
+    private func getPreValue(from string: String) -> (key: String, value: String)? {
+        if let preValue = string.slice(from: "{", to: "}") {
+            let pureFirstPart = string.replacingOccurrences(of: "{\(preValue)}", with: "")
+            return preValue.trim() == "" ? nil : (pureFirstPart, preValue)
+        }
+        
+        return nil
     }
 
     func getArrayOfTags(from string: String) -> [String] {
@@ -294,4 +312,15 @@ class FileData: Hashable, Codable, Identifiable {
         hasher.combine(path)
     }
 
+}
+
+extension String {
+    
+    func slice(from: String, to: String) -> String? {
+        return (range(of: from)?.upperBound).flatMap { substringFrom in
+            (range(of: to, range: substringFrom..<endIndex)?.lowerBound).map { substringTo in
+                String(self[substringFrom..<substringTo])
+            }
+        }
+    }
 }

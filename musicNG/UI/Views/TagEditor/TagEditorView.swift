@@ -153,10 +153,10 @@ struct TagEditorView: View {
         for file in files {
             file.fileData.artist = nil
             file.fileData.title = nil
-            if let artist = file.fileData.getTagFromName(sourceTemplate: mask.lowercased(), tagName: "%artist%")?.capitalized {
+            if let artist = file.fileData.getTagFromName(sourceTemplate: mask, tagName: "%artist%") {
                 file.fileData.artist = artist
             }
-            if let title = file.fileData.getTagFromName(sourceTemplate: mask.lowercased(), tagName: "%title%")?.capitalized {
+            if let title = file.fileData.getTagFromName(sourceTemplate: mask, tagName: "%title%") {
                 file.fileData.title = title
             }
         }
