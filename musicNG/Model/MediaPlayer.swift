@@ -248,13 +248,16 @@ final class MediaPlayer {
                     }
                 }
                 self.player = AVPlayer(playerItem: MediaPlayer.shared.playerItem)
-                
-                self.setupAudioSession()
+                let player = self.player
                 
                 if autostart {
-                    self.player?.play()
-                    Settings.shared.lastSongPosition = self.playerItem?.currentTime().seconds
+                    self.setupAudioSession {
+                        guard self.player === player, !self.paused else { return }
+                        player?.play()
+                        Settings.shared.lastSongPosition = self.playerItem?.currentTime().seconds
+                    }
                 } else {
+                    self.setupAudioSession()
                     self.paused = true
                 }
                 
@@ -288,6 +291,10 @@ final class MediaPlayer {
             MPNowPlayingInfoCenter.default().nowPlayingInfo = info
             
             MPNowPlayingInfoCenter.default().playbackState = .paused
+        }
+        
+        audioSessionQueue.async {
+            guard self.paused else { return }
             do {
                 try AVAudioSession.sharedInstance().setActive(false)
             } catch {
@@ -299,18 +306,11 @@ final class MediaPlayer {
     func unpause() {
         paused = false
 
-        DispatchQueue.global().async {
+        setupAudioSession {
+            guard !self.paused else { return }
             self.player?.play()
             
-            do {
-                try AVAudioSession.sharedInstance().setActive(false)
-                try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.defaultToSpeaker, .mixWithOthers])
-                try AVAudioSession.sharedInstance().setActive(true)
-            } catch {
-                print("Error setting the AVAudioSession:", error.localizedDescription)
-            }
-            
-            MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = self.player!.rate
+            MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = self.player?.rate ?? 0
             MPNowPlayingInfoCenter.default().playbackState = .playing
         }
     }
@@ -370,13 +370,30 @@ final class MediaPlayer {
         })
     }
     
-    func setupAudioSession() {
-        do {
-            try AVAudioSession.sharedInstance().setActive(false)
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.defaultToSpeaker, .mixWithOthers])
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
-            print("Error setting the AVAudioSession:", error.localizedDescription)
+    private let audioSessionQueue = DispatchQueue(label: "musicNG.audioSession", qos: .userInitiated)
+    
+    func setupAudioSession(completion: (() -> Void)? = nil) {
+        audioSessionQueue.async {
+            let session = AVAudioSession.sharedInstance()
+            let options: AVAudioSession.CategoryOptions = [.defaultToSpeaker, .mixWithOthers]
+            
+            if session.category != .playback || session.categoryOptions != options {
+                do {
+                    try session.setCategory(.playback, mode: .default, options: options)
+                } catch {
+                    print("Error setting the AVAudioSession category:", error.localizedDescription)
+                }
+            }
+            
+            do {
+                try session.setActive(true)
+            } catch {
+                print("Error activating the AVAudioSession:", error.localizedDescription)
+            }
+            
+            if let completion {
+                DispatchQueue.main.async(execute: completion)
+            }
         }
     }
     
@@ -653,7 +670,7 @@ final class MediaPlayer {
                         
                         //print("\(index)-\(i): \(samples[i])")
                         //result.append(floatArray[i])
-                        slowResult.append(sred / Float(sredIndex))
+                        slowResult.append(sredIndex > 0 ? sred / Float(sredIndex) : 0)
                         sred = 0
                         sredIndex = 0
                     } else {

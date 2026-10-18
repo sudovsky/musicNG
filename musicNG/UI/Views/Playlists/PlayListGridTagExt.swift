@@ -42,7 +42,7 @@ extension PlayListGrid {
             return
         }
 
-        let oldMeta = FilesMetaDB.data.filter({$0.path.starts(with: playlist.name + "/")})
+        let oldMeta = FilesMetaDB.lines(where: {$0.path.starts(with: playlist.name + "/")})
         
         for meta in oldMeta {
             meta.path = meta.path.replacingOccurrences(of: playlist.name + "/", with: str + "/")
@@ -119,7 +119,7 @@ extension PlayListGrid {
             print(error)
         }
 
-        FilesMetaDB.data.removeAll(where: {$0.path.starts(with: playlist.name + "/")})
+        FilesMetaDB.removeAll(where: {$0.path.starts(with: playlist.name + "/")})
         MediaPlayer.shared.originalPlaylist.removeAll(where: {$0.path.starts(with: playlist.name + "/")})
         MediaPlayer.shared.playlist.removeAll(where: {$0.path.starts(with: playlist.name + "/")})
 

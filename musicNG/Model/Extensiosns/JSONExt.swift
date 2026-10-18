@@ -42,12 +42,8 @@ extension Encodable {
     }
     
     func save(_ file: URL) throws {
-        if let text = try toJSON() {
-            if FileManager.default.fileExists(atPath: file.path) {
-                try FileManager.default.removeItem(at: file)
-            }
-            
-            FileManager.default.createFile(atPath: file.path, contents: text.data(using: .utf8))
+        if let text = try toJSON(), let data = text.data(using: .utf8) {
+            try data.write(to: file, options: .atomic)
         }
     }
 }

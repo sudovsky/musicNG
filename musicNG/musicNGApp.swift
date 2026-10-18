@@ -23,9 +23,7 @@ struct musicNGApp: App {
                     OrientationCoordinator.shared.vertical = vertical
                 })
                 .onAppear {
-                    if FilesMetaDB.data.isEmpty {
-                        FilesMetaDB.restore()
-                    }
+                    FilesMetaDB.restore()
                     
                     if HTags.list.isEmpty {
                         HTags.restore()

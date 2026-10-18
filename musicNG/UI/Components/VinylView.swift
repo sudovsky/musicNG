@@ -13,6 +13,7 @@ struct VinylView: View {
 
     @State private var rotate = false
     @State private var cover = Variables.shared.currentSong?.cover?.image() ?? noImage
+    @State private var coverData: Data? = Variables.shared.currentSong?.cover
 
     var body: some View {
         ZStack {
@@ -52,9 +53,10 @@ struct VinylView: View {
             }
         }
         .onReceive(variables.$currentSong) { pub in
-            //withAnimation {
-                cover = pub?.cover?.image() ?? noImage
-            //}
+            let newData = pub?.cover
+            guard newData != coverData else { return }
+            coverData = newData
+            cover = newData?.image() ?? noImage
         }
     }
 }

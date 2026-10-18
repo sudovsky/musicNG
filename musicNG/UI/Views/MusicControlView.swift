@@ -18,6 +18,7 @@ struct MusicControlView: View {
 
     @ObservedObject var variables = Variables.shared
     @ObservedObject var pb = PlaybackCoordinator.shared
+    @ObservedObject var peaksCoordinator = PeaksCoordinator.shared
     @StateObject private var orientationCoordinator = OrientationCoordinator.shared
 
     @State private var isVertical: Bool? = nil
@@ -147,7 +148,7 @@ struct MusicControlView: View {
     func updatePeaksFrame(currentSong: FileData) {
         currentSong.peaksWidth = orientationCoordinator.size.width
         currentSong.peaksHeight = orientationCoordinator.size.height
-        if let dataLine = FilesMetaDB.data.first(where: {$0.path == currentSong.path}) {
+        if let dataLine = FilesMetaDB.getDataForPath(currentSong.path) {
             dataLine.peaksWidth = currentSong.peaksWidth
             dataLine.peaksHeight = currentSong.peaksHeight
         }

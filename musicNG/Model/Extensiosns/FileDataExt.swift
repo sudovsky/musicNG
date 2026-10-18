@@ -13,16 +13,23 @@ extension FileData {
         MediaPlayer.shared.readBuffer(fileURL(), notify: false) { data in
             self.slowPeaks = data
             
-            if Variables.shared.currentSong?.id == self.id {
-                DispatchQueue.main.async {
-                    withAnimation {
-                        Variables.shared.currentSong = self
-                    }
+            DispatchQueue.main.async {
+                // Песня — та же, но объект FileData может быть другим экземпляром
+                guard let current = Variables.shared.currentSong, current.path == self.path else { return }
+                if current !== self {
+                    current.slowPeaks = data
+                }
+                // Только пики: currentSong не трогаем, чтобы не перерисовывалась обложка
+                withAnimation {
+                    PeaksCoordinator.shared.peaksUpdated()
                 }
             }
             
-            if let dataLine = FilesMetaDB.data.first(where: {$0.path == self.path}) {
+            if let dataLine = FilesMetaDB.getDataForPath(self.path) {
                 dataLine.peaks = data
+                if let w = self.peaksWidth { dataLine.peaksWidth = w }
+                if let h = self.peaksHeight { dataLine.peaksHeight = h }
+                FilesMetaDB.scheduleSave()
             }
         }
     }

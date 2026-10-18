@@ -224,7 +224,7 @@ extension Array where Element: Playlist {
             
             if !toRemove.isEmpty {
                 for removeItem in toRemove {
-                    FilesMetaDB.data.removeAll(where: { $0.path.hasPrefix(removeItem.name) })
+                    FilesMetaDB.removeAll(where: { $0.path.hasPrefix(removeItem.name) })
                 }
                 
                 DispatchQueue.global(qos: .background).async {

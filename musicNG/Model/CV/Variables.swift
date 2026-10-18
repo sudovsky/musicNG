@@ -124,6 +124,19 @@ class Variables: ObservableObject {
     
 }
 
+class PeaksCoordinator: ObservableObject {
+
+    @Published private(set) var version = 0
+
+    static var shared = PeaksCoordinator()
+    
+    private init() {}
+    
+    func peaksUpdated() {
+        version &+= 1
+    }
+}
+
 class PositionCoordinator: ObservableObject {
 
     @Published var position: CGFloat = 0
