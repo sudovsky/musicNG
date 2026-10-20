@@ -13,6 +13,7 @@ let commonBorderColor: Color = Color(.shadow.withAlphaComponent(0.2))
 let commonShadowColor: Color = Color(.shadow.withAlphaComponent(0.25))
 let comonTextColor: Color = .white
 let commonGradientColor: Color = .black.opacity(0.2)
+let commonTextBorderColor: Color = Color(.shadow.withAlphaComponent(0.15))
 
 let titleFont: Font = .custom("avanti", size: 32) //.system(size: 19, weight: .regular)
 let trackFont: Font = .custom("avanti", size: 19) //.system(size: 19, weight: .regular)

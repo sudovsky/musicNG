@@ -1,3 +1,11 @@
+//
+//  OutlinedText.swift
+//  musicNG
+//
+//  Created by Max Sudovsky on 20.10.2026.
+//
+
+import SwiftUI
 
 struct OutlinedText: View {
     var text: String

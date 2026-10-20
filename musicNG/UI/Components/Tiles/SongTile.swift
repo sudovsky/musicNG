@@ -41,23 +41,21 @@ struct SongTile: View {
             }
             VStack(spacing: 0) {
                 Spacer()
-                Text(track)
+                OutlinedText(text: track, width: 1, color: commonTextBorderColor)
                     .font(trackFont)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.horizontal], 8)
                     .padding([.bottom], artistVisible ? 0 : 6)
                     .foregroundStyle(comonTextColor)
-                    .shadow(color: .black, radius: 1)
                     .multilineTextAlignment(.leading)
                 
                 if artistVisible {
-                    Text(artist)
+                    OutlinedText(text: artist, width: 1, color: commonTextBorderColor)
                         .font(artistFont)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding([.horizontal], 8)
                         .padding([.bottom], 6)
                         .foregroundStyle(comonTextColor)
-                        .shadow(color: .black, radius: 1)
                         .multilineTextAlignment(.leading)
                 }
             }
@@ -69,7 +67,6 @@ struct SongTile: View {
             RoundedRectangle(cornerRadius: commonCornerRadius)
                 .stroke(commonBorderColor, lineWidth: commonBorderWidth)
         )
-        .shadowed(use: shadow)
     }
     
 }

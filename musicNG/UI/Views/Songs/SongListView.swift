@@ -87,12 +87,14 @@ struct SongListView: View {
                             MediaPlayer.shared.playlist = fileList
                         }
                     }
-                    Color(.back)
+                    //Color(.back)
                 }
                 .padding([.horizontal, .top], 16)
                 .padding([.bottom], 14)
+                .shadowed()
             }
-            .contentMargin26(bottomMargin - 32)
+//            .contentMargin26(bottomMargin - 32)
+            .contentMargin26(bottomMargin)
             .contentMargin26(edges: .top, 66)
             .imageSelection(importing: $importing, onGetImage: updateImage(imageData:))
             
@@ -137,8 +139,8 @@ struct SongListView: View {
     
     //vgrid or scroll view bug fix
     func setBottomMargin(vertical: Bool) {
-        let count = vertical ? vcolumns.count : hcolumns.count
-        bottomMargin = fileList.count % count == 0 ? 96 : 96 + 24
+        //let count = vertical ? vcolumns.count : hcolumns.count
+        bottomMargin = 86 //fileList.count % count == 0 ? 96 : 96 + 24
     }
     
 }

@@ -89,14 +89,16 @@ struct PlayListGrid: View {
                             }
                         }
                         .id(gridID)
-                        Color(.back)
+                        //Color(.back)
                     }
                     .padding([.top, .horizontal], 16)
+                    .shadowed()
                     //                  Если четное количество плиток, отступ нужен, иначе нет
                     //                  тоже самое у песен, только наоборот минус меняем на плюс
                     //                    .padding([.bottom], -14)
                 }
-                .contentMargin26(bottomMargin - 32)
+//                .contentMargin26(bottomMargin - 32)
+                .contentMargin26(bottomMargin)
                 .contentMargin26(edges: .top, 66)
             }
             .imageSelection(importing: $importing, onGetImage: updateImage(imageData:))
@@ -132,8 +134,8 @@ struct PlayListGrid: View {
     
     //vgrid or scroll view bug fix
     func setBottomMargin(vertical: Bool, plCount: Int) {
-        let count = vertical ? vcolumns.count : hcolumns.count
-        bottomMargin = plCount % count == 0 ? 96 : 96 + 32
+        //let count = vertical ? vcolumns.count : hcolumns.count
+        bottomMargin = 100 //plCount % count == 0 ? 96 : 96 + 32
     }
     
 }
