@@ -48,16 +48,17 @@ struct SongTile: View {
                     .font(trackFont)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.horizontal], 8)
-                    .padding([.bottom], artistVisible ? 0 : 6)
+                    .padding([.bottom], artistVisible ? 0 : 8)
                     .foregroundStyle(comonTextColor)
                     .multilineTextAlignment(.leading)
                 
                 if artistVisible {
                     OutlinedText(text: artist, width: 1, color: commonTextBorderColor)
                         .font(artistFont)
+                        .artistLineHeight()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding([.horizontal], 8)
-                        .padding([.bottom], 6)
+                        .padding([.bottom], 10)
                         .foregroundStyle(comonTextColor)
                         .multilineTextAlignment(.leading)
                 }
@@ -83,4 +84,30 @@ struct SongTile: View {
 
 #Preview {
     SongTile(image: noImage)
+}
+
+/// Уменьшенный межстрочный интервал для исполнителя.
+///
+/// У шрифта Ampero-Regular высокая верхняя метрика: при 18 pt шаг строк ≈ 25 pt
+/// (1.39 от кегля), между строками ≈ 5 pt пустоты. Множитель 1.25 оставляет ≈ 2.5 pt —
+/// вдвое меньше. Уменьшить интервал ниже заложенного в шрифте SwiftUI умеет только
+/// с iOS 26 (lineSpacing с отрицательным значением игнорируется), поэтому на более
+/// старых системах интервал остаётся прежним.
+private struct ArtistLineHeight: ViewModifier {
+    /// Шаг строк как доля размера шрифта. Меньше — плотнее (≈1.15 — строки почти касаются).
+    static let factor: CGFloat = 1.1
+
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.lineHeight(.multiple(factor: Self.factor))
+        } else {
+            content
+        }
+    }
+}
+
+private extension View {
+    func artistLineHeight() -> some View {
+        modifier(ArtistLineHeight())
+    }
 }
