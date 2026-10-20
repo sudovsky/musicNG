@@ -10,6 +10,7 @@ import SwiftUI
 struct PlayControlButton: View {
     var imageName: String = "play.fill"
     var isBig: Bool = false
+    var fontSize: CGFloat? = nil
     var action: () -> Void = { }
 
     @ObservedObject var pb = PlaybackCoordinator.shared
@@ -23,7 +24,7 @@ struct PlayControlButton: View {
                     .foregroundStyle(.main)
                 Image(systemName: !isBig ? imageName : (pb.isPlaying ? "pause.fill" : "play.fill"))
                     .foregroundStyle(.back)
-                    .font(isBig ? .system(size: 33) : .system(size: 17, weight: .ultraLight))
+                    .font(isBig ? .system(size: fontSize ?? 33) : .system(size: fontSize ?? 17, weight: .ultraLight))
             }
         }
         .buttonStyle(GrowingButton())

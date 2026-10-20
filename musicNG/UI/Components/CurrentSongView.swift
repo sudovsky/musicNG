@@ -55,6 +55,17 @@ struct CurrentSongView: View {
                 }
                 
                 Spacer()
+                
+                PlayControlButton(isBig: true, fontSize: 20) {
+                    if MediaPlayer.shared.paused {
+                        MediaPlayer.shared.unpause()
+                    } else {
+                        MediaPlayer.shared.pause()
+                    }
+                }
+                .frame(width: 44, height: 44)
+                .padding(.trailing, 16)
+                .opacity(currentFrame == .musicControl ? 0 : 1)
             }
             .frame(maxWidth: .infinity, maxHeight: 80)
             .clipped()
