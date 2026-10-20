@@ -24,6 +24,9 @@ struct SongTile: View {
     var shadow: Bool = true
     var gradient: Bool = true
     var destination: SongTileDestination = .song
+    /// Если задан, в правом нижнем углу показывается эквалайзер,
+    /// когда текущий трек — этот (.song) или из этого плейлиста (.playlist).
+    var nowPlaying: NowPlayingIndicator.Target? = nil
     
     var body: some View {
         ZStack {
@@ -62,6 +65,13 @@ struct SongTile: View {
         }
         .aspectRatio(contentMode: .fit)
         .tileImageFrame(destination: destination)
+        .overlay(alignment: .topTrailing) {
+            if let nowPlaying {
+                NowPlayingIndicator(target: nowPlaying)
+                    .frame(width: 24, height: 24)
+                    .padding(12)
+            }
+        }
         .cornerRadius(commonCornerRadius)
         .overlay(
             RoundedRectangle(cornerRadius: commonCornerRadius)

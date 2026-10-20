@@ -248,6 +248,11 @@ final class MediaPlayer {
                     }
                 }
                 self.player = AVPlayer(playerItem: MediaPlayer.shared.playerItem)
+                
+                // Анализ спектра для эквалайзера на плитке (звук не меняет)
+                if let item = self.playerItem {
+                    AudioSpectrumAnalyzer.shared.attach(to: item)
+                }
                 let player = self.player
                 
                 if autostart {

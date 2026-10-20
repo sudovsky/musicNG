@@ -62,7 +62,7 @@ struct SongListView: View {
                             
                             MediaPlayer.shared.initPlayback(playlist: fileList, index: Int(findx ?? 0), playlistName: playlist.name)
                         } label: {
-                            SongTile(image: file.cover?.image() ?? noImage, artistVisible: file.artist != nil, artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
+                            SongTile(image: file.cover?.image() ?? noImage, artistVisible: file.artist != nil, artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true, nowPlaying: .song(path: file.path))
                                 .songContext(file: file) { fileToUpdate in
                                     viewUpdater.reloadView()
                                     fileToUpdate.updatePeaks()

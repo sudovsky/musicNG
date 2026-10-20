@@ -37,7 +37,7 @@ struct SearchResultsView: View {
                     
                     MediaPlayer.shared.initPlayback(playlist: songs, index: Int(findx ?? 0), playlistName: "Search")
                 } label: {
-                    SongTile(image: file.cover?.image() ?? noImage, artistVisible: file.artist != nil, artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true)
+                    SongTile(image: file.cover?.image() ?? noImage, artistVisible: file.artist != nil, artist: file.artist ?? "", track: file.title ?? file.name, shadow: true, gradient: true, nowPlaying: .song(path: file.path))
                 }
                 .buttonStyle(GrowingButton())
                 .overlay(isDragged ? Color.back.opacity(0.6) : Color.clear)
