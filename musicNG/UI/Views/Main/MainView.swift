@@ -177,7 +177,7 @@ public struct MainView: View, KeyboardReadable {
                 title = plist?.name ?? "Playlists".localized
             }
         }
-        .onChange(of: currentFrame) { newFrame in
+        .onChange(of: currentFrame) { _, newFrame in
             guard newFrame == .playlist else { return }
             let plist = playlistCoordinator.current
             backButtonVisible = plist?.id != nil

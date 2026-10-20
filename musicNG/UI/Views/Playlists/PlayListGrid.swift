@@ -104,7 +104,7 @@ struct PlayListGrid: View {
             .imageSelection(importing: $importing, onGetImage: updateImage(imageData:))
             
         }
-        .onChange(of: orientationCoordinator.vertical) { coord in
+        .onChange(of: orientationCoordinator.vertical) { _, coord in
             if !ios26 { return }
             
             setBottomMargin(vertical: coord, plCount: pls.count)

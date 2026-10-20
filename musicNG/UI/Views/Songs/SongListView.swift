@@ -129,7 +129,7 @@ struct SongListView: View {
             PlaylistCoordinator.shared.current = nil
             canDismiss = false
         }
-        .onChange(of: orientationCoordinator.vertical) { coord in
+        .onChange(of: orientationCoordinator.vertical) { _, coord in
             if !ios26 { return }
             
             setBottomMargin(vertical: coord)

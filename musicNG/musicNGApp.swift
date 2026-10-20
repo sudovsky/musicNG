@@ -48,7 +48,7 @@ struct musicNGApp: App {
                     executePlaylistSelection(pl: pl, isNew: isNew)
                 }
         }
-        .onChange(of: scenePhase) { (newScenePhase) in
+        .onChange(of: scenePhase) { _, newScenePhase in
             switch newScenePhase {
             case .inactive:
                 if let curPos = MediaPlayer.shared.playerItem?.currentTime().seconds, !curPos.isNaN {

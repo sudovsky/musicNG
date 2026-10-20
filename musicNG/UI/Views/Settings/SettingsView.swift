@@ -38,7 +38,7 @@ struct SettingsView: View {
                         .textContentType(.username)
                         .font(.system(size: 19))
                         .autocorrectionDisabled()
-                        .onChange(of: login) { newValue in
+                        .onChange(of: login) { _, newValue in
                             Settings.shared.username = newValue
                         }
                 }
@@ -55,7 +55,7 @@ struct SettingsView: View {
                         .font(.system(size: 19))
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
-                        .onChange(of: pass) { newValue in
+                        .onChange(of: pass) { _, newValue in
                             Settings.shared.password = newValue
                         }
                     
@@ -71,7 +71,7 @@ struct SettingsView: View {
                     TextField("IP-address", text: $ip)
                         .font(.system(size: 19))
                         .autocorrectionDisabled()
-                        .onChange(of: ip) { newValue in
+                        .onChange(of: ip) { _, newValue in
                             Settings.shared.address = newValue.replacingOccurrences(of: ",", with: ".")
                         }
                 }

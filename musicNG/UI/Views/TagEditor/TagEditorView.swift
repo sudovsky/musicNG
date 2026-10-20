@@ -121,7 +121,7 @@ struct TagEditorView: View {
         .onAppear() {
             updateTags()
         }
-        .onChange(of: mask) { newValue in
+        .onChange(of: mask) { _, newValue in
             updateTags()
         }
         .transition(.move(edge: .bottom).combined(with: .opacity))

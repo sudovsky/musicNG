@@ -44,7 +44,7 @@ struct RemoteView: View {
             TextField("Search", text: $searchStr)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
-                .onChange(of: searchStr) { text in
+                .onChange(of: searchStr) { _, text in
                     if text.trim().isEmpty {
                         filteredFiles = files
                         return
@@ -71,7 +71,7 @@ struct RemoteView: View {
         .okMessage(showingAlert: $showError, title: .constant("Connection error".localized), subtitle: $errorMessage, onOk: {
             errorMessage = nil
         })
-        .onChange(of: currentPath) { newValue in
+        .onChange(of: currentPath) { _, newValue in
             listDirectory {
                 UIApplication.shared.endEditing()
                 searchStr = ""
@@ -99,7 +99,7 @@ struct RemoteView: View {
             
             readyToDownload = true
         }
-        .onChange(of: readyToDownload) { ready in
+        .onChange(of: readyToDownload) { _, ready in
             guard ready, filesToSave.count > 0 else {
                 readyToDownload = false
                 return
