@@ -258,7 +258,10 @@ final class MediaPlayer {
                 if autostart {
                     self.setupAudioSession {
                         guard self.player === player, !self.paused else { return }
-                        player?.play()
+                        //DispatchQueue чинит заикание при смене трека
+                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
+                            player?.play()
+                        }
                         Settings.shared.lastSongPosition = self.playerItem?.currentTime().seconds
                     }
                 } else {

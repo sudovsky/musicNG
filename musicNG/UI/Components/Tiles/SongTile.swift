@@ -69,7 +69,7 @@ struct SongTile: View {
         .overlay(alignment: .topTrailing) {
             if let nowPlaying {
                 NowPlayingIndicator(target: nowPlaying)
-                    .frame(width: 24, height: 24)
+                    .frame(width: 18, height: 18)
                     .padding(12)
             }
         }

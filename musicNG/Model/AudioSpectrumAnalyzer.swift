@@ -81,18 +81,20 @@ final class AudioSpectrumAnalyzer: ObservableObject {
     func attach(to item: AVPlayerItem) {
         reset()
 
-        Task {
-            guard let track = try? await item.asset.loadTracks(withMediaType: .audio).first,
-                  let tap = makeTap() else { return }
-
-            let params = AVMutableAudioMixInputParameters(track: track)
-            params.audioTapProcessor = tap
-
-            let mix = AVMutableAudioMix()
-            mix.inputParameters = [params]
-
-            await MainActor.run {
-                item.audioMix = mix
+        DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) { [self] in
+            Task {
+                guard let track = try? await item.asset.loadTracks(withMediaType: .audio).first,
+                      let tap = makeTap() else { return }
+                
+                let params = AVMutableAudioMixInputParameters(track: track)
+                params.audioTapProcessor = tap
+                
+                let mix = AVMutableAudioMix()
+                mix.inputParameters = [params]
+                
+                await MainActor.run {
+                    item.audioMix = mix
+                }
             }
         }
     }
